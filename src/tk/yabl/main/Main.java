@@ -48,6 +48,7 @@ public class Main extends NanoHTTPD {
 	public static MongoClient mongo = null;
 	public static MongoDatabase db = null;
 	public static String token = null;
+	public static String secret = null;
 	public Map<String,JsonObject> loggedUsers = new HashMap<String,JsonObject>();
 	public final static Logger logger = LoggerFactory.getLogger("tk.yabl.main.Main");
 	public Main(int port) throws IOException {
@@ -65,6 +66,7 @@ public class Main extends NanoHTTPD {
             String source = config.get("config", "mongosrc");
             String database = config.get("config", "mongodtb");
             token = config.get("config","bottoken");
+            secret = config.get("config","clientsecret");
             MongoCredential credential = MongoCredential.createCredential(username, source, password.toCharArray());
             mongo = MongoClients.create(
             		MongoClientSettings.builder()
@@ -218,7 +220,7 @@ public class Main extends NanoHTTPD {
 				List <NameValuePair> nvps = new ArrayList <NameValuePair>();
 				nvps.add(new BasicNameValuePair("code", params.get("code").get(0)));
 				nvps.add(new BasicNameValuePair("client_id", "521481605467078667"));
-				nvps.add(new BasicNameValuePair("client_secret", "3G1Rasipgri5ASRiKDjENEF77sMU9DmH"));
+				nvps.add(new BasicNameValuePair("client_secret", secret));
 				nvps.add(new BasicNameValuePair("redirect_uri", "http://localhost/login"));
 				nvps.add(new BasicNameValuePair("grant_type", "authorization_code"));
 				nvps.add(new BasicNameValuePair("scope", "identify"));

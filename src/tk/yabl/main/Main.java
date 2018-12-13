@@ -99,9 +99,9 @@ public class Main extends NanoHTTPD {
         	String authorization = session.getHeaders().get("authorization");
         	boolean apiToken = false;
         	Document tokenData = null;
-        	if(db.getCollection("users").find(Document.parse("{\"token\":\""+token+"\"}")).first() != null) {
+        	if(db.getCollection("users").find(Document.parse("{\"token\":\""+authorization+"\"}")).first() != null) {
         		apiToken = true;
-        		tokenData = db.getCollection("users").find(Document.parse("{\"token\":\""+token+"\"}")).first();
+        		tokenData = db.getCollection("users").find(Document.parse("{\"token\":\""+authorization+"\"}")).first();
         	}
         	if(session.getUri().startsWith("/api/whoami")) {
         		if(authorization != null && (loggedUsers.containsKey(authorization))) {
@@ -116,7 +116,7 @@ public class Main extends NanoHTTPD {
 	        			Document updatedData = Document.parse(tokenData.toJson());
 	        			updatedData.put("token", null);
 	        			db.getCollection("users").replaceOne(tokenData,updatedData);
-	            		return newFixedLengthResponse(Status.OK,"text/plain","Token invalidated belonging to " + tokenData.getString("id"));
+	            		return newFixedLengthResponse(Status.OK,"text/plain","Token invalidated belonging to " + tokenData.getString("userid"));
         			} else {
                 		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","Invalid token.");
         			}
@@ -124,10 +124,11 @@ public class Main extends NanoHTTPD {
         			if(authorization != null && (loggedUsers.containsKey(authorization))) {
             			JsonObject r = this.loggedUsers.get(authorization);
             			String token = generate(64);
-            			Document user = Document.parse(tokenData.toJson());
+            			Document user = db.getCollection("users").find(Document.parse("{\"userid\":\""+r.get("id").getAsString()+"\"}")).first();
             			user.put("token", token);
-            			db.getCollection("users").replaceOne(tokenData,user);
-                		return newFixedLengthResponse(Status.OK,"application/json",r.toString());
+            			db.getCollection("users").replaceOne(Document.parse("{\"userid\":\""+r.get("id").getAsString()+"\"}"),user);
+            			user.remove("_id");
+                		return newFixedLengthResponse(Status.OK,"application/json",user.toJson());
                 	} else {
                 		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
                 	}
@@ -200,6 +201,7 @@ public class Main extends NanoHTTPD {
 												userF.put("_id", id);
 												db.getCollection("users").replaceOne(userF, user);
 												db.getCollection("bots").insertOne(document);
+												document.remove("_id");
 												return newFixedLengthResponse(Status.CREATED,"application/json",document.toJson());
 											} else {
 												return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
@@ -227,20 +229,19 @@ public class Main extends NanoHTTPD {
 	        						if(!loggedUsers.get(authorization).get("id").getAsString().equals(owner)) {
 	        		            		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
 	        						}
-	        						Document document = new Document();
+	        						Document document = Document.parse(bot.toJson());
         							try {
-        								document.put("_id", bot.get("_id"));
-										document.put("id", json.get("id").toString());
-										if(json.get("prefix") != null){document.put("prefix", json.get("prefix").getAsString());}
-										if(json.get("help") != null){document.put("help", json.get("help").getAsString());}
-										if(json.get("body") != null){document.put("body", json.get("body").getAsString());}
-										if(json.get("desc") != null){document.put("desc", json.get("desc").getAsString());}
-										if(json.get("website") != null){document.put("website", json.get("website").getAsString());}
-										if(json.get("support") != null){document.put("support", json.get("support").getAsString());}
-										if(json.get("git") != null){document.put("git", json.get("git").getAsString());}
-										if(json.get("library") != null){document.put("library", json.get("library").getAsString());}
-										if(json.get("modnote") != null){document.put("modnote", json.get("modnote").getAsString());}
+										if(json.get("prefix") != null){document.put("prefix", json.get("prefix").getAsString());} else {document.put("prefix", bot.get("prefix"));}
+										if(json.get("help") != null){document.put("help", json.get("help").getAsString());} else {document.put("help", bot.get("help"));}
+										if(json.get("body") != null){document.put("body", json.get("body").getAsString());} else {document.put("body", bot.get("body"));}
+										if(json.get("desc") != null){document.put("desc", json.get("desc").getAsString());} else {document.put("desc", bot.get("desc"));}
+										if(json.get("website") != null){document.put("website", json.get("website").getAsString());} else {document.put("website", bot.get("website"));}
+										if(json.get("support") != null){document.put("support", json.get("support").getAsString());} else {document.put("support", bot.get("support"));}
+										if(json.get("git") != null){document.put("git", json.get("git").getAsString());} else {document.put("git", bot.get("git"));}
+										if(json.get("library") != null){document.put("library", json.get("library").getAsString());} else {document.put("library", bot.get("library"));}
+										if(json.get("modnote") != null){document.put("modnote", json.get("modnote").getAsString());} else {document.put("modnote", bot.get("modnote"));}
 										db.getCollection("bots").replaceOne(bot, document);
+										document.remove("_id");
 										return newFixedLengthResponse(Status.OK,"application/json",document.toJson());
 									} catch (Exception e1) {
 										return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
@@ -253,12 +254,17 @@ public class Main extends NanoHTTPD {
 											return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
 		        						}
 		        						String owner = bot.get("owners", ArrayList.class).get(0).toString();
-		        						if(!tokenData.getString("id").equals(owner)) {
+		        						if(!tokenData.getString("userid").equals(owner)) {
 		        		            		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
 		        						}
 		        						if(!json.has("guildCount")) return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
-		        						bot.put("guildCount", json.get("guildCount").getAsString());
-	        						} else return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
+		        						if(!canParse(json.get("guildCount").getAsString())) return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
+		        						if(Integer.parseInt(json.get("guildCount").getAsString().split("\\.")[0].substring(0, Math.min(json.get("guildCount").getAsString().split("\\.")[0].length(), 9))) < 0) return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
+		        						bot.put("guildCount", Integer.parseInt(json.get("guildCount").getAsString().split("\\.")[0].substring(0, Math.min(json.get("guildCount").getAsString().split("\\.")[0].length(), 9))));
+		        						db.getCollection("bots").replaceOne(Document.parse("{\"id\":\""+id+"\"}"), bot);
+		        						bot.remove("_id");
+		        						return newFixedLengthResponse(Status.OK,"application/json",bot.toJson());
+		        					} else return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
 	        					} else if(session.getUri().split("/")[4].equals("delete")){
 	        						if(apiToken) return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
 	        						String id = session.getUri().split("/")[3];

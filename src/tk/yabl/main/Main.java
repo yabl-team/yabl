@@ -311,9 +311,9 @@ public class Main extends NanoHTTPD {
 										return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
 	        						}
 	        						String owner = bot.get("owners", ArrayList.class).get(0).toString();
-	        						bot.remove("verified");
+	        						bot.put("verified", true);
         							db.getCollection("bots").replaceOne(Document.parse("{\"id\":\""+id+"\"}"), bot);
-        							botUpdate(bot.getString("id"),owner,2,loggedUsers.get(authorization).get("id").getAsString());
+        							botUpdate(bot.getString("id"),owner,3,loggedUsers.get(authorization).get("id").getAsString());
         							return newFixedLengthResponse(Status.OK,"text/plain","Bot verified.");
 	        					}
 	    					}

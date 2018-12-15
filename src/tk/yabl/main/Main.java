@@ -2,6 +2,7 @@ package tk.yabl.main;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.AccessDeniedException;
 import java.nio.file.Files;
@@ -15,11 +16,13 @@ import java.util.Map;
 import java.util.Random;
 import java.util.function.Consumer;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
@@ -182,6 +185,7 @@ public class Main extends NanoHTTPD {
 											document.put("git", git);
 											document.put("library", library);
 											document.put("modnote", modnote);
+											document.put("verified",false);
 										} catch (Exception e1) {
 											return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
 										}
@@ -210,6 +214,7 @@ public class Main extends NanoHTTPD {
 												db.getCollection("users").replaceOne(userF, user);
 												db.getCollection("bots").insertOne(document);
 												document.remove("_id");
+												botUpdate(document.getString("id"),user.getString("userid"),0,owners.get(0).toString());
 												return newFixedLengthResponse(Status.CREATED,"application/json",document.toJson());
 											} else {
 												return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
@@ -234,7 +239,7 @@ public class Main extends NanoHTTPD {
 										return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
 	        						}
 	        						String owner = bot.get("owners", ArrayList.class).get(0).toString();
-	        						if(!loggedUsers.get(authorization).get("id").getAsString().equals(owner)) {
+	        						if(!loggedUsers.get(authorization).get("id").getAsString().equals(owner) && loggedUsers.get(authorization).get("admin").getAsString() == null) {
 	        		            		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
 	        						}
 	        						Document document = Document.parse(bot.toJson());
@@ -249,6 +254,7 @@ public class Main extends NanoHTTPD {
 										if(json.get("library") != null){document.put("library", json.get("library").getAsString());} else {document.put("library", bot.get("library"));}
 										if(json.get("modnote") != null){document.put("modnote", json.get("modnote").getAsString());} else {document.put("modnote", bot.get("modnote"));}
 										db.getCollection("bots").replaceOne(bot, document);
+										botUpdate(document.getString("id"),owner,1,loggedUsers.get(authorization).get("id").getAsString());
 										document.remove("_id");
 										return newFixedLengthResponse(Status.OK,"application/json",document.toJson());
 									} catch (Exception e1) {
@@ -289,6 +295,7 @@ public class Main extends NanoHTTPD {
 		        							user.put("bots", bots);
 		        							db.getCollection("users").replaceOne(Document.parse("{\"userid\":\""+owner+"\"}"), user);
 		        							db.getCollection("bots").deleteOne(bot);
+		        							botUpdate(bot.getString("id"),owner,2,loggedUsers.get(authorization).get("id").getAsString());
 		        							return newFixedLengthResponse(Status.OK,"text/plain","Bot deleted.");
 	        							}
 	        							db.getCollection("bots").deleteOne(bot);
@@ -296,6 +303,18 @@ public class Main extends NanoHTTPD {
 	        						} else {
 	                            		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
 	        						}
+	        					} else if(session.getUri().split("/")[4].equals("verify")){
+	        						if(apiToken || loggedUsers.get(authorization).get("admin") == null) return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
+	        						String id = session.getUri().split("/")[3];
+	        						Document bot = db.getCollection("bots").find(Document.parse("{\"id\":\""+id+"\"}")).first();
+	        						if(bot == null) {
+										return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
+	        						}
+	        						String owner = bot.get("owners", ArrayList.class).get(0).toString();
+	        						bot.remove("verified");
+        							db.getCollection("bots").replaceOne(Document.parse("{\"id\":\""+id+"\"}"), bot);
+        							botUpdate(bot.getString("id"),owner,2,loggedUsers.get(authorization).get("id").getAsString());
+        							return newFixedLengthResponse(Status.OK,"text/plain","Bot verified.");
 	        					}
 	    					}
         				} else {
@@ -396,7 +415,7 @@ public class Main extends NanoHTTPD {
         	Map<String,List<String>> params = session.getParameters();
         	if(!params.containsKey("code")) {
         		Response response = newFixedLengthResponse(Status.REDIRECT_SEE_OTHER,"text/plain","");
-        		response.addHeader("Location", "https://discordapp.com/api/oauth2/authorize?client_id=521481605467078667&redirect_uri=http://localhost/login&response_type=code&scope=identify");
+        		response.addHeader("Location", "https://discordapp.com/api/oauth2/authorize?client_id=521481605467078667&redirect_uri=http://localhost/login&response_type=code&scope=identify guilds.join");
         		return response;
         	}
         	try {
@@ -527,5 +546,35 @@ public class Main extends NanoHTTPD {
         String saltStr = salt.toString();
         return saltStr;
 
-    }
+     }
+	private static void botUpdate(String id, String owner, int type, String by) {
+		try {
+			HttpClient httpclient = HttpClients.createDefault();
+			HttpPost httppost = new HttpPost("https://discordapp.com/api/v6/channels/523526083698491432/messages");
+			httppost.setHeader("Content-Type", "application/json");
+			httppost.setHeader("Authorization","Bot "+token);
+			String content = "{\"content\":\"";
+			switch(type) {
+				case 0:
+					content = content +"<:yabl_add:523557038291288065> <@"+owner+">"+ " Added bot " + "<@"+id+"> (" + id + ") <@&523523933434019860>"; 
+					break;
+				case 1:
+					content = content +"<:yabl_edit:523557038232436736> <@"+by+">"+ " Edited bot " + "<@"+id+"> (" + id + ") By " + "<@"+owner+">"; 
+					break;
+				case 2:
+					content = content +"<:yabl_delete:523557038316322836> <@"+by+">"+ " Deleted bot " + "<@"+id+"> (" + id + ") By " + "<@"+owner+">"; 
+					break;
+				case 3:
+					content = content +"✅ <@"+by+">"+ " Verified bot" + "<@"+id+"> (" + id + ") By " + "<@"+owner+">"; 
+					break;
+			}
+			content = content + "\"}";
+			httppost.setEntity(new StringEntity(content));
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(httpclient.execute(httppost).getEntity().getContent(), writer, StandardCharsets.UTF_8);
+			logger.info(writer.toString());
+		} catch (Exception e) {
+			logger.error("Failed to post bot update to discord",e);
+		}
+	}
 }

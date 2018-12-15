@@ -37,6 +37,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.JsonSyntaxException;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.MongoCredential;
 import com.mongodb.MongoWriteException;
@@ -152,7 +153,14 @@ public class Main extends NanoHTTPD {
         				}
         			} else if(session.getMethod() == Method.POST) {
         				if(authorization != null && (loggedUsers.containsKey(authorization) || apiToken)) {
-        				JsonObject json = new JsonParser().parse(ifnull(data.get("postData"),"{}").toString()).getAsJsonObject();
+        					JsonObject json;
+        					try {
+        						json = new JsonParser().parse(ifnull(data.get("postData"),"{}").toString()).getAsJsonObject();
+        					} catch(JsonSyntaxException e) {
+        						return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
+        					} catch(IllegalStateException e) {
+        						return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
+        					}
 	        				if(session.getUri().split("/").length > 4) {
 	        					if(session.getUri().split("/")[4].equals("add")){
 	        						if(apiToken) return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
@@ -351,10 +359,34 @@ public class Main extends NanoHTTPD {
             			}else {
                     		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
                     	}
-            		} else if(session.getUri().startsWith("/api/bots/page/")) {
-            			//TODO!
+            		} else if(session.getUri().startsWith("/api/bots/page")) {
+            			JsonObject json;
+            			try {
+    						json = new JsonParser().parse(ifnull(data.get("postData"),"{}").toString()).getAsJsonObject();
+    					} catch(JsonSyntaxException e) {
+    						return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
+    					} catch(IllegalStateException e) {
+    						return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
+    					}
+            			List<String> bots = new ArrayList<>();
+            			Document d = new Document();
+            			Document sort = new Document();
+            			if(json.has("search")) {
+            				Document d2 = new Document();
+                			d2.put("$search", json.get("search") != null ? json.get("search").getAsString() : "");
+                			d.put("$text", d2);
+                			Document sort2 = new Document();
+                			sort2.put("$meta", "textScore");
+                			sort.put("score",sort2);
+            			}
+        				db.getCollection("bots").find(d).projection(sort).sort(sort).skip(json.get("page") != null ? json.get("page").getAsInt()*20 : 0).limit(20).forEach((Consumer<Document>)a->{a.remove("_id");bots.add(a.toJson());});
+        				return newFixedLengthResponse(Status.OK,"application/json","["+String.join(",", bots)+"]");
             		} else {
-            			//TODO!
+						List<String> bots = new ArrayList<>();
+						Document[] aggregateArray = {Document.parse("{ $match : {\"guildCount\":{\"$exists\":true},\"support\":{\"$type\":2}}}"),
+								Document.parse("{ $sample : { size: 20 } }]")};
+						db.getCollection("bots").aggregate(Arrays.asList(aggregateArray)).forEach((Consumer<Document>)a->{a.remove("_id");bots.add(a.toJson());});
+						return newFixedLengthResponse(Status.OK,"application/json","["+String.join(",", bots)+"]");
             		}
         		}
         		

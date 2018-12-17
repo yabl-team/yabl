@@ -59,6 +59,17 @@ public class Main extends NanoHTTPD {
 	public static String secret = null;
 	public Map<String,JsonObject> loggedUsers = new HashMap<String,JsonObject>();
 	public final static Logger logger = LoggerFactory.getLogger("tk.yabl.main.Main");
+	public static Map<String,String> mimeMap;
+	static {
+	    mimeMap = new HashMap<>();
+	    mimeMap.put("html", "text/html");
+	    mimeMap.put("css", "text/css");
+	    mimeMap.put("jpg", "image/jpeg");
+	    mimeMap.put("jpeg", "image/jpeg");
+	    mimeMap.put("gif", "image/gif");
+	    mimeMap.put("js", "application/javascript");
+	    mimeMap.put("png", "image/png");
+	}
 	public Main(int port) throws IOException {
 		super(port);
         start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
@@ -473,55 +484,74 @@ public class Main extends NanoHTTPD {
         } else {
         	String response;
         	Status status = Status.OK;
+        	String mime = "text/plain";
         	try {
         		if(session.getUri().equals("/")) {
         			response = String.join("\n", Files.readAllLines(Paths.get("./www/index.html")));
+        			mime = "text/html";
         		}
         		else {
-        			response = String.join("\n", Files.readAllLines(Paths.get("./www/"+session.getUri().replaceAll("\\.\\.", ""))));
+        			String uri;
+        			if(session.getUri().replaceAll("\\.\\.", "").split("\\.").length > 1) {
+        				uri = session.getUri().replaceAll("\\.\\.", "");
+        				mime = mimeMap.get(uri.split("\\.")[1]);
+        			} else {
+        				uri = session.getUri().replaceAll("\\.\\.", "") + ".html";
+        				mime = "text/html";
+        			}
+        			response = String.join("\n", Files.readAllLines(Paths.get("./www/"+uri)));
         		}
         	} catch(NoSuchFileException e) {
         		try {
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/404.html")));
+					mime = "text/html";
 					status = Status.NOT_FOUND;
 				} catch (NoSuchFileException e1) {
+					mime = "text/html";
 					response = "<h1>404: Not Found</h1><br/><h3>The requested URL "+session.getUri()+" was not found on this server.</h3><br/>Additionally, the 404 error document was not found.";
 					status = Status.NOT_FOUND;
 				}
         		catch (IOException e1) {
 	        		logger.error("Exception in processing request:",e);
+	        		mime = "text/html";
 					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk";
 					status = Status.INTERNAL_ERROR;
         		}
         	} catch(AccessDeniedException e) {
         		try {
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/403.html")));
+					mime = "text/html";
 					status = Status.FORBIDDEN;
 				} catch (NoSuchFileException e1) {
+					mime = "text/html";
 					response = "<h1>403: Forbidden</h1><br/><h3>The requested URL "+session.getUri()+" was denied access to by the filesystem.</h3><br/>Additionally, the 403 error document was not found.";
 					status = Status.FORBIDDEN;
 				}
         		catch (IOException e1) {
 	        		logger.error("Exception in processing request:",e);
+	        		mime = "text/html";
 					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk";
 					status = Status.INTERNAL_ERROR;
         		}
         	} catch (IOException e) {
         		try {
+        			mime = "text/html";
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/500.html")));
 					status = Status.INTERNAL_ERROR;
 				} catch (NoSuchFileException e1) {
 					logger.error("Exception in processing request:",e);
+					mime = "text/html";
 					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk<br/>Additionally, the 500 error document was not found.";
 					status = Status.INTERNAL_ERROR;
 				}
         		catch (IOException e1) {
 	        		logger.error("Exception in processing request:",e);
 					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk";
+					mime = "text/html";
 					status = Status.INTERNAL_ERROR;
         		}
 			}
-        	return newFixedLengthResponse(status,"text/html",response);
+        	return newFixedLengthResponse(status,mime,response);
         }
     }
 	public <T> T ifnull(T input,T ifnull) {
@@ -565,7 +595,7 @@ public class Main extends NanoHTTPD {
 					content = content +"<:yabl_delete:523557038316322836> <@"+by+">"+ " Deleted bot " + "<@"+id+"> (" + id + ") By " + "<@"+owner+">"; 
 					break;
 				case 3:
-					content = content +"✅ <@"+by+">"+ " Verified bot" + "<@"+id+"> (" + id + ") By " + "<@"+owner+">"; 
+					content = content +":white_check_mark: <@"+by+">"+ " Verified bot " + "<@"+id+"> (" + id + ") By " + "<@"+owner+">"; 
 					break;
 			}
 			content = content + "\"}";

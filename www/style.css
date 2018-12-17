@@ -1,0 +1,134 @@
+html, body {
+    background: #4F4F4F;
+    padding:0px;
+    margin:0px;
+}
+p{
+    margin:0px;
+    padding:0px;
+}
+.navtext{
+    font-size: 30px;
+    margin: 5px 15px;
+}
+.text {
+    font-family: "Roboto";
+    color: #E0E0E0;
+    font-style: normal;
+    font-weight: normal;
+    line-height: normal;
+}
+.navbar {
+    width: 100%;
+    height: 50px;
+    background: #333333;
+    display:flex;
+    flex-flow: row nowrap;
+    justify-content: flex-start;
+}
+.rightnav {
+    width: 100%;
+    height:50px;
+    display:flex;
+    flex-flow: row nowrap;
+    justify-content: flex-end;
+}
+.hover{
+    display:block;
+    width:100%;
+    height:3px;
+    background:white;
+    opacity:0;
+    transition: opacity 0.15s ease-in-out;
+}
+.active{
+    display:block;
+    opacity:1 !important;
+}
+.listitem:hover .hover{
+    opacity: 1;
+}
+.icon {
+    position:absolute;
+    top:13px;
+    left:8px;
+    width:24px;
+    height:24px;
+    border-radius: 12px;
+    display:inline-block;
+    background-image: url(https://crxb.tk/nkt2h2.png)
+}
+.picture{
+    width:256px;
+    height:256px;
+    border-radius:128px;
+}
+.page{
+    position:absolute;
+    width:100%;
+    margin:0px;
+    padding:0px;
+    padding-top:35px;
+    top:50px;
+    opacity:0;
+    transition: opacity 0.25s ease-in-out;
+}
+.pagecontent {
+    display:flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items:center;
+}
+.mobilepage{
+    padding-top:20px;
+    height:calc(100% - 70px);
+}
+.textcontent{
+    margin-left:30px;
+}
+.header{
+    font-size:65px;
+    font-weight: bold;
+}
+.midheader{
+    letter-spacing: 3px;
+    font-weight: bold;
+}
+.description{
+    font-size:30px;
+}
+.searchbox{
+  position: relative;
+  width:250px;
+  height:30px;
+  top:7.5px;
+  padding-left: 8px;
+  padding-right:8px;
+  background: #4f4f4f;
+  border:none;
+  outline:none;
+  font-size:15px;
+  border-radius: 10px;
+  color:#fff;
+}
+.footer{
+    position:fixed;
+    bottom:0px;
+    height:100px;
+    width:100%;
+    background:#333;
+    display:flex;
+    flex-flow: column nowrap;
+    justify-content: center;
+    align-content: center;
+    align-items: center;
+}
+a:link{
+    color:#ccc;
+}
+a:visited{
+    color:#aaa;
+}
+a:active{
+    color:#eee;
+}

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Yet Another Bot List </title>
+        <meta charset="utf-8"/>
+        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+        <link rel="stylesheet" type="text/css" href="./style.css">
+    </head>
+    <body>
+        <div class="navbar">
+            <div class="listitem home" onclick="home()">
+              <div class="hover"></div>
+              <p class="navtext text">YABL</p>
+            </div>
+            <div class="rightnav">
+                <div class="listitem search">
+                    <input class="searchbox" placeholder="Search" onenter="search"></div>
+                </div>
+                <div class="listitem login" onclick="login()">
+                  <div class="hover"></div>
+                  <p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
+                </div>
+                <div class="listitem logout" onclick="logout()">
+                  <div class="hover"></div>
+                  <p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
+                </div>
+                <div class="listitem addbot" onclick="addbot()">
+                  <div class="hover"></div>
+                  <p class="navtext text"><i class="fas fa-plus-circle"></i></p>
+                </div>
+                <div class="listitem profile" onclick="profile()">
+                  <div class="hover"></div>
+                  <p class="navtext text"><i class="fas fa-user-circle"></i></p>
+                </div>
+            </div>
+        </div>
+        <div class="footer">
+            <p class="footitem text">&#169; YABL team 2018, built with java and html.</p>
+            <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a></p>
+        </div>
+        <script>
+            if(findGetParameter("code") != null){
+                window.localStorage.setItem("token",findGetParameter("code"))
+                window.location.replace(window.location.toString().split(/\?/)[0]);
+            }
+            if(window.localStorage.getItem("token") != null){
+              document.querySelector(".listitem.login").style.display = "none"
+            } else{
+                window.location.href = "login";
+            }
+            document.querySelector(".profile .hover").classList.add("active")
+            var baseUrl = window.location.protocol +"//"+ window.location.hostname
+            function login(){
+              window.location.href = "login";
+            }
+            function logout(){
+              window.localStorage.removeItem("token");
+              window.location.href = window.location.toString().replace("dashboard","");
+            }
+            function addbot(){
+                window.location.href = "add";
+            }
+            function profile(){
+                window.location.href = "dashboard";
+            }
+            function home(){
+                window.location.href = baseUrl;
+            }
+            function findGetParameter(parameterName) {
+                var result = null,
+                    tmp = [];
+                location.search
+                    .substr(1)
+                    .split("&")
+                    .forEach(function (item) {
+                    tmp = item.split("=");
+                    if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+                    });
+                return result;
+            }
+            document.querySelector(".searchbox").addEventListener("keyup", function(event) {
+              event.preventDefault();
+              if (event.keyCode === 13) {
+                window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
+              }
+            });
+        </script>
+    </body>
+</html>

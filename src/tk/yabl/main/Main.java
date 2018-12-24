@@ -481,7 +481,72 @@ public class Main extends NanoHTTPD {
 					return newFixedLengthResponse(Status.INTERNAL_ERROR,"text/html","<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk");
         		}
 			}
-        } else {
+        } else if(session.getUri().startsWith("/bot/")) {
+        	String response;
+        	String mime = "text/html";
+			Status status = Status.OK;
+			try {
+				if(session.getUri().split("/bot/")[1].matches("\\d{17,21}")) {
+					String id = session.getUri().split("/bot/")[1];
+					if(db.getCollection("bots").find(Document.parse("{\"id\":\""+id+"\"}")).first() == null) throw new NoSuchFileException("");
+					response = String.join("\n", Files.readAllLines(Paths.get("./www/bot.html")));
+				} else {
+					throw new NoSuchFileException("");
+				}
+			} catch (NoSuchFileException e) {
+				
+				try {
+					response = String.join("\n", Files.readAllLines(Paths.get("./www/404.html")));
+					mime = "text/html";
+					status = Status.NOT_FOUND;
+				} catch (NoSuchFileException e1) {
+					mime = "text/html";
+					response = "<h1>404: Not Found</h1><br/><h3>The requested URL "+session.getUri()+" was not found on this server.</h3><br/>Additionally, the 404 error document was not found.";
+					status = Status.NOT_FOUND;
+				}
+        		catch (IOException e1) {
+	        		logger.error("Exception in processing request:",e);
+	        		mime = "text/html";
+					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk";
+					status = Status.INTERNAL_ERROR;
+        		}
+				return newFixedLengthResponse(status,mime,response);
+			}  catch(AccessDeniedException e) {
+        		try {
+					response = String.join("\n", Files.readAllLines(Paths.get("./www/403.html")));
+					mime = "text/html";
+					status = Status.FORBIDDEN;
+				} catch (NoSuchFileException e1) {
+					mime = "text/html";
+					response = "<h1>403: Forbidden</h1><br/><h3>The requested URL "+session.getUri()+" was denied access to by the filesystem.</h3><br/>Additionally, the 403 error document was not found.";
+					status = Status.FORBIDDEN;
+				}
+        		catch (IOException e1) {
+	        		logger.error("Exception in processing request:",e);
+	        		mime = "text/html";
+					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk";
+					status = Status.INTERNAL_ERROR;
+        		}
+        	} catch (IOException e) {
+        		try {
+        			mime = "text/html";
+					response = String.join("\n", Files.readAllLines(Paths.get("./www/500.html")));
+					status = Status.INTERNAL_ERROR;
+				} catch (NoSuchFileException e1) {
+					logger.error("Exception in processing request:",e);
+					mime = "text/html";
+					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk<br/>Additionally, the 500 error document was not found.";
+					status = Status.INTERNAL_ERROR;
+				}
+        		catch (IOException e1) {
+	        		logger.error("Exception in processing request:",e);
+					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk";
+					mime = "text/html";
+					status = Status.INTERNAL_ERROR;
+        		}
+			}
+        	return newFixedLengthResponse(status,mime,response);
+		}else {
         	String response;
         	Status status = Status.OK;
         	String mime = "text/plain";
@@ -491,6 +556,7 @@ public class Main extends NanoHTTPD {
         			mime = "text/html";
         		}
         		else {
+        			
         			String uri;
         			if(session.getUri().replaceAll("\\.\\.", "").split("\\.").length > 1) {
         				uri = session.getUri().replaceAll("\\.\\.", "");

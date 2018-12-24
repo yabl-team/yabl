@@ -2,6 +2,12 @@ html, body {
     background: #4F4F4F;
     padding:0px;
     margin:0px;
+    position:absolute;
+    top:0px;
+    left:0px;
+    height:100%;
+    width:100%;
+    overflow:auto;
 }
 p{
     margin:0px;
@@ -75,9 +81,18 @@ p{
 }
 .pagecontent {
     display:flex;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
     justify-content: center;
     align-items:center;
+    overflow:auto;
+    margin:0px;
+    padding:0px;
+    height:calc(100% - 150px);
+    width: 100%;
+}
+
+.addcontent{
+    display:block;
 }
 .mobilepage{
     padding-top:20px;
@@ -97,19 +112,34 @@ p{
 .description{
     font-size:30px;
 }
-.searchbox{
-  position: relative;
+.inputbox{
   width:250px;
   height:30px;
   top:7.5px;
   padding-left: 8px;
   padding-right:8px;
-  background: #4f4f4f;
+  background: #333333;
   border:none;
   outline:none;
   font-size:15px;
   border-radius: 10px;
   color:#fff;
+}
+.nestedinput{
+    background:transparent;
+    color:#fff;
+    border:none;
+    resize:none;
+    position:relative;
+    width:100%;
+    height:100%;
+    padding:0px;
+    font-size:18px;
+}
+.searchbox{
+    background:#4f4f4f;
+    position: relative;
+    top:7.5px;
 }
 .footer{
     position:fixed;
@@ -131,4 +161,60 @@ a:visited{
 }
 a:active{
     color:#eee;
+}
+.pageinput{
+    margin-left:60px;
+    margin-right:60px;
+    margin-top:10px;
+    margin-bottom:10px;
+}
+.addinput{
+    width:350px;
+    height:40px;
+    margin-left:0px;
+    margin-right:0px;
+    font-size:18px;
+}
+.submit{
+    width:366px;
+    margin-bottom:0px;
+}
+.addleftdiv{
+    position:relative;
+    width:350px;
+    height:100%;
+}
+.body{
+    margin:0px;
+    padding:8px;
+    height:582px;
+    width:350px;
+}
+.errors{
+    color:#c00;
+}
+.wrapper{
+    height:100%;
+    margin:0px;
+    display:flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items:center;
+    overflow:auto;
+}
+.inputwrapper{
+    margin:0px;
+    padding:0px;
+}
+.botid{
+    margin-top:0px;
+}
+.addsep{
+    width:50px !important;
+    height:16px !important;
+}
+@media screen and (max-width:800px) {
+    .wrapper {
+        flex-flow: column nowrap !important;
+    }
 }

@@ -9,7 +9,7 @@ html, body {
     width:100%;
     overflow:auto;
 }
-p{
+p,h1{
     margin:0px;
     padding:0px;
 }
@@ -51,6 +51,9 @@ p{
     display:block;
     opacity:1 !important;
 }
+.listitem{
+    cursor: pointer;
+}
 .listitem:hover .hover{
     opacity: 1;
 }
@@ -81,18 +84,16 @@ p{
 }
 .pagecontent {
     display:flex;
-    flex-flow: row nowrap;
+    flex-flow: row wrap;
     justify-content: center;
     align-items:center;
     overflow:auto;
     margin:0px;
     padding:0px;
+    top:50px;
+    left:0px;
     height:calc(100% - 150px);
     width: 100%;
-}
-
-.addcontent{
-    display:block;
 }
 .mobilepage{
     padding-top:20px;
@@ -102,7 +103,12 @@ p{
     margin-left:30px;
 }
 .header{
+    order:0;
     font-size:65px;
+    font-weight: bold;
+}
+.subheader{
+    font-size:35px;
     font-weight: bold;
 }
 .midheader{
@@ -167,6 +173,7 @@ a:active{
     margin-right:60px;
     margin-top:10px;
     margin-bottom:10px;
+    
 }
 .addinput{
     width:350px;
@@ -192,6 +199,9 @@ a:active{
 }
 .errors{
     color:#c00;
+    position:absolute;
+    top:58px;
+    left:8px;
 }
 .wrapper{
     height:100%;
@@ -217,4 +227,228 @@ a:active{
     .wrapper {
         flex-flow: column nowrap !important;
     }
+}
+.cardrow{
+    min-height:301px !important;
+    max-height:301px !important;
+    width:100%;
+    display:flex;
+    flex-flow:row wrap;
+    justify-content: center;
+    align-content: space-between;
+}
+.botcard{
+    position:relative;
+    width:285px;
+    height:260px;
+    border-radius: 10px;
+    margin:8px;
+    padding:8px;
+    background: #333333;
+    display:flex;
+    flex-flow:row wrap;
+    justify-content: flex-start;
+    align-items:flex-start;
+    align-content: flex-start;
+}
+.indexcontent{
+    display:block;
+}
+.indexheader{
+    margin:auto;
+    width:625px;
+    margin-top:50px;
+    margin-bottom:25px;
+}
+.cardimg{
+    margin-left:8px;
+    margin-top:8px;
+    width:64px;
+    height:64px;
+    margin-bottom:3px;
+    border-radius:32px;
+}
+.cardheader{
+    max-height:35px;
+    margin-bottom:0px;
+    cursor: pointer;
+}
+.cardheader:hover{
+    text-decoration: underline
+}
+.cardauthor{
+    margin-left:14px;
+    color:#BBB;
+    cursor: pointer;
+}
+.cardauthor:hover{
+    text-decoration: underline
+}
+.cardstats{
+    margin-left:14px;
+    color:#BBB;
+    margin-bottom:0px;
+}
+.cardbotinfo{
+    margin-left:16px;
+    margin-top:8px;
+    width:68%;
+}
+.carddesc{
+    margin-left:8px;
+    margin-top:8px;
+    margin-right:8px;
+    font-size: 20px;
+    max-height:130px;
+    max-width:268px;
+    overflow:hidden;
+}
+.cardbuttons{
+    position:absolute;
+    width:269px;
+    display:flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    padding-left:8px;
+    padding-right:8px;
+    margin-top:12px;
+    bottom:12px;
+    align-content: center;
+}
+.cardbutton{
+    width:130px;
+    height:40px;
+    background-color:#666;
+    font-size: 25px;
+    cursor: pointer;
+}
+.cardbutton:hover{
+    text-decoration: underline;
+}
+.cardbotstatus{
+    position: absolute;
+    display:block;
+    margin-left:52px;
+    margin-top:52px;
+    width:16px;
+    height:16px;
+    background-color:#43B581;
+    border: 4px solid #333;
+    border-radius: 16px;
+}
+.noflex{
+    display:block;
+}
+.botheader{
+    margin-left:64px;
+    margin-top:64px;
+    display:flex;
+    flex-flow: row wrap;
+    height:200px;
+    width:max-content;
+}
+.botname{
+    margin-top:15px;
+    margin-left:16px;
+}
+.botimg{
+    width:200px;
+    height:200px;
+    border-radius:100px;
+}
+.textdiv{
+    display:flex;
+    flex-flow:column nowrap;
+}
+.statdiv{
+    display:inherit;
+    flex-flow:row nowrap;
+    margin-left:8px;
+}
+.statbox{
+    width:max-content;
+    height:30px;
+    top:7.5px;
+    background: #333333;
+    border:none;
+    outline:none;
+    border-radius: 10px;
+    color:#fff;
+    font-size:18px;
+}
+.authorname{
+    font-size:23px;
+    margin-top:0px;
+    margin-left:40px;
+    margin-bottom:4px;
+    color:#999
+}
+.buttondiv{
+    margin-top:2px;
+}
+.statbutton{
+    color:#aaa;
+    margin-right:6px;
+    margin-bottom:2px;
+}
+.button{
+    cursor:pointer;
+}
+.button:hover{
+    color:#ccc;
+}
+.status{
+    background-color:#43B581;
+    color:#333;
+}
+.invite{
+    background-color: #33b5e5;
+    color:#eee;
+}
+.website{
+    background-color: #ffbb33;
+    color:#eee;
+}
+.support{
+    background-color:#ff4444;
+    color:#eee;
+}
+.git{
+    background-color:#00C851;
+    color:#eee;
+}
+.edit{
+    background-color:#FF8800;
+    color:#eee;
+    display:none;
+}
+.report{
+    background-color: #ffbb33;
+    color:#333;
+    display:none;
+}
+.delete{
+    background-color: #CC0000;
+    color:#333;
+    display:none;
+}
+.verify{
+    background-color:#007E33;
+    color:#eee;
+    display:none;
+}
+.botbody{
+    position:relative;
+    top:20px;
+    margin-left:auto;
+    margin-right:auto;
+    min-height:400px;
+    min-width:1400px;
+    max-height:600px;
+    font-size:18px;
+    padding:10px;
+    overflow:auto;
+    color:#ddd;
+    height:max-content;
+    margin-bottom:32px;
 }

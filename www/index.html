@@ -1,78 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Yet Another Bot List</title>
-        <meta charset="utf-8"/>
-        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="./style.css">
-    </head>
-    <body>
-        <div class="navbar">
-            <div class="listitem home" onclick="changepage('home')">
-              <div class="hover"></div>
-              <p class="navtext text">YABL</p>
-            </div>
-            <div class="rightnav">
-                <div class="listitem search">
-                    <input class="searchbox inputbox" placeholder="Search" onenter="search"></div>
-                </div>
-                <div class="listitem login" onclick="login()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
-                </div>
-                <div class="listitem logout" onclick="logout()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
-                </div>
-                <div class="listitem addbot" onclick="addbot()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-plus-circle"></i></p>
-                </div>
-                <div class="listitem profile" onclick="profile()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-user-circle"></i></p>
-                </div>
-            </div>
-        </div>
-        <div class="pagecontent">
-          <p class="text header">
-            Yet Another Bot List
-          </p>
-        </div>
-        <div class="footer">
-            <p class="footitem text">&#169; YABL team 2018, built with java and html.</p>
-            <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a></p>
-        </div>
-        <script>
-            var baseUrl = window.location.protocol +"//"+ window.location.hostname
-            if(window.localStorage.getItem("token") != null){
-              document.querySelector(".listitem.login").style.display = "none"
-            } else{
-              document.querySelector(".listitem.logout").style.display = "none"
-              document.querySelector(".listitem.addbot").style.display = "none"
-              document.querySelector(".listitem.profile").style.display = "none"
-            }
-            document.querySelector(".home .hover").classList.add("active")
-            function login(){
-              window.location.href = baseUrl + "/login";
-            }
-            function logout(){
-              window.localStorage.removeItem("token");
-              window.location.reload();
-            }
-            function addbot(){
-              window.location.href = baseUrl + "/add";
-            }
-            function profile(){
-              window.location.href = baseUrl + "/dashboard";
-            }
-            document.querySelector(".searchbox").addEventListener("keyup", function(event) {
-              event.preventDefault();
-              if (event.keyCode === 13) {
-                window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
-              }
-            });
-        </script>
-    </body>
+	<head>
+		<title>Yet Another Bot List</title>
+		<meta charset="utf-8"/>
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="/style.css">
+	</head>
+	<body>
+			<div class="botcard" id="templateBotCard" style="display:none;">
+					<div class="cardbotstatus"></div>
+					<img class="cardimg" src="https://crxb.tk/w5ww5b.png"/>
+					<div class="cardbotinfo">
+						<p class="cardheader subheader text">template</p>
+						<p class="cardauthor metaheader text">template#0000</p>
+						<p class="cardstats metaheader text">template Servers</p>
+					</div>
+					<p class="carddesc text">
+						template
+					</p>
+					<div class="cardbuttons">
+						<button id="invitebutton" class="inputbox cardbutton">Invite</button>
+						<button id="supportbutton" class="inputbox cardbutton">Support</button>
+					</div>
+				</div>
+		<div class="navbar">
+			<div class="listitem home" onclick="changepage('home')">
+				<div class="hover">
+				</div>
+				<p class="navtext text">YABL</p>
+			</div>
+			<div class="rightnav">
+				<div class="listitem search">
+					<input class="searchbox inputbox" placeholder="Search">
+				</div>
+				<div class="listitem login" onclick="login()">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
+				</div>
+				<div class="listitem logout" onclick="logout()">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
+				</div>
+				<div class="listitem addbot" onclick="addbot()">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-plus-circle"></i></p>
+				</div>
+				<div class="listitem profile" onclick="profile()">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-user-circle"></i></p>
+				</div>
+			</div>
+		</div>
+		<div class="pagecontent indexcontent">
+			<p class="text header indexheader">
+				Yet Another Bot List
+			</p>
+			<div class="cardrow cardrowone" id="cardrowone">
+			</div>
+			<div class="cardrow cardrowtwo" id="cardrowtwo">
+      </div>
+		</div>
+		<div class="footer">
+			<p class="footitem text">&#169; YABL team 2018, built with java and html.</p>
+			<p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a></p>
+		</div>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script>
+			var baseUrl = window.location.protocol +"//"+ window.location.hostname
+			if(window.localStorage.getItem("token") != null){
+			  document.querySelector(".listitem.login").style.display = "none"
+			} else{
+			  document.querySelector(".listitem.logout").style.display = "none"
+			  document.querySelector(".listitem.addbot").style.display = "none"
+			  document.querySelector(".listitem.profile").style.display = "none"
+			}
+			document.querySelector(".home .hover").classList.add("active")
+			var instance = axios.create({validateStatus: a => {return true;}});
+			instance.post(baseUrl + "/api/bots")
+			.then(function (response) {
+			  var data = response.data
+			  for(var o in response.data){
+			    var i = data[o]
+			    if(o < 5){
+						var card = document.getElementById("templateBotCard").cloneNode(true)
+						card.id = i.id
+						card.classList.add(i.id)
+						card.querySelector(".cardheader").textContent = i.username
+						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://localhost/bot/" + i.id + "'")
+						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
+						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://localhost/user/" + Object.keys(i.owners)[0] + "'")
+						card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
+						card.querySelector(".carddesc").textContent = i.desc
+						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
+						card.style = "";
+						document.getElementById("cardrowone").appendChild(card)
+			    } else if(o < 10){
+						var card = document.getElementById("templateBotCard").cloneNode(true)
+						card.id = i.id
+						card.classList.add(i.id)
+						card.querySelector(".cardheader").textContent = i.username
+						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://localhost/bot/" + i.id + "'")
+						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
+						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://localhost/user/" + Object.keys(i.owners)[0] + "'")
+						card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
+						card.querySelector(".carddesc").textContent = i.desc
+						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
+						card.style = "";
+						document.getElementById("cardrowtwo").appendChild(card)
+			    }
+			  }
+			}).catch(function (error) {console.log(error)});
+			function login(){
+			  window.location.href = baseUrl + "/login";
+			}
+			function logout(){
+			  window.localStorage.removeItem("token");
+			  window.location.reload();
+			}
+			function addbot(){
+			  window.location.href = baseUrl + "/add";
+			}
+			function profile(){
+			  window.location.href = baseUrl + "/dashboard";
+			}
+			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
+			  event.preventDefault();
+			  if (event.keyCode === 13) {
+			    window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
+			  }
+			});
+		</script>
+	</body>
 </html>

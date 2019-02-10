@@ -5,7 +5,7 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="./style.css">
+        <link rel="stylesheet" type="text/css" href="/style.css">
     </head>
     <body>
         <div class="navbar">
@@ -35,13 +35,41 @@
                 </div>
             </div>
         </div>
-        <div class="pagecontent">
-          
+        <div class="pagecontent noflex">
+          <div class="botheader">
+            <img class="botimg" src="https://crxb.tk/w5ww5b.png">
+            <div class="textdiv">
+              <p class="text header botname"></p>
+              <p class="authorname text subheader"></p>
+              <div class="statdiv">
+                  <button class="statbox statbutton status">Online</button>
+                  <button class="statbox statbutton servers"></button>
+                  <button class="statbox button statbutton library"></button>
+              </div>
+              <div class="statdiv buttondiv">
+                  <button class="statbox button statbutton invite">Invite</button>
+                  <button class="statbox button statbutton website">Website</button>
+                  <button class="statbox button statbutton support">Support</button>
+                  <button class="statbox button statbutton git">Git</button>
+                  <button class="statbox button statbutton report">Report</button>
+                  <button class="statbox button statbutton edit">Edit</button>
+                  <button class="statbox button statbutton delete">Delete</button>
+                  <button class="statbox button statbutton verify">Verify</button>
+              </div>
+            </div>
+          </div>
+          <div class="botbody inputbox">
+
+          </div>
         </div>
         <div class="footer">
             <p class="footitem text">&#169; YABL team 2018, built with java and html.</p>
             <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a></p>
         </div>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://rawcdn.githack.com/showdownjs/showdown/1.9.0/dist/showdown.min.js"></script>
+        <script src="https://rawcdn.githack.com/leizongmin/js-xss/cc989ce9eab632d38bf9330be645f7c53e093cff/dist/xss.min.js"></script>
+        <script src="https://rawcdn.githack.com/VisionistInc/showdown-xss-filter/e26046384e266be5646ef0eb58816ff4029da565/showdown-xss-filter.js">    </script>
         <script>
             var baseUrl = window.location.protocol +"//"+ window.location.hostname
             if(window.localStorage.getItem("token") != null){
@@ -73,6 +101,51 @@
                 window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
               }
             });
+            var instance = axios.create({validateStatus: a => {return true;}});
+            var whoami = null;
+            if(localStorage.getItem("token") !== null){
+              instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data}).catch();
+            }
+            instance.get(baseUrl + "/api/bot/" + window.location.href.split("bot/")[1])
+            .then(function (response) {
+              var data = response.data
+              console.log(data)
+              document.querySelector(".botname").textContent = data.username
+              document.querySelector(".authorname").textContent = data.owners[Object.keys(data.owners)[0]]
+              var converter = new showdown.Converter({ extensions: ['xssfilter'] })
+              document.querySelector(".botbody").innerHTML = converter.makeHtml(data.body)
+              document.querySelector(".servers").textContent = data.guildCount + " Servers"
+              document.querySelector(".library").textContent = data.library || "Not Specified"
+              document.querySelector(".library").setAttribute("onclick","window.open('http://localhost/search?query="+data.library+"','_blank')")
+              document.querySelector(".botimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256"
+              document.querySelector(".invite").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id="+data.id+"&scope=bot','_blank')")
+              if(data.website){
+                document.querySelector(".website").setAttribute("onclick", "window.open('" + data.website + "','_blank')")
+              } else{
+                document.querySelector(".website").setAttribute("style","display:none !important;")
+              }
+              if(data.support){
+                document.querySelector(".support").setAttribute("onclick", "window.open('" + data.support + "','_blank')")
+              } else{
+                document.querySelector(".support").setAttribute("style","display:none !important;")
+              }
+              if(data.git){
+                document.querySelector(".git").setAttribute("onclick", "window.open('" + data.git + "','_blank')")
+              } else{
+                document.querySelector(".git").setAttribute("style","display:none !important;")
+              }
+              if(window.localStorage.getItem("token") !== null){
+                document.querySelector(".report").setAttribute("style","display:block !important;")
+              }
+              if(whoami.admin && !data.verified){
+                document.querySelector(".verify").setAttribute("style","display:block !important;")
+              }
+              if(whoami.admin || data.owners[whoami.id] !== null){
+                document.querySelector(".report").setAttribute("style","display:none !important;")
+                document.querySelector(".delete").setAttribute("style","display:block !important;")
+                document.querySelector(".edit").setAttribute("style","display:block !important;")
+              }
+            }).catch(function (error) {console.log(error)});
         </script>
     </body>
 </html>

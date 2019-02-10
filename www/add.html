@@ -5,7 +5,8 @@
         <meta charset="utf-8"/>
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="./style.css">
+        <link rel="stylesheet" type="text/css" href="/style.css">
+        <script src='https://www.google.com/recaptcha/api.js'></script>
     </head>
     <body>
         <div class="navbar">
@@ -35,7 +36,7 @@
                 </div>
             </div>
         </div>
-        <div class="pagecontent addcontent">
+        <div class="pagecontent noflex">
             <div class="wrapper">
                 <div class="inputwrapper">
                         <input class="inputbox pageinput addinput botid" placeholder="Bot ID*"><br/>
@@ -47,7 +48,7 @@
                         <input class="inputbox pageinput addinput git" placeholder="Git Repository"><br/>
                         <input class="inputbox pageinput addinput library" placeholder="Library"><br/>
                         <input class="inputbox pageinput addinput modnote" placeholder="Moderator Note"><br/>
-                        <button class="inputbox pageinput addinput submit" onclick="submit()">Submit</button>
+                        <button class="inputbox pageinput addinput submit g-recaptcha" data-sitekey="6Ld1p4YUAAAAAOtrDKN_YqflQhL0E-bMhM_b9xCC" data-callback="submit">Submit</button>
                 </div>
                 <div class="addsep">
                     &ZeroWidthSpace;
@@ -88,7 +89,16 @@
             function home(){
                 window.location.href = baseUrl;
             }
-            function submit(){
+            function submit(gresponse){ 
+                console.log(!gresponse)
+                if(!gresponse) {
+                    document.querySelector(".errors").innerHTML = `Missing grecaptcha response</br>`
+                    return "missing grecaptcha response"
+                }
+                if(gresponse.length < 20){
+                    document.querySelector(".errors").innerHTML = `Invalid grecaptcha response</br>`
+                    return "invalid grecaptcha response"
+                }
                 if(document.querySelector(".botid").value.length < 17 || document.querySelector(".prefix").value.length < 1 || document.querySelector(".help").value.length < 2 || 
                     document.querySelector(".desc").value.length < 30 || document.querySelector(".nestedinput").value.length < 100){
                     document.querySelector(".errors").innerHTML = ""; 
@@ -119,11 +129,12 @@
                     document.querySelector(".git").value.length > 0 ? object["git"] = document.querySelector(".git").value : false;
                     document.querySelector(".library").value.length > 0 ? object["library"] = document.querySelector(".library").value : false;
                     document.querySelector(".modnote").value.length > 0 ? object["modnote"] = document.querySelector(".modnote").value : false;
+                    object["gresponse"] = gresponse
                     var instance = axios.create({validateStatus: a => {return true;}});
                     instance.post(baseUrl + "/api/bot/"+object["id"]+"/add",object,{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}})
                     .then(function (response) {
                         if(response.status == 201){
-
+                            window.location.href = baseUrl + "/dashboard"
                         } else{
                             document.querySelector(".errors").innerHTML = response.status + "<br/>";
                             document.querySelector(".errors").innerHTML = document.querySelector(".errors").innerHTML + response.data
@@ -134,6 +145,7 @@
                         document.querySelector(".errors").innerHTML = document.querySelector(".errors").innerHTML + response.data
                     });
                 }
+                grecaptcha.reset()
             }
             document.querySelector(".searchbox").addEventListener("keyup", function(event) {
               event.preventDefault();

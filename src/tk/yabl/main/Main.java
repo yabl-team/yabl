@@ -22,10 +22,12 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.http.util.EntityUtils;
+import org.bson.BSONObject;
 import org.bson.BasicBSONObject;
 import org.bson.BsonArray;
 import org.bson.BsonDocument;
@@ -57,13 +59,14 @@ public class Main extends NanoHTTPD {
 	public static MongoDatabase db = null;
 	public static String token = null;
 	public static String secret = null;
+	public static String gresecret = null;
 	public Map<String,JsonObject> loggedUsers = new HashMap<String,JsonObject>();
 	public final static Logger logger = LoggerFactory.getLogger("tk.yabl.main.Main");
 	public static Map<String,String> mimeMap;
 	static {
 	    mimeMap = new HashMap<>();
 	    mimeMap.put("html", "text/html");
-	    mimeMap.put("css", "text/css");
+	    mimeMap.put("css", "text/css");	
 	    mimeMap.put("jpg", "image/jpeg");
 	    mimeMap.put("jpeg", "image/jpeg");
 	    mimeMap.put("gif", "image/gif");
@@ -86,6 +89,7 @@ public class Main extends NanoHTTPD {
             String database = config.get("config", "mongodtb");
             token = config.get("config","bottoken");
             secret = config.get("config","clientsecret");
+            gresecret = config.get("config", "gresecret");
             MongoCredential credential = MongoCredential.createCredential(username, source, password.toCharArray());
             mongo = MongoClients.create(
             		MongoClientSettings.builder()
@@ -156,7 +160,6 @@ public class Main extends NanoHTTPD {
         					String id = session.getUri().split("/")[3];
         					Document d = new Document();
         					d.put("id", new BsonString(id));
-        					logger.info(d.toJson());
         					Document bot = db.getCollection("bots").find(d).first();
         					if(bot != null) {
         						bot.remove("_id");
@@ -178,9 +181,16 @@ public class Main extends NanoHTTPD {
 	        				if(session.getUri().split("/").length > 4) {
 	        					if(session.getUri().split("/")[4].equals("add")){
 	        						if(apiToken) return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
-	        						if(json.has("id") && json.has("prefix") && json.has("help") && json.has("desc") && json.has("body")) {
+	        						if(json.has("id") && json.has("prefix") && json.has("help") && json.has("desc") && json.has("body") && json.has("gresponse")) {
+	        							HttpClient httpclient = HttpClients.createDefault();
+	        							HttpPost httppost = new HttpPost("https://www.google.com/recaptcha/api/siteverify?secret="+gresecret+"&response="+json.get("gresponse").getAsString());
+	        							JsonObject response;
 	        							Document document = new Document();
 	        							try {
+	        								response = new JsonParser().parse(EntityUtils.toString(httpclient.execute(httppost).getEntity())).getAsJsonObject();
+	        								if(!response.get("success").getAsBoolean()) {
+	        									return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Invalid grecaptcha response.");
+	        								}
 											document.put("id", json.get("id").getAsString());
 											document.put("prefix", json.get("prefix").getAsString());
 											document.put("help", json.get("help").getAsString());
@@ -200,16 +210,17 @@ public class Main extends NanoHTTPD {
 										} catch (Exception e1) {
 											return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
 										}
-	        							BsonArray owners = new BsonArray();
-	        							owners.add(new BsonString(loggedUsers.get(authorization).get("id").getAsString()));
+	        							BSONObject owners = new BasicBSONObject();
+	        							owners.put(loggedUsers.get(authorization).get("id").getAsString(),loggedUsers.get(authorization).get("username").getAsString() + "#" + loggedUsers.get(authorization).get("discriminator").getAsString());
 	        							document.put("owners", owners);
-	        							HttpClient httpclient = HttpClients.createDefault();
-	        							HttpGet httppost = new HttpGet("https://discordapp.com/api/v6/users/" + json.get("id").getAsString());
-	        							httppost.setHeader("Content-Type", "application/json");
-	        							httppost.setHeader("Authorization", "Bot "+token);
+	        							HttpGet httpget = new HttpGet("https://discordapp.com/api/v6/users/" + json.get("id").getAsString());
+	        							httpget.setHeader("Content-Type", "application/json");
+	        							httpget.setHeader("Authorization", "Bot "+token);
 	        							try {
-											JsonObject response = new JsonParser().parse(EntityUtils.toString(httpclient.execute(httppost).getEntity())).getAsJsonObject();
+											response = new JsonParser().parse(EntityUtils.toString(httpclient.execute(httpget).getEntity())).getAsJsonObject();
 											if(response.has("username") && response.get("id").getAsString().equals(json.get("id").getAsString()) && response.has("bot")) {
+												document.put("username", response.get("username").getAsString());
+												document.put("avatar", response.get("avatar").getAsString());
 												Document user = db.getCollection("users").find(new BsonDocument().append("userid", new BsonString(loggedUsers.get(authorization).get("id").getAsString()))).first();
 												@SuppressWarnings("unchecked")
 												List<String> bots = (List<String>)user.get("bots");
@@ -225,7 +236,11 @@ public class Main extends NanoHTTPD {
 												db.getCollection("users").replaceOne(userF, user);
 												db.getCollection("bots").insertOne(document);
 												document.remove("_id");
-												botUpdate(document.getString("id"),user.getString("userid"),0,owners.get(0).toString());
+												HttpPut httpput = new HttpPut("https://discordapp.com/api/v6/guilds/523523486719803403/members/"+loggedUsers.get(authorization).get("id").getAsString());
+												httpput.setHeader("Content-Type", "application/json");
+			        							httpput.setHeader("Authorization", "Bearer "+authorization);
+			        							httpclient.execute(httpput);
+												botUpdate(document.getString("id"),user.getString("userid"),0,owners.get(loggedUsers.get(authorization).get("id").getAsString()).toString());
 												return newFixedLengthResponse(Status.CREATED,"application/json",document.toJson());
 											} else {
 												return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
@@ -344,8 +359,6 @@ public class Main extends NanoHTTPD {
     								BasicBSONObject b = new BasicBSONObject();
     								b.put("$all", botIds);
     								d.put("id",b);
-    								logger.info(d.toJson());
-    								logger.info(user.toString());
     								if(user.get("bots") instanceof ArrayList<?>) {
 										((ArrayList<?>)user.get("bots")).forEach((a->{botIds.add(new BsonString(a.toString()));}));
 									} else {
@@ -365,8 +378,6 @@ public class Main extends NanoHTTPD {
     								BasicBSONObject b = new BasicBSONObject();
     								b.put("$all", botIds);
     								d.put("id",b);
-    								logger.info(d.toJson());
-    								logger.info(user.toString());
     								if(user.get("bots") instanceof ArrayList<?>) {
 										((ArrayList<?>)user.get("bots")).forEach((a->{botIds.add(new BsonString(a.toString()));}));
 									} else {
@@ -449,7 +460,7 @@ public class Main extends NanoHTTPD {
 					JsonObject uInfo = new JsonParser().parse(EntityUtils.toString(httpclient.execute(getUinfo).getEntity())).getAsJsonObject();
 					Document user = db.getCollection("users").find(new BsonDocument().append("userid", new BsonString(uInfo.get("id").getAsString()))).first();
 					if(user != null) {
-						if(user.getBoolean("admin")) {
+						if(user.getBoolean("admin",false)) {
 							uInfo.addProperty("admin", true);
 						}
 						this.loggedUsers.put(response.get("access_token").getAsString(), uInfo);
@@ -460,6 +471,7 @@ public class Main extends NanoHTTPD {
 						user = new Document();
 						user.append("userid", uInfo.get("id").getAsString());
 						user.append("bots", new BsonArray());
+						user.append("userscrim", uInfo.get("username").getAsString() + "#" + uInfo.get("discriminator").getAsString());
 						db.getCollection("users").insertOne(user);
 						Response r = newFixedLengthResponse(Status.REDIRECT_SEE_OTHER,"text/plain","User created, Login success.");
 						r.addHeader("Location", "http://localhost/dashboard?code="+response.get("access_token").getAsString());
@@ -490,6 +502,71 @@ public class Main extends NanoHTTPD {
 					String id = session.getUri().split("/bot/")[1];
 					if(db.getCollection("bots").find(Document.parse("{\"id\":\""+id+"\"}")).first() == null) throw new NoSuchFileException("");
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/bot.html")));
+				} else {
+					throw new NoSuchFileException("");
+				}
+			} catch (NoSuchFileException e) {
+				
+				try {
+					response = String.join("\n", Files.readAllLines(Paths.get("./www/404.html")));
+					mime = "text/html";
+					status = Status.NOT_FOUND;
+				} catch (NoSuchFileException e1) {
+					mime = "text/html";
+					response = "<h1>404: Not Found</h1><br/><h3>The requested URL "+session.getUri()+" was not found on this server.</h3><br/>Additionally, the 404 error document was not found.";
+					status = Status.NOT_FOUND;
+				}
+        		catch (IOException e1) {
+	        		logger.error("Exception in processing request:",e);
+	        		mime = "text/html";
+					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk";
+					status = Status.INTERNAL_ERROR;
+        		}
+				return newFixedLengthResponse(status,mime,response);
+			}  catch(AccessDeniedException e) {
+        		try {
+					response = String.join("\n", Files.readAllLines(Paths.get("./www/403.html")));
+					mime = "text/html";
+					status = Status.FORBIDDEN;
+				} catch (NoSuchFileException e1) {
+					mime = "text/html";
+					response = "<h1>403: Forbidden</h1><br/><h3>The requested URL "+session.getUri()+" was denied access to by the filesystem.</h3><br/>Additionally, the 403 error document was not found.";
+					status = Status.FORBIDDEN;
+				}
+        		catch (IOException e1) {
+	        		logger.error("Exception in processing request:",e);
+	        		mime = "text/html";
+					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk";
+					status = Status.INTERNAL_ERROR;
+        		}
+        	} catch (IOException e) {
+        		try {
+        			mime = "text/html";
+					response = String.join("\n", Files.readAllLines(Paths.get("./www/500.html")));
+					status = Status.INTERNAL_ERROR;
+				} catch (NoSuchFileException e1) {
+					logger.error("Exception in processing request:",e);
+					mime = "text/html";
+					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk<br/>Additionally, the 500 error document was not found.";
+					status = Status.INTERNAL_ERROR;
+				}
+        		catch (IOException e1) {
+	        		logger.error("Exception in processing request:",e);
+					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk";
+					mime = "text/html";
+					status = Status.INTERNAL_ERROR;
+        		}
+			}
+        	return newFixedLengthResponse(status,mime,response);
+		}else if(session.getUri().startsWith("/user/")) {
+        	String response;
+        	String mime = "text/html";
+			Status status = Status.OK;
+			try {
+				if(session.getUri().split("/user/")[1].matches("\\d{17,21}")) {
+					String id = session.getUri().split("/user/")[1];
+					if(db.getCollection("users").find(Document.parse("{\"userid\":\""+id+"\"}")).first() == null) throw new NoSuchFileException("");
+					response = String.join("\n", Files.readAllLines(Paths.get("./www/user.html")));
 				} else {
 					throw new NoSuchFileException("");
 				}
@@ -668,7 +745,6 @@ public class Main extends NanoHTTPD {
 			httppost.setEntity(new StringEntity(content));
 			StringWriter writer = new StringWriter();
 			IOUtils.copy(httpclient.execute(httppost).getEntity().getContent(), writer, StandardCharsets.UTF_8);
-			logger.info(writer.toString());
 		} catch (Exception e) {
 			logger.error("Failed to post bot update to discord",e);
 		}

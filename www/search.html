@@ -138,10 +138,10 @@
 						card.id = "card"+i.id
 						card.classList.add("card"+i.id)
 						card.querySelector(".cardheader").textContent = i.username
-						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://yabl.xyz/bot/" + i.id + "'")
+						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'https://yabl.xyz/bot/" + i.id + "'")
 						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
-						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
-						card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
+						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
+						card.querySelector(".cardstats").textContent = i.guildCount||"No" + " Servers"
 						card.querySelector(".carddesc").textContent = i.desc
 						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
 						card.querySelector("#invitebutton").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id="+i.id+"&scope=bot','_blank')")
@@ -154,10 +154,10 @@
 						card.id = "card"+i.id
 						card.classList.add("card"+i.id)
 						card.querySelector(".cardheader").textContent = i.username
-						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://yabl.xyz/bot/" + i.id + "'")
+						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'https://yabl.xyz/bot/" + i.id + "'")
 						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
-						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
-						card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
+						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
+						card.querySelector(".cardstats").textContent = i.guildCount||"No" + " Servers"
 						card.querySelector(".carddesc").textContent = i.desc
 						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
 						card.style = "";
@@ -167,10 +167,10 @@
 						card.id = "card"+i.id
 						card.classList.add("card"+i.id)
 						card.querySelector(".cardheader").textContent = i.username
-						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://yabl.xyz/bot/" + i.id + "'")
+						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'https://yabl.xyz/bot/" + i.id + "'")
 						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
-						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
-						card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
+						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
+						card.querySelector(".cardstats").textContent = i.guildCount||"No" + " Servers"
 						card.querySelector(".carddesc").textContent = i.desc
 						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
 						card.style = "";
@@ -180,10 +180,10 @@
 						card.id = "card"+i.id
 						card.classList.add("card"+i.id)
 						card.querySelector(".cardheader").textContent = i.username
-						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://yabl.xyz/bot/" + i.id + "'")
+						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'https://yabl.xyz/bot/" + i.id + "'")
 						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
-						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
-						card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
+						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
+						card.querySelector(".cardstats").textContent = i.guildCount||"No" + " Servers"
 						card.querySelector(".carddesc").textContent = i.desc
 						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
 						card.style = "";

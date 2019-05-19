@@ -8,6 +8,22 @@
         <link rel="stylesheet" type="text/css" href="/style.css">
     </head>
     <body>
+        <div class="botcard" id="templateBotCard" style="display:none;">
+            <div class="cardbotstatus"></div>
+            <img class="cardimg" src="https://crxb.tk/w5ww5b.png"/>
+            <div class="cardbotinfo">
+              <p class="cardheader subheader text">template</p>
+              <p class="cardauthor metaheader text">template#0000</p>
+              <p class="cardstats metaheader text">template Servers</p>
+            </div>
+            <p class="carddesc text">
+              template
+            </p>
+            <div class="cardbuttons">
+              <button id="invitebutton" class="inputbox cardbutton">Invite</button>
+              <button id="supportbutton" class="inputbox cardbutton">Support</button>
+            </div>
+          </div>
         <div class="navbar">
             <div class="listitem home" onclick="home()">
               <div class="hover"></div>
@@ -29,20 +45,46 @@
                   <div class="hover"></div>
                   <p class="navtext text"><i class="fas fa-plus-circle"></i></p>
                 </div>
+                <div class="listitem verifynav" onclick="verify()">
+                    <div class="hover"></div>
+                    <p class="navtext text"><i class="fas fa-user-check"></i></p>
+                  </div>
                 <div class="listitem profile" onclick="profile()">
                   <div class="hover"></div>
                   <p class="navtext text"><i class="fas fa-user-circle"></i></p>
                 </div>
             </div>
         </div>
-        <div class="pagecontent">
-          
+        <div class="pagecontent noflex">
+          <div class="botheader">
+            <img class="botimg" src="https://crxb.tk/w5ww5b.png">
+            <div class="textdiv">
+              <p class="text header botname"></p>
+            </div>
+          </div>
+          <div class="cardrow cardrowone" id="cardrowone">
+          </div>
+          <div class="cardrow cardrowtwo" id="cardrowtwo">
+          </div>
         </div>
         <div class="footer">
             <p class="footitem text">&#169; YABL team 2018, built with java and html.</p>
             <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a></p>
         </div>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="https://rawcdn.githack.com/showdownjs/showdown/1.9.0/dist/showdown.min.js"></script>
+        <script src="https://rawcdn.githack.com/leizongmin/js-xss/cc989ce9eab632d38bf9330be645f7c53e093cff/dist/xss.min.js"></script>
+        <script src="https://rawcdn.githack.com/VisionistInc/showdown-xss-filter/e26046384e266be5646ef0eb58816ff4029da565/showdown-xss-filter.js">    </script>
         <script>
+            Object.values = function (obj) {
+                var vals = [];
+                for( var key in obj ) {
+                    if ( obj.hasOwnProperty(key) ) {
+                        vals.push(obj[key]);
+                    }
+                }
+                return vals;
+            }
             var baseUrl = window.location.protocol +"//"+ window.location.hostname
             if(window.localStorage.getItem("token") != null){
               document.querySelector(".listitem.login").style.display = "none"
@@ -73,7 +115,57 @@
                 window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
               }
             });
-        </script>
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+            var instance = axios.create({validateStatus: a => {return true;}});
+            var whoami = null;
+            if(localStorage.getItem("token") !== null){
+              instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
+                if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
+              }).catch();
+            } else{
+              document.querySelector(".listitem.verifynav").style.display = "none"
+            }
+            function verify(){
+              window.location.href = baseUrl + "/verify";
+            }
+            instance.post(baseUrl + "/api/bots/user/" + window.location.href.split("user/")[1],{},{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}})
+            .then(function (response) {
+              var data = response.data
+              document.querySelector(".botname").textContent = data.userscrim
+              document.querySelector(".botimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256"
+              for(var o in data.bots){
+                var i = data.bots[o]
+                if(o < 5){
+                  var card = templateBotCard.cloneNode(true)
+                  card.id = "card"+i.id
+                  card.classList.add(i.id)
+                  card.querySelector(".cardheader").textContent = i.username
+                  card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://localhost/bot/" + i.id + "'")
+                  card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
+                  card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://localhost/user/" + Object.keys(i.owners)[0] + "'")
+                  card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
+                  card.querySelector(".carddesc").textContent = i.desc
+                  card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
+                  card.style = "";
+                  cardrowone.appendChild(card)
+                } else if(o < 10){
+                  var card = templateBotCard.cloneNode(true)
+                  card.id = i.id
+                  card.classList.add(i.id)
+                  card.querySelector(".cardheader").textContent = i.username
+                  card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://localhost/bot/" + i.id + "'")
+                  card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
+                  card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://localhost/user/" + Object.keys(i.owners)[0] + "'")
+                  card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
+                  card.querySelector(".carddesc").textContent = i.desc
+                  card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
+                  card.style = "";
+                  cardrowtwo.appendChild(card)
+                }
+                if(data.bots.length <= 5){
+                  cardrowtwo.style = "display:none;"
+                }
+              }
+            }).catch(function (error) {console.log(error)});
+      </script>
     </body>
 </html>

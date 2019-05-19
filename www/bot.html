@@ -29,6 +29,10 @@
                   <div class="hover"></div>
                   <p class="navtext text"><i class="fas fa-plus-circle"></i></p>
                 </div>
+                <div class="listitem verifynav" onclick="verify()">
+                    <div class="hover"></div>
+                    <p class="navtext text"><i class="fas fa-user-check"></i></p>
+                  </div>
                 <div class="listitem profile" onclick="profile()">
                   <div class="hover"></div>
                   <p class="navtext text"><i class="fas fa-user-circle"></i></p>
@@ -48,9 +52,9 @@
               </div>
               <div class="statdiv buttondiv">
                   <button class="statbox button statbutton invite">Invite</button>
-                  <button class="statbox button statbutton website">Website</button>
-                  <button class="statbox button statbutton support">Support</button>
-                  <button class="statbox button statbutton git">Git</button>
+                  <button class="statbox button statbutton botwebsite">Website</button>
+                  <button class="statbox button statbutton botsupport">Support</button>
+                  <button class="statbox button statbutton botgit">Git</button>
                   <button class="statbox button statbutton report">Report</button>
                   <button class="statbox button statbutton edit">Edit</button>
                   <button class="statbox button statbutton delete">Delete</button>
@@ -71,6 +75,15 @@
         <script src="https://rawcdn.githack.com/leizongmin/js-xss/cc989ce9eab632d38bf9330be645f7c53e093cff/dist/xss.min.js"></script>
         <script src="https://rawcdn.githack.com/VisionistInc/showdown-xss-filter/e26046384e266be5646ef0eb58816ff4029da565/showdown-xss-filter.js">    </script>
         <script>
+            Object.values = function (obj) {
+                var vals = [];
+                for( var key in obj ) {
+                    if ( obj.hasOwnProperty(key) ) {
+                        vals.push(obj[key]);
+                    }
+                }
+                return vals;
+            }
             var baseUrl = window.location.protocol +"//"+ window.location.hostname
             if(window.localStorage.getItem("token") != null){
               document.querySelector(".listitem.login").style.display = "none"
@@ -104,48 +117,80 @@
             var instance = axios.create({validateStatus: a => {return true;}});
             var whoami = null;
             if(localStorage.getItem("token") !== null){
-              instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data}).catch();
+              instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
+                if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
+              }).catch();
+            } else{
+              document.querySelector(".listitem.verifynav").style.display = "none"
+            }
+            function verify(){
+              window.location.href = baseUrl + "/verify";
             }
             instance.get(baseUrl + "/api/bot/" + window.location.href.split("bot/")[1])
             .then(function (response) {
               var data = response.data
               console.log(data)
               document.querySelector(".botname").textContent = data.username
-              document.querySelector(".authorname").textContent = data.owners[Object.keys(data.owners)[0]]
+              document.querySelector(".authorname").textContent = Object.values(data.owners).join(" , ")
               var converter = new showdown.Converter({ extensions: ['xssfilter'] })
               document.querySelector(".botbody").innerHTML = converter.makeHtml(data.body)
-              document.querySelector(".servers").textContent = data.guildCount + " Servers"
+              if(data.servers){
+                document.querySelector(".servers").textContent = data.guildCount + " Servers"
+              } else{
+                document.querySelector(".servers").setAttribute("style","display:none !important;")
+              }
               document.querySelector(".library").textContent = data.library || "Not Specified"
-              document.querySelector(".library").setAttribute("onclick","window.open('http://localhost/search?query="+data.library+"','_blank')")
+              document.querySelector(".library").setAttribute("onclick","window.open('"+baseUrl+"/search?query="+data.library+"','_blank')")
               document.querySelector(".botimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256"
               document.querySelector(".invite").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id="+data.id+"&scope=bot','_blank')")
               if(data.website){
-                document.querySelector(".website").setAttribute("onclick", "window.open('" + data.website + "','_blank')")
+                document.querySelector(".botwebsite").setAttribute("onclick", "window.open('" + data.website + "','_blank')")
               } else{
-                document.querySelector(".website").setAttribute("style","display:none !important;")
+                document.querySelector(".botwebsite").setAttribute("style","display:none !important;")
               }
               if(data.support){
-                document.querySelector(".support").setAttribute("onclick", "window.open('" + data.support + "','_blank')")
+                document.querySelector(".botsupport").setAttribute("onclick", "window.open('" + data.support + "','_blank')")
               } else{
-                document.querySelector(".support").setAttribute("style","display:none !important;")
+                document.querySelector(".botsupport").setAttribute("style","display:none !important;")
               }
               if(data.git){
-                document.querySelector(".git").setAttribute("onclick", "window.open('" + data.git + "','_blank')")
+                document.querySelector(".botgit").setAttribute("onclick", "window.open('" + data.git + "','_blank')")
               } else{
-                document.querySelector(".git").setAttribute("style","display:none !important;")
+                document.querySelector(".botgit").setAttribute("style","display:none !important;")
               }
               if(window.localStorage.getItem("token") !== null){
                 document.querySelector(".report").setAttribute("style","display:block !important;")
               }
-              if(whoami.admin && !data.verified){
+              if(whoami && whoami.admin && !data.verified){
                 document.querySelector(".verify").setAttribute("style","display:block !important;")
+                document.querySelector(".verify").setAttribute("onclick", "verify()")
               }
-              if(whoami.admin || data.owners[whoami.id] !== null){
+              if(whoami && whoami.admin || data.owners[whoami.id] !== null){
                 document.querySelector(".report").setAttribute("style","display:none !important;")
                 document.querySelector(".delete").setAttribute("style","display:block !important;")
+                document.querySelector(".delete").setAttribute("onclick", "deletebot()");
                 document.querySelector(".edit").setAttribute("style","display:block !important;")
+                document.querySelector(".edit").setAttribute("onclick","window.location.href ='"+baseUrl+"/edit/"+data.id+"'")
               }
             }).catch(function (error) {console.log(error)});
-        </script>
+            function deletebot(){
+              document.querySelector(".delete").textContent = "Are you really sure? (10s)"
+              document.querySelector(".delete").setAttribute("style","display:block !important;background-color:rgb(155, 31, 31) !important;")
+              document.querySelector(".delete").setAttribute("onclick", "");
+              setTimeout(function(){
+                document.querySelector(".delete").textContent = "Are you really sure?"
+                document.querySelector(".delete").setAttribute("style","display:block !important;");
+                document.querySelector(".delete").setAttribute("onclick", "deleteiamreallysure()");
+              },10000)
+            }
+            function deleteiamreallysure(){
+              var instance = axios.create()
+              instance.post(baseUrl+"/api/bot/"+ window.location.href.split("bot/")[1]+"/delete",{},{"headers":{"Content-Type":"application/json","Authorization":localStorage.token}}).then(()=>{window.location.replace(baseUrl + "/dashboard")})
+            }
+            function verify(){
+              var instance = axios.create()
+              instance.post(baseUrl+"/api/bot/"+ window.location.href.split("bot/")[1]+"/verify",{},{"headers":{"Content-Type":"application/json","Authorization":localStorage.token}}).then(()=>{window.location.reload()})
+            }
+      </script>
     </body>
 </html>

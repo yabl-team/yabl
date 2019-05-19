@@ -24,7 +24,7 @@
 					</div>
 				</div>
 		<div class="navbar">
-			<div class="listitem home" onclick="changepage('home')">
+			<div class="listitem home" onclick="home()">
 				<div class="hover">
 				</div>
 				<p class="navtext text">YABL</p>
@@ -45,6 +45,10 @@
 					<div class="hover"></div>
 					<p class="navtext text"><i class="fas fa-plus-circle"></i></p>
 				</div>
+				<div class="listitem verifynav" onclick="verify()">
+						<div class="hover"></div>
+						<p class="navtext text"><i class="fas fa-user-check"></i></p>
+					</div>
 				<div class="listitem profile" onclick="profile()">
 					<div class="hover"></div>
 					<p class="navtext text"><i class="fas fa-user-circle"></i></p>
@@ -83,8 +87,8 @@
 			    var i = data[o]
 			    if(o < 5){
 						var card = document.getElementById("templateBotCard").cloneNode(true)
-						card.id = i.id
-						card.classList.add(i.id)
+						card.id = "card"+i.id
+						card.classList.add("card"+i.id)
 						card.querySelector(".cardheader").textContent = i.username
 						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://localhost/bot/" + i.id + "'")
 						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
@@ -92,12 +96,15 @@
 						card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
 						card.querySelector(".carddesc").textContent = i.desc
 						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
+						card.querySelector("#invitebutton").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id="+i.id+"&scope=bot','_blank')")
+            card.querySelector("#supportbutton").setAttribute("onclick", "window.open('" + i.support + "','_blank')")
 						card.style = "";
+
 						document.getElementById("cardrowone").appendChild(card)
 			    } else if(o < 10){
 						var card = document.getElementById("templateBotCard").cloneNode(true)
-						card.id = i.id
-						card.classList.add(i.id)
+						card.id = "card"+i.id
+						card.classList.add("card"+i.id)
 						card.querySelector(".cardheader").textContent = i.username
 						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://localhost/bot/" + i.id + "'")
 						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
@@ -122,6 +129,25 @@
 			}
 			function profile(){
 			  window.location.href = baseUrl + "/dashboard";
+			}
+			function home(){
+        window.location.href = baseUrl;
+      }
+			var whoami = null;
+      if(localStorage.getItem("token") !== null){
+        instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
+					if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
+				}).catch();
+      } else{
+				document.querySelector(".listitem.verifynav").style.display = "none"
+			}
+			
+      function verify(){
+			  window.location.href = baseUrl + "/verify";
+			}
+			function calcFontSize(username){
+				var factors = [0,2,2,2.2,2.15,2.05,1.95,1.85,1.78,1.68,1.61,1.55,1.51,1.44,1.38,1.33,1.28,1.24,1.2,1.16,1.12,1.08,1]
+				return (35-(Math.max(username.length-11,0)*factors[Math.max(username.length-11,0)]))
 			}
 			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
 			  event.preventDefault();

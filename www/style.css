@@ -272,6 +272,11 @@ a:active{
     max-height:35px;
     margin-bottom:0px;
     cursor: pointer;
+    text-overflow: ellipsis;
+    width:193px;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 35px;
 }
 .cardheader:hover{
     text-decoration: underline
@@ -299,9 +304,11 @@ a:active{
     margin-top:8px;
     margin-right:8px;
     font-size: 20px;
-    max-height:130px;
+    max-height:115px;
     max-width:268px;
     overflow:hidden;
+    text-overflow: ellipsis;
+    word-wrap:break-word;
 }
 .cardbuttons{
     position:absolute;
@@ -405,15 +412,15 @@ a:active{
     background-color: #33b5e5;
     color:#eee;
 }
-.website{
+.botwebsite{
     background-color: #ffbb33;
     color:#eee;
 }
-.support{
+.botsupport{
     background-color:#ff4444;
     color:#eee;
 }
-.git{
+.botgit{
     background-color:#00C851;
     color:#eee;
 }
@@ -451,4 +458,46 @@ a:active{
     color:#ddd;
     height:max-content;
     margin-bottom:32px;
+}
+#editbutton{
+    width:268px;
+}
+#results{
+    text-align:center;
+}
+.searchbutton{
+    width:78px;
+    height:25px;
+    font-size: 15px;
+    cursor: pointer;
+    margin-left:4px;
+}
+.pagebox{
+    width:30px;
+    height:25px;
+    font-size: 15px;
+    cursor: pointer;
+    text-align:center;
+}
+#gobtn{
+    width:40px;
+}
+#pagesdiv{
+    width:260px;
+    margin:auto;
+    display:flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    align-items:center;
+}
+.searchcontent{
+    display:block;
+    padding-top:35px;
+    padding-bottom:10px;
+    height:calc(100% - 195px);
+}
+.errorcontent {
+    padding-top:20px;
+    flex-flow: column wrap;
+    justify-content: flex-start
 }

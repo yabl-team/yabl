@@ -30,6 +30,10 @@
                   <div class="hover"></div>
                   <p class="navtext text"><i class="fas fa-plus-circle"></i></p>
                 </div>
+                <div class="listitem verifynav" onclick="verify()">
+                        <div class="hover"></div>
+                        <p class="navtext text"><i class="fas fa-user-check"></i></p>
+                      </div>
                 <div class="listitem profile" onclick="profile()">
                   <div class="hover"></div>
                   <p class="navtext text"><i class="fas fa-user-circle"></i></p>
@@ -153,6 +157,17 @@
                 window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
               }
             });
+            var whoami = null;
+            if(localStorage.getItem("token") !== null){
+                instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
+                    if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
+                }).catch();
+            } else{
+                document.querySelector(".listitem.verifynav").style.display = "none"
+            }
+            function verify(){
+                    window.location.href = baseUrl + "/verify";
+			}
         </script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     </body>

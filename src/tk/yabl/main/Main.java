@@ -453,7 +453,7 @@ public class Main extends NanoHTTPD {
         	Map<String,List<String>> params = session.getParameters();
         	if(!params.containsKey("code")) {
         		Response response = newFixedLengthResponse(Status.REDIRECT_SEE_OTHER,"text/plain","");
-        		response.addHeader("Location", "https://discordapp.com/api/oauth2/authorize?client_id=521481605467078667&redirect_uri=http://localhost/login&response_type=code&scope=identify guilds.join");
+        		response.addHeader("Location", "https://discordapp.com/api/oauth2/authorize?client_id=521481605467078667&redirect_uri=https://yabl.xyz/login&response_type=code&scope=identify guilds.join");
         		return response;
         	}
         	try {
@@ -463,7 +463,7 @@ public class Main extends NanoHTTPD {
 				nvps.add(new BasicNameValuePair("code", params.get("code").get(0)));
 				nvps.add(new BasicNameValuePair("client_id", "521481605467078667"));
 				nvps.add(new BasicNameValuePair("client_secret", secret));
-				nvps.add(new BasicNameValuePair("redirect_uri", "http://localhost/login"));
+				nvps.add(new BasicNameValuePair("redirect_uri", "https://yabl.xyz/login"));
 				nvps.add(new BasicNameValuePair("grant_type", "authorization_code"));
 				nvps.add(new BasicNameValuePair("scope", "identify"));
 				httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -481,7 +481,7 @@ public class Main extends NanoHTTPD {
 						}
 						this.loggedUsers.put(response.get("access_token").getAsString(), uInfo);
 						Response r = newFixedLengthResponse(Status.REDIRECT_SEE_OTHER,"text/plain","Login success.");
-						r.addHeader("Location", "http://localhost/dashboard?code="+response.get("access_token").getAsString());
+						r.addHeader("Location", "https://yabl.xyz/dashboard?code="+response.get("access_token").getAsString());
 						user.put("avatar", uInfo.get("avatar").getAsString());
 						db.getCollection("users").replaceOne(new BsonDocument().append("userid", new BsonString(uInfo.get("id").getAsString())), user);
 						return r;
@@ -493,7 +493,7 @@ public class Main extends NanoHTTPD {
 						user.append("userscrim", uInfo.get("username").getAsString() + "#" + uInfo.get("discriminator").getAsString());
 						db.getCollection("users").insertOne(user);
 						Response r = newFixedLengthResponse(Status.REDIRECT_SEE_OTHER,"text/plain","User created, Login success.");
-						r.addHeader("Location", "http://localhost/dashboard?code="+response.get("access_token").getAsString());
+						r.addHeader("Location", "https://yabl.xyz/dashboard?code="+response.get("access_token").getAsString());
 						return r;
 					}
 				} else {

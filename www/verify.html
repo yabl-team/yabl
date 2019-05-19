@@ -145,9 +145,9 @@
 						card.id = "card"+i.id
 						card.classList.add("card"+i.id)
 						card.querySelector(".cardheader").textContent = i.username
-						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://localhost/bot/" + i.id + "'")
+						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://yabl.xyz/bot/" + i.id + "'")
 						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
-						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://localhost/user/" + Object.keys(i.owners)[0] + "'")
+						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
 						card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
 						card.querySelector(".carddesc").textContent = i.desc
 						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
@@ -161,9 +161,9 @@
 						card.id = "card"+i.id
 						card.classList.add("card"+i.id)
 						card.querySelector(".cardheader").textContent = i.username
-						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://localhost/bot/" + i.id + "'")
+						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://yabl.xyz/bot/" + i.id + "'")
 						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
-						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://localhost/user/" + Object.keys(i.owners)[0] + "'")
+						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
 						card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
 						card.querySelector(".carddesc").textContent = i.desc
 						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
@@ -174,9 +174,9 @@
 						card.id = "card"+i.id
 						card.classList.add("card"+i.id)
 						card.querySelector(".cardheader").textContent = i.username
-						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://localhost/bot/" + i.id + "'")
+						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://yabl.xyz/bot/" + i.id + "'")
 						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
-						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://localhost/user/" + Object.keys(i.owners)[0] + "'")
+						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
 						card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
 						card.querySelector(".carddesc").textContent = i.desc
 						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
@@ -187,16 +187,17 @@
 						card.id = "card"+i.id
 						card.classList.add("card"+i.id)
 						card.querySelector(".cardheader").textContent = i.username
-						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://localhost/bot/" + i.id + "'")
+						card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'http://yabl.xyz/bot/" + i.id + "'")
 						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
-						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://localhost/user/" + Object.keys(i.owners)[0] + "'")
+						card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'http://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
 						card.querySelector(".cardstats").textContent = i.guildCount + " Servers"
 						card.querySelector(".carddesc").textContent = i.desc
 						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
 						card.style = "";
 						document.getElementById("cardrowfour").appendChild(card)
 			    }
-          if(data.bots.length <= 5){
+			  }
+        if(data.bots.length <= 5){
             cardrowtwo.style = "display:none;"
             cardrowthree.style = "display:none;"
             cardrowfour.style = "display:none;"
@@ -207,7 +208,6 @@
             cardrowfour.style = "display:none;"
             
           }
-			  }
 			}).catch(function (error) {console.log(error)});
 			function login(){
 			  window.location.href = baseUrl + "/login";
@@ -222,7 +222,6 @@
 			function profile(){
 			  window.location.href = baseUrl + "/dashboard";
 			}
-      if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
       function verify(){
 			  window.location.href = baseUrl + "/verify";
 			}

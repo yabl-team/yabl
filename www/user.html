@@ -142,7 +142,7 @@
                   card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'https://yabl.xyz/bot/" + i.id + "'")
                   card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
                   card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
-                  card.querySelector(".cardstats").textContent = i.guildCount||"No" + " Servers"
+                  card.querySelector(".cardstats").textContent = (i.guildCount||"No") + " Servers"
                   card.querySelector(".carddesc").textContent = i.desc
                   card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
                   card.style = "";
@@ -155,7 +155,7 @@
                   card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'https://yabl.xyz/bot/" + i.id + "'")
                   card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
                   card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
-                  card.querySelector(".cardstats").textContent = i.guildCount||"No" + " Servers"
+                  card.querySelector(".cardstats").textContent = (i.guildCount||"No") + " Servers"
                   card.querySelector(".carddesc").textContent = i.desc
                   card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
                   card.style = "";

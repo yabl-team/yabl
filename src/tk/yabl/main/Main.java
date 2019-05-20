@@ -144,14 +144,12 @@ public class Main extends NanoHTTPD {
         				JsonObject r = this.loggedUsers.get(authorization);
         				Document user = db.getCollection("users").find(Document.parse("{\"userid\":\""+r.get("id").getAsString()+"\"}")).first();
             			if(user.containsKey("token")) {
-            				user.remove("_id");
-                    		return newFixedLengthResponse(Status.OK,"application/json",user.toJson());
+                    		return newFixedLengthResponse(Status.OK,"application/json",user.getString("token"));
             			} else {
                 			String token = generate(64);
                 			user.put("token", token);
                 			db.getCollection("users").replaceOne(Document.parse("{\"userid\":\""+r.get("id").getAsString()+"\"}"),user);
-                			user.remove("_id");
-                    		return newFixedLengthResponse(Status.OK,"application/json",user.toJson());
+                    		return newFixedLengthResponse(Status.OK,"application/json",user.getString("token"));
             			}
                 	} else {
                 		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
@@ -359,7 +357,7 @@ public class Main extends NanoHTTPD {
             			try {
     						if(session.getUri().startsWith("/api/bots/user/@me")) {
     							if(authorization != null && (loggedUsers.containsKey(authorization) || apiToken)) {
-    								Document user = db.getCollection("users").find(new BsonDocument().append("userid", new BsonString(loggedUsers.get(authorization).get("id").getAsString()))).first();
+    								Document user = db.getCollection("users").find(Document.parse("{\"userid\":\""+loggedUsers.get(authorization).get("id").getAsString()+"\"}")).first();
     								BsonArray botIds = new BsonArray();
     								List<String> bots = new ArrayList<>();
     								Document d = new Document();
@@ -368,10 +366,11 @@ public class Main extends NanoHTTPD {
     								d.put("id",b);
     								if(user.get("bots") instanceof ArrayList<?>) {
 										((ArrayList<?>)user.get("bots")).forEach((a->{botIds.add(new BsonString(a.toString()));}));
+									} else {
 										return newFixedLengthResponse(Status.INTERNAL_ERROR,"text/plain","");
 									}
     								db.getCollection("bots").find(d).forEach((Consumer<Document>)a->{a.remove("_id");bots.add(a.toJson());});
-    	            				return newFixedLengthResponse(Status.OK,"application/json","["+String.join(",", bots)+"]");
+    	            				return newFixedLengthResponse(Status.OK,"application/json","{\"id\":\""+user.getString("userid")+"\",\"userscrim\":\""+user.getString("userscrim")+"\",\"avatar\":\""+user.getString("avatar")+"\",\"bots\":["+String.join(",", bots)+"]}");
     							} else {
     			            		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
     			            	}

@@ -496,6 +496,7 @@ public class Main extends NanoHTTPD {
 						user.append("avatar", uInfo.get("avatar").getAsString());
 						user.append("userscrim", uInfo.get("username").getAsString() + "#" + uInfo.get("discriminator").getAsString());
 						db.getCollection("users").insertOne(user);
+						this.loggedUsers.put(response.get("access_token").getAsString(), uInfo);
 						Response r = newFixedLengthResponse(Status.REDIRECT_SEE_OTHER,"text/plain","User created, Login success.");
 						r.addHeader("Location", "https://yabl.xyz/dashboard?code="+response.get("access_token").getAsString());
 						return r;

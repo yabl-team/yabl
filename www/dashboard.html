@@ -102,6 +102,9 @@
             }
             document.querySelector(".profile .hover").classList.add("active")
             var baseUrl = window.location.protocol +"//"+ window.location.hostname
+            if(localStorage.getItem("token") == null){
+                window.location.href = baseUrl + "/401"
+            }
             if(window.localStorage.getItem("token") != null){
               document.querySelector(".listitem.login").style.display = "none"
             } else{
@@ -114,7 +117,7 @@
             }
             function logout(){
               window.localStorage.removeItem("token");
-              window.location.reload();
+              window.location.href = baseUrl
             }
             function addbot(){
               window.location.href = baseUrl + "/add";

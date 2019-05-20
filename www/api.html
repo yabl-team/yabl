@@ -40,13 +40,13 @@
             </div>
         </div>
         <div class="pagecontent apicontent">
-          <p class="header text apiheader">API Documentation</p><br/>
-          <input class="inputbox" id="apikey"></input>
-          <button class="inputbox searchbutton" id="revealkey">Reveal</button>
+          <p class="header text apiheader" >API Documentation</p><br/>
+          <input class="inputbox" id="apikey" placeholder="API token" disabled></input>
+          <button class="inputbox searchbutton" id="revealkey" onclick="reveal()">Reveal</button>
           <p class="text apiheader"><br/>
               The base URL for all REST requests is https://yabl.xyz/api<br/>
               <br/>
-<div>
+<div class="text">
     <a name="apiwhoami" class="text subheader">/api/whoami&nbsp;</a><br/>
     Method: GET<br/>
     Authorization: User Token<br/>
@@ -282,6 +282,8 @@
                 if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
               }).catch();
             } else{
+              apikey.style.display = "none"
+              revealkey.style.display = "none"
               document.querySelector(".listitem.verifynav").style.display = "none"
             }
             function verify(){
@@ -293,6 +295,14 @@
                 window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
               }
             });
+            function reveal(){
+              instance.get(baseUrl+"/api/token/generate",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){
+                var token = response.data
+                apikey.value = token
+                revealkey.disabled = true
+                revealkey.textContent = "Revealed"
+              }).catch();
+            }
         </script>
     </body>
 </html>

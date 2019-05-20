@@ -520,3 +520,7 @@ a:active{
 .flexbreak{
     width:100%;
 }
+pre {
+    color:#eee;
+    font-size:16px;
+}

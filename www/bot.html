@@ -128,6 +128,7 @@
             }
             instance.get(baseUrl + "/api/bot/" + window.location.href.split("bot/")[1])
             .then(function (response) {
+              setTimeout(()=>{
               var data = response.data
               console.log(data)
               document.querySelector(".botname").textContent = data.username
@@ -171,7 +172,7 @@
                 document.querySelector(".delete").setAttribute("onclick", "deletebot()");
                 document.querySelector(".edit").setAttribute("style","display:block !important;")
                 document.querySelector(".edit").setAttribute("onclick","window.location.href ='"+baseUrl+"/edit/"+data.id+"'")
-              }
+              }},100)
             }).catch(function (error) {console.log(error)});
             function deletebot(){
               document.querySelector(".delete").textContent = "Are you really sure? (10s)"

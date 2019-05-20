@@ -141,13 +141,18 @@ public class Main extends NanoHTTPD {
         			}
         		} else if(session.getUri().startsWith("/api/token/generate")) {
         			if(authorization != null && (loggedUsers.containsKey(authorization))) {
-            			JsonObject r = this.loggedUsers.get(authorization);
-            			String token = generate(64);
-            			Document user = db.getCollection("users").find(Document.parse("{\"userid\":\""+r.get("id").getAsString()+"\"}")).first();
-            			user.put("token", token);
-            			db.getCollection("users").replaceOne(Document.parse("{\"userid\":\""+r.get("id").getAsString()+"\"}"),user);
-            			user.remove("_id");
-                		return newFixedLengthResponse(Status.OK,"application/json",user.toJson());
+        				JsonObject r = this.loggedUsers.get(authorization);
+        				Document user = db.getCollection("users").find(Document.parse("{\"userid\":\""+r.get("id").getAsString()+"\"}")).first();
+            			if(user.containsKey("token")) {
+            				user.remove("_id");
+                    		return newFixedLengthResponse(Status.OK,"application/json",user.toJson());
+            			} else {
+                			String token = generate(64);
+                			user.put("token", token);
+                			db.getCollection("users").replaceOne(Document.parse("{\"userid\":\""+r.get("id").getAsString()+"\"}"),user);
+                			user.remove("_id");
+                    		return newFixedLengthResponse(Status.OK,"application/json",user.toJson());
+            			}
                 	} else {
                 		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
                 	}

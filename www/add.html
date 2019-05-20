@@ -64,7 +64,7 @@
             <p class="errors"></p>
         </div>
         <div class="footer">
-            <p class="footitem text">&#169; YABL team 2018, built with java and html.</p>
+            <p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
             <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
         </div>
         <script>
@@ -99,29 +99,29 @@
             function submit(gresponse){ 
                 console.log(!gresponse)
                 if(!gresponse) {
-                    alert(`Missing grecaptcha response</br>`)
+                    alert(`Missing grecaptcha response`)
                     return "missing grecaptcha response"
                 }
                 if(gresponse.length < 20){
-                    alert(`Invalid grecaptcha response</br>`)
+                    alert(`Invalid grecaptcha response`)
                     return "invalid grecaptcha response"
                 }
                 if(document.querySelector(".botid").value.length < 17 || document.querySelector(".prefix").value.length < 1 || document.querySelector(".help").value.length < 2 || 
                     document.querySelector(".desc").value.length < 30 || document.querySelector(".nestedinput").value.length < 100){
                     if(document.querySelector(".botid").value.length < 17){
-                        alert(`Bot ID is too short. (${document.querySelector(".botid").value.length}/17)</br>`)
+                        alert(`Bot ID is too short. (${document.querySelector(".botid").value.length}/17)`)
                     }
                     if(document.querySelector(".prefix").value.length < 1){
-                        alert(`Prefix is too short. (${document.querySelector(".prefix").value.length}/1)</br>`)
+                        alert(`Prefix is too short. (${document.querySelector(".prefix").value.length}/1)`)
                     }
                     if(document.querySelector(".help").value.length < 2){
-                        alert(`Help command is too short. (${document.querySelector(".help").value.length}/2)</br>`)
+                        alert(`Help command is too short. (${document.querySelector(".help").value.length}/2)`)
                     }
                     if(document.querySelector(".desc").value.length < 30){
-                        alert(`Description is too short. (${document.querySelector(".desc").value.length}/30)</br>`)
+                        alert(`Description is too short. (${document.querySelector(".desc").value.length}/30)`)
                     }
                     if(document.querySelector(".nestedinput").value.length < 100){
-                        alert(`Body is too short. (${document.querySelector(".botid").value.length}/100)</br>`)
+                        alert(`Body is too short. (${document.querySelector(".botid").value.length}/100)`)
                     }
                 } else{
                     var object = {};

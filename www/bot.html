@@ -67,7 +67,7 @@
           </div>
         </div>
         <div class="footer">
-            <p class="footitem text">&#169; YABL team 2018, built with java and html.</p>
+            <p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
             <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
         </div>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
@@ -175,14 +175,14 @@
               }},100)
             }).catch(function (error) {console.log(error)});
             function deletebot(){
-              document.querySelector(".delete").textContent = "Are you really sure? (10s)"
+              document.querySelector(".delete").textContent = "Are you really sure?"
               document.querySelector(".delete").setAttribute("style","display:block !important;background-color:rgb(155, 31, 31) !important;")
               document.querySelector(".delete").setAttribute("onclick", "");
               setTimeout(function(){
                 document.querySelector(".delete").textContent = "Are you really sure?"
                 document.querySelector(".delete").setAttribute("style","display:block !important;");
                 document.querySelector(".delete").setAttribute("onclick", "deleteiamreallysure()");
-              },10000)
+              },1500)
             }
             function deleteiamreallysure(){
               var instance = axios.create()

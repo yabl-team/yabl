@@ -141,7 +141,7 @@
             var whoami = null;
             instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
             if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
-            instance.post(baseUrl + "/api/bots/user/"+whoami.id,{},{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}})
+            instance.post(baseUrl + "/api/bots/user/@me",{},{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}})
             .then(function (response) {
               var data = response.data
               document.querySelector(".botname").textContent = data.userscrim

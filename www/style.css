@@ -409,15 +409,15 @@ a:active{
     color:#333;
 }
 .statusidle{
-    background-color:#1762E7;
+    background-color:#FAA61A;
     color:#333;
 }
 .statusdnd{
-    background-color:#ff0031;
+    background-color:#F04747;
     color:#333;
 }
 .statusoffline{
-    background-color:#596284;
+    background-color:#99AAB5;
     color:#333;
 }
 .invite{

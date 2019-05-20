@@ -88,6 +88,7 @@
 				return (35-(Math.max(username.length-11,0)*factors[Math.max(username.length-11,0)]))
 			}
 			var whoami = null;
+			var instance = axios.create({validateStatus: a => {return true;}});
             if(localStorage.getItem("token") !== null){
                 instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
                     if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
@@ -98,7 +99,6 @@
             function verify(){
                     window.location.href = baseUrl + "/verify";
 			}
-			var instance = axios.create({validateStatus: a => {return true;}});
 			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
 			  event.preventDefault();
 			  if (event.keyCode === 13) {

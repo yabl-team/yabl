@@ -55,7 +55,7 @@
                   <button class="statbox button statbutton botwebsite">Website</button>
                   <button class="statbox button statbutton botsupport">Support</button>
                   <button class="statbox button statbutton botgit">Git</button>
-                  <button class="statbox button statbutton report">Report</button>
+                  <button class="statbox button statbutton report" onclick="report()">Report</button>
                   <button class="statbox button statbutton edit">Edit</button>
                   <button class="statbox button statbutton delete">Delete</button>
                   <button class="statbox button statbutton verify">Verify</button>
@@ -83,6 +83,9 @@
                     }
                 }
                 return vals;
+            }
+            function report(){
+              alert("Not yet implemented")
             }
             var baseUrl = window.location.protocol +"//"+ window.location.hostname
             if(window.localStorage.getItem("token") != null){

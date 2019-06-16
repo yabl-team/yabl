@@ -20,6 +20,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
@@ -826,9 +827,11 @@ public class Main extends NanoHTTPD {
 					break;
 				case 2:
 					content = content +"<:yabl_delete:523557038316322836> <@"+by+">"+ " Deleted bot " + "<@"+id+"> (" + id + ") By " + "<@"+ownersstring+">"; 
+					delete(id);
 					break;
 				case 3:
 					content = content +":white_check_mark: <@"+by+">"+ " Verified bot " + "<@"+id+"> (" + id + ") By " + "<@"+ownersstring+">"; 
+					verify(id);
 					break;
 			}
 			content = content + "\"}";
@@ -837,6 +840,30 @@ public class Main extends NanoHTTPD {
 			IOUtils.copy(httpclient.execute(httppost).getEntity().getContent(), writer, StandardCharsets.UTF_8);
 		} catch (Exception e) {
 			logger.error("Failed to post bot update to discord",e);
+		}
+	}
+	private static void delete(String id) {
+		try {
+			HttpClient httpclient = HttpClients.createDefault();
+			HttpDelete httpdelete = new HttpDelete("https://discordapp.com/api/v6/guilds/523526083698491432/members/"+id);
+			httpdelete.setHeader("Content-Type", "application/json");
+			httpdelete.setHeader("Authorization","Bot "+token);
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(httpclient.execute(httpdelete).getEntity().getContent(), writer, StandardCharsets.UTF_8);
+		} catch (Exception e) {
+			logger.error("Failed to post bot delete to discord",e);
+		}
+	}
+	private static void verify(String id) {
+		try {
+			HttpClient httpclient = HttpClients.createDefault();
+			HttpPut httpput = new HttpPut("https://discordapp.com/api/v6/guilds/523526083698491432/members/"+id+"/roles/523524003625697290");
+			httpput.setHeader("Content-Type", "application/json");
+			httpput.setHeader("Authorization","Bot "+token);
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(httpclient.execute(httpput).getEntity().getContent(), writer, StandardCharsets.UTF_8);
+		} catch (Exception e) {
+			logger.error("Failed to post bot verify to discord",e);
 		}
 	}
 	

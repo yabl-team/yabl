@@ -8,7 +8,6 @@ html, body {
     height:100%;
     width:100%;
     overflow:auto;
-    font-family: Arial, Helvetica, sans-serif
 }
 p,h1{
     margin:0px;
@@ -19,7 +18,7 @@ p,h1{
     margin: 5px 15px;
 }
 .text {
-    font-family: "Roboto";
+    font-family:'Roboto',Arial, Helvetica, sans-serif;
     color: #E0E0E0;
     font-style: normal;
     font-weight: normal;
@@ -131,6 +130,7 @@ p,h1{
   font-size:15px;
   border-radius: 10px;
   color:#fff;
+  text-overflow: ellipsis;
 }
 .nestedinput{
     background:transparent;
@@ -464,7 +464,7 @@ a:active{
     margin-right:auto;
     min-height:400px;
     min-width:1400px;
-    max-height:600px;
+    height:100%;
     font-size:18px;
     padding:10px;
     overflow:auto;
@@ -541,4 +541,6 @@ pre {
 }
 .termscontent{
     width:35%;
+}
+#apikey{
 }

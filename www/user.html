@@ -3,6 +3,7 @@
     <head>
         <title>Yet Another Bot List</title>
         <meta charset="utf-8"/>
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="/style.css">
@@ -161,9 +162,13 @@
                   card.style = "";
                   cardrowtwo.appendChild(card)
                 }
-                if(data.bots.length <= 5){
+                
+              }
+              if(data.bots.length <= 5){
                   cardrowtwo.style = "display:none;"
                 }
+              if(data.bots.length == 0){
+                cardrowone.innerHTML = "<p class=\"text subheader\">You have no bots, why dont you <a href=/add>Add one?</a></p>"
               }
             }).catch(function (error) {console.log(error)});
       </script>

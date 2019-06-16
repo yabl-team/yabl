@@ -3,6 +3,7 @@
     <head>
         <title>Yet Another Bot List</title>
         <meta charset="utf-8"/>
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="/style.css">
@@ -41,7 +42,7 @@
         </div>
         <div class="pagecontent apicontent">
           <p class="header text apiheader" >API Documentation</p><br/>
-          <input class="inputbox" id="apikey" placeholder="API token" disabled></input>
+          <input class="inputbox" id="apikey" placeholder="API token" readonly></input>
           <button class="inputbox searchbutton" id="revealkey" onclick="reveal()">Reveal</button>
           <p class="text apiheader"><br/>
               The base URL for all REST requests is https://yabl.xyz/api<br/>
@@ -103,11 +104,11 @@
 &lt;    "avatar" : "6f12e0c5f5270a9dcf3104ba7fc651cc",
 &lt;    "guildCount" : 418}
     </pre><br/>
-    <a name="apiadd" class="text subheader">/api/bot/add&nbsp;</a><br/>
+    <a name="apiadd" class="text subheader">/api/bot/:id/add&nbsp;</a><br/>
     Method: POST<br/>
     Authorization: User token<br/>
     Submits a new bot.&nbsp;<br/>
-    <pre>> POST /api/bot/add
+    <pre>> POST /api/bot/0/add
 &gt; {"id" : "321493510241124363",
 &gt;    "prefix" : "c;",
 &gt;    "help" : "c;help",
@@ -121,11 +122,11 @@
 &lt; 201
 &lt; &lt;the previous document&gt;
     </pre><br/>
-    <a name="apiedit" class="text subheader">/api/bot/edit/&nbsp;</a><br/>
+    <a name="apiedit" class="text subheader">/api/bot/:id/edit&nbsp;</a><br/>
     Method: POST<br/>
     Authorization: User token<br/>
     Edits an existing bot.&nbsp;<br/>
-    <pre>> POST /api/bot/edit/321493510241124363
+    <pre>> POST /api/bot/321493510241124363/dedit
 &gt; {"id" : "321493510241124363",
 &gt;    "prefix" : "c;",
 &gt;    "help" : "c;help",
@@ -139,28 +140,28 @@
 &lt; 200
 &lt; &lt;the previous document&gt;
     </pre><br/>
-    <a name="apistats" class="text subheader">/api/bot/stats/&nbsp;</a><br/>
+    <a name="apistats" class="text subheader">/api/bot/:id/stats&nbsp;</a><br/>
     Method: POST<br/>
     Authorization: API token<br/>
     Changes bot guild statistics.&nbsp;<br/>
-    <pre>> POST /api/bot/stats/321493510241124363
+    <pre>> POST /api/bot/321493510241124363/stats
 &gt; {"guildCount":418}
 &lt; 200
 &lt; &lt;bot object&gt;
     </pre><br/>
-    <a name="apidelete" class="text subheader">/api/bot/delete/&nbsp;</a><br/>
+    <a name="apidelete" class="text subheader">/api/bot/:id/delete&nbsp;</a><br/>
     Method: POST<br/>
     Authorization: User token<br/>
     Deletes a bot.&nbsp;<br/>
-    <pre>> POST /api/bot/delete/321493510241124363
+    <pre>> POST /api/bot/321493510241124363/delete
 &lt; 200
 &lt; Bot deleted.
     </pre><br/>
-    <a name="apiverify" class="text subheader">/api/bot/verify/&nbsp;</a><br/>
+    <a name="apiverify" class="text subheader">/api/bot/:id/verify&nbsp;</a><br/>
     Method: POST<br/>
     Authorization: Administrator user token<br/>
     Verifies a bot.&nbsp;<br/>
-    <pre>> POST /api/bot/verify/321493510241124363
+    <pre>> POST /api/bot/321493510241124363/verify
 &lt; 200
 &lt; Bot verified.
     </pre><br/>

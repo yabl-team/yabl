@@ -3,6 +3,7 @@
     <head>
         <title>Yet Another Bot List</title>
         <meta charset="utf-8"/>
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="/style.css">
@@ -29,7 +30,7 @@
                   <div class="hover"></div>
                   <p class="navtext text"><i class="fas fa-plus-circle"></i></p>
                 </div>
-                <div class="listitem verifynav" onclick="verify()">
+                <div class="listitem verifynav" onclick="verifypage()">
                     <div class="hover"></div>
                     <p class="navtext text"><i class="fas fa-user-check"></i></p>
                   </div>
@@ -74,6 +75,7 @@
         <script src="https://rawcdn.githack.com/showdownjs/showdown/1.9.0/dist/showdown.min.js"></script>
         <script src="https://rawcdn.githack.com/leizongmin/js-xss/cc989ce9eab632d38bf9330be645f7c53e093cff/dist/xss.min.js"></script>
         <script src="https://rawcdn.githack.com/VisionistInc/showdown-xss-filter/e26046384e266be5646ef0eb58816ff4029da565/showdown-xss-filter.js">    </script>
+        <script src="https://unpkg.com/he@1.2.0/he.js"></script>
         <script>
             Object.values = function (obj) {
                 var vals = [];
@@ -126,7 +128,7 @@
             } else{
               document.querySelector(".listitem.verifynav").style.display = "none"
             }
-            function verify(){
+            function verifypage(){
               window.location.href = baseUrl + "/verify";
             }
             instance.get(baseUrl + "/api/bot/" + window.location.href.split("bot/")[1])
@@ -137,7 +139,7 @@
               document.querySelector(".botname").textContent = data.username
               document.querySelector(".authorname").textContent = Object.values(data.owners).join(" , ")
               var converter = new showdown.Converter({ extensions: ['xssfilter'] })
-              document.querySelector(".botbody").innerHTML = converter.makeHtml(data.body)
+              document.querySelector(".botbody").innerHTML = converter.makeHtml(he.decode(data.body))
               if(data.servers){
                 document.querySelector(".servers").textContent = data.guildCount + " Servers"
               } else{

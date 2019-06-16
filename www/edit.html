@@ -3,6 +3,7 @@
     <head>
         <title>Yet Another Bot List</title>
         <meta charset="utf-8"/>
+        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
         <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
         <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
         <link rel="stylesheet" type="text/css" href="/style.css">
@@ -67,6 +68,7 @@
             <p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
             <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
         </div>
+        <script src="https://unpkg.com/he@1.2.0/he.js"></script>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script>
             var baseUrl = window.location.protocol +"//"+ window.location.hostname
@@ -160,7 +162,7 @@
                     object["prefix"] = document.querySelector(".prefix").value
                     object["help"] = document.querySelector(".help").value 
                     object["desc"] = document.querySelector(".desc").value
-                    object["body"] = document.querySelector(".nestedinput").value
+                    object["body"] = he.encode(document.querySelector(".nestedinput").value)
                     document.querySelector(".website").value.length > 0 ? object["website"] = document.querySelector(".website").value : false;
                     document.querySelector(".support").value.length > 0 ? object["support"] = document.querySelector(".support").value : false;
                     document.querySelector(".git").value.length > 0 ? object["git"] = document.querySelector(".git").value : false;
@@ -168,16 +170,17 @@
                     document.querySelector(".modnote").value.length > 0 ? object["modnote"] = document.querySelector(".modnote").value : false;
                     object["gresponse"] = gresponse
                     var instance = axios.create({validateStatus: a => {return true;}});
+                    console.log(object)
                     instance.post(baseUrl + "/api/bot/"+object["id"]+"/edit",object,{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}})
                     .then(function (response) {
                         if(response.status == 200){
                             window.location.href = baseUrl + "/dashboard"
                         } else{
-                            alert(response.status + ": " +response.data)
+                            alert(response.status + ": " +JSON.stringify(response.data))
                         }
                     })
                     .catch(function (error) {
-                        alert(response.status + ": " +response.data)
+                        alert(response.status + ": " +JSON.stringify(response.data))
                     });
                 }
                 grecaptcha.reset()

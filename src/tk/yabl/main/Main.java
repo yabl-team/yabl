@@ -123,6 +123,9 @@ public class Main extends NanoHTTPD {
         		apiToken = true;
         		tokenData = db.getCollection("users").find(Document.parse("{\"token\":\""+authorization+"\"}")).first();
         	}
+        	if(!apiToken && authorization.length() > 1 && !loggedUsers.containsKey(authorization)) {
+        		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","Authorization is invalid. Please relog.");
+        	}
         	if(session.getUri().startsWith("/api/whoami")) {
         		if(authorization != null && (loggedUsers.containsKey(authorization))) {
         			JsonObject r = this.loggedUsers.get(authorization);

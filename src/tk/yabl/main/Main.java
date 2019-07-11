@@ -116,7 +116,7 @@ public class Main extends NanoHTTPD {
 			} catch (ResponseException e1) {
 				return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
 			}
-        	String authorization = session.getHeaders().get("authorization");
+        	String authorization = session.getHeaders().get("authorization").replaceAll("[^\\w]","");
         	boolean apiToken = false;
         	Document tokenData = null;
         	if(db.getCollection("users").find(Document.parse("{\"token\":\""+authorization+"\"}")).first() != null) {
@@ -264,7 +264,7 @@ public class Main extends NanoHTTPD {
 	        						}
 	        					} else if(session.getUri().split("/")[4].equals("edit")){
 	        						if(apiToken) return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
-	        						String id = session.getUri().split("/")[3];
+	        						String id = session.getUri().split("/")[3].replaceAll("[^\\w]","");;
 	        						Document bot = db.getCollection("bots").find(Document.parse("{\"id\":\""+id+"\"}")).first();
 	        						if(bot == null) {
 										return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
@@ -294,7 +294,7 @@ public class Main extends NanoHTTPD {
 									}
 	        					} else if(session.getUri().split("/")[4].equals("stats")){
 	        						if(apiToken) {
-	        							String id = session.getUri().split("/")[3];
+	        							String id = session.getUri().split("/")[3].replaceAll("[^\\w]","");;
 		        						Document bot = db.getCollection("bots").find(Document.parse("{\"id\":\""+id+"\"}")).first();
 		        						if(bot == null) {
 											return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
@@ -313,7 +313,7 @@ public class Main extends NanoHTTPD {
 		        					} else return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
 	        					} else if(session.getUri().split("/")[4].equals("delete")){
 	        						if(apiToken) return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
-	        						String id = session.getUri().split("/")[3];
+	        						String id = session.getUri().split("/")[3].replaceAll("[^\\w]","");;
 	        						Document bot = db.getCollection("bots").find(Document.parse("{\"id\":\""+id+"\"}")).first();
 	        						if(bot == null) {
 										return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
@@ -337,7 +337,7 @@ public class Main extends NanoHTTPD {
 	        						}
 	        					} else if(session.getUri().split("/")[4].equals("verify")){
 	        						if(apiToken || loggedUsers.get(authorization).get("admin") == null) return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
-	        						String id = session.getUri().split("/")[3];
+	        						String id = session.getUri().split("/")[3].replaceAll("[^\\w]","");;
 	        						Document bot = db.getCollection("bots").find(Document.parse("{\"id\":\""+id+"\"}")).first();
 	        						if(bot == null) {
 										return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
@@ -524,7 +524,7 @@ public class Main extends NanoHTTPD {
 			Status status = Status.OK;
 			try {
 				if(session.getUri().split("/bot/")[1].matches("\\d{17,21}")) {
-					String id = session.getUri().split("/bot/")[1];
+					String id = session.getUri().split("/bot/")[1].replaceAll("[^\\w]","");;
 					if(db.getCollection("bots").find(Document.parse("{\"id\":\""+id+"\"}")).first() == null) throw new NoSuchFileException("");
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/bot.html")));
 				} else {
@@ -589,7 +589,7 @@ public class Main extends NanoHTTPD {
 			Status status = Status.OK;
 			try {
 				if(session.getUri().split("/user/")[1].matches("\\d{17,21}")) {
-					String id = session.getUri().split("/user/")[1];
+					String id = session.getUri().split("/user/")[1].replaceAll("[^\\w]","");;
 					if(db.getCollection("users").find(Document.parse("{\"userid\":\""+id+"\"}")).first() == null) throw new NoSuchFileException("");
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/user.html")));
 				} else {
@@ -654,7 +654,7 @@ public class Main extends NanoHTTPD {
 			Status status = Status.OK;
 			try {
 				if(session.getUri().split("/edit/")[1].matches("\\d{17,21}")) {
-					String id = session.getUri().split("/edit/")[1];
+					String id = session.getUri().split("/edit/")[1].replaceAll("[^\\w]","");;
 					if(db.getCollection("bots").find(Document.parse("{\"id\":\""+id+"\"}")).first() == null) throw new NoSuchFileException("");
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/edit.html")));
 				} else {

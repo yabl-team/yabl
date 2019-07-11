@@ -116,7 +116,7 @@ public class Main extends NanoHTTPD {
 			} catch (ResponseException e1) {
 				return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
 			}
-        	String authorization = session.getHeaders().get("authorization").replaceAll("[^\\w]","");
+        	String authorization = session.getHeaders().getOrDefault("authorization","").replaceAll("[^\\w]","");
         	boolean apiToken = false;
         	Document tokenData = null;
         	if(db.getCollection("users").find(Document.parse("{\"token\":\""+authorization+"\"}")).first() != null) {

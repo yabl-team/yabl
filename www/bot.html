@@ -171,7 +171,7 @@
                 document.querySelector(".verify").setAttribute("style","display:block !important;")
                 document.querySelector(".verify").setAttribute("onclick", "verify()")
               }
-              if(whoami && whoami.admin || data.owners[whoami.id] !== null){
+              if(whoami && whoami.admin || whoami && data.owners[whoami.id] !== null){
                 document.querySelector(".report").setAttribute("style","display:none !important;")
                 document.querySelector(".delete").setAttribute("style","display:block !important;")
                 document.querySelector(".delete").setAttribute("onclick", "deletebot()");

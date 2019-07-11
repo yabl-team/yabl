@@ -181,6 +181,9 @@
                 if(data.bots.length <= 5){
                   cardrowtwo.style = "display:none;"
                 }
+                if(data.bots.length == 0){
+                    cardrowone.innerHTML = "<p class=\"text subheader\">You have no bots, why dont you <a href=/add>Add one?</a></p>"
+                }
               }
             }).catch(function (error) {console.log(error)});
             }).catch();

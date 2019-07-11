@@ -75,7 +75,7 @@
         <script src="https://rawcdn.githack.com/showdownjs/showdown/1.9.0/dist/showdown.min.js"></script>
         <script src="https://rawcdn.githack.com/leizongmin/js-xss/cc989ce9eab632d38bf9330be645f7c53e093cff/dist/xss.min.js"></script>
         <script src="https://rawcdn.githack.com/VisionistInc/showdown-xss-filter/e26046384e266be5646ef0eb58816ff4029da565/showdown-xss-filter.js">    </script>
-        <script>
+        <script type="text/javascript">
             Object.values = function (obj) {
                 var vals = [];
                 for( var key in obj ) {
@@ -178,12 +178,12 @@
                   card.style = "";
                   cardrowtwo.appendChild(card)
                 }
-                if(data.bots.length <= 5){
-                  cardrowtwo.style = "display:none;"
-                }
-                if(data.bots.length == 0){
-                    cardrowone.innerHTML = "<p class=\"text subheader\">You have no bots, why dont you <a href=/add>Add one?</a></p>"
-                }
+              }
+              if(data.bots.length <= 5){
+                cardrowtwo.style = "display:none;"
+              }
+              if(data.bots.length == 0){
+                cardrowone.innerHTML = "<p class=\"text subheader\">You have no bots, why dont you <a href=/add>Add one?</a></p>"
               }
             }).catch(function (error) {console.log(error)});
             }).catch();

@@ -124,7 +124,7 @@ public class Main extends NanoHTTPD {
         		tokenData = db.getCollection("users").find(Document.parse("{\"token\":\""+authorization+"\"}")).first();
         	}
         	if(session.getUri().startsWith("/api/whoami")) {
-        		if(authorization != null && (loggedUsers.containsKey(authorization))) {
+        		if(authorization != null && (this.loggedUsers.containsKey(authorization))) {
         			JsonObject r = this.loggedUsers.get(authorization);
             		return newFixedLengthResponse(Status.OK,"application/json",r.toString());
             	} else {
@@ -141,7 +141,7 @@ public class Main extends NanoHTTPD {
                 		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","Invalid token.");
         			}
         		} else if(session.getUri().startsWith("/api/token/generate")) {
-        			if(authorization != null && (loggedUsers.containsKey(authorization))) {
+        			if(authorization != null && (this.loggedUsers.containsKey(authorization))) {
         				JsonObject r = this.loggedUsers.get(authorization);
         				Document user = db.getCollection("users").find(Document.parse("{\"userid\":\""+r.get("id").getAsString()+"\"}")).first();
             			if(user.containsKey("token")) {
@@ -173,7 +173,7 @@ public class Main extends NanoHTTPD {
         					}
         				}
         			} else if(session.getMethod() == Method.POST) {
-        				if(authorization != null && (loggedUsers.containsKey(authorization) || apiToken)) {
+        				if(authorization != null && (this.loggedUsers.containsKey(authorization) || apiToken)) {
         					JsonObject json;
         					try {
         						json = new JsonParser().parse(ifnull(data.get("postData"),"{}").toString()).getAsJsonObject();
@@ -215,7 +215,7 @@ public class Main extends NanoHTTPD {
 											return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
 										}
 	        							BSONObject owners = new BasicBSONObject();
-	        							owners.put(loggedUsers.get(authorization).get("id").getAsString(),loggedUsers.get(authorization).get("username").getAsString() + "#" + loggedUsers.get(authorization).get("discriminator").getAsString());
+	        							owners.put(this.loggedUsers.get(authorization).get("id").getAsString(),this.loggedUsers.get(authorization).get("username").getAsString() + "#" + this.loggedUsers.get(authorization).get("discriminator").getAsString());
 	        							document.put("owners", owners);
 	        							HttpGet httpget = new HttpGet("https://discordapp.com/api/v6/users/" + json.get("id").getAsString());
 	        							httpget.setHeader("Content-Type", "application/json");
@@ -225,7 +225,7 @@ public class Main extends NanoHTTPD {
 											if(response.has("username") && response.get("id").getAsString().equals(json.get("id").getAsString()) && response.has("bot")) {
 												document.put("username", response.get("username").getAsString());
 												document.put("avatar", response.get("avatar")==null?"":response.get("avatar").getAsString());
-												Document user = db.getCollection("users").find(new BsonDocument().append("userid", new BsonString(loggedUsers.get(authorization).get("id").getAsString()))).first();
+												Document user = db.getCollection("users").find(new BsonDocument().append("userid", new BsonString(this.loggedUsers.get(authorization).get("id").getAsString()))).first();
 												@SuppressWarnings("unchecked")
 												List<String> bots = (List<String>)user.get("bots");
 												bots.add(json.get("id").getAsString());
@@ -240,12 +240,12 @@ public class Main extends NanoHTTPD {
 												db.getCollection("users").replaceOne(userF, user);
 												db.getCollection("bots").insertOne(document);
 												document.remove("_id");
-												HttpPut httpput = new HttpPut("https://discordapp.com/api/v6/guilds/523523486719803403/members/"+loggedUsers.get(authorization).get("id").getAsString());
+												HttpPut httpput = new HttpPut("https://discordapp.com/api/v6/guilds/523523486719803403/members/"+this.loggedUsers.get(authorization).get("id").getAsString());
 												httpput.setHeader("Content-Type", "application/json");
 			        							httpput.setHeader("Authorization", "Bot "+token);
 			        							StringEntity ent = new StringEntity("{\"access_token\":\""+authorization+"\"}");
 			        							httpput.setEntity(ent);
-												botUpdate(document.getString("id"),new String[]{loggedUsers.get(authorization).get("id").getAsString()},0,loggedUsers.get(authorization).get("id").getAsString());
+												botUpdate(document.getString("id"),new String[]{this.loggedUsers.get(authorization).get("id").getAsString()},0,this.loggedUsers.get(authorization).get("id").getAsString());
 												return newFixedLengthResponse(Status.CREATED,"application/json",document.toJson());
 											} else {
 												return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
@@ -270,7 +270,7 @@ public class Main extends NanoHTTPD {
 										return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
 	        						}
 	        						Document owners = bot.get("owners", Document.class);
-	        						if(!owners.keySet().contains(loggedUsers.get(authorization).get("id").getAsString()) && loggedUsers.get(authorization).get("admin").getAsString() == null) {
+	        						if(!owners.keySet().contains(this.loggedUsers.get(authorization).get("id").getAsString()) && this.loggedUsers.get(authorization).get("admin").getAsString() == null) {
 	        		            		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
 	        						}
 	        						Document document = Document.parse(bot.toJson());
@@ -285,7 +285,7 @@ public class Main extends NanoHTTPD {
 										if(json.get("library") != null){document.put("library", json.get("library").getAsString());} else {document.put("library", bot.get("library"));}
 										if(json.get("modnote") != null){document.put("modnote", json.get("modnote").getAsString());} else {document.put("modnote", bot.get("modnote"));}
 										db.getCollection("bots").replaceOne(bot, document);
-										botUpdate(document.getString("id"),owners.keySet().toArray(new String[0]),1,loggedUsers.get(authorization).get("id").getAsString());
+										botUpdate(document.getString("id"),owners.keySet().toArray(new String[0]),1,this.loggedUsers.get(authorization).get("id").getAsString());
 										document.remove("_id");
 										return newFixedLengthResponse(Status.OK,"application/json",document.toJson());
 									} catch (Exception e1) {
@@ -319,15 +319,15 @@ public class Main extends NanoHTTPD {
 										return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","Bot doesnt exist.");
 	        						}
 	        						Document owners = bot.get("owners", Document.class);
-	        						if(owners.keySet().contains(loggedUsers.get(authorization).get("id").getAsString()) || loggedUsers.get(authorization).get("admin") != null) {
-	        							Document user = db.getCollection("users").find(Document.parse("{\"userid\":\""+loggedUsers.get(authorization).get("id").getAsString()+"\"}")).first();
+	        						if(owners.keySet().contains(this.loggedUsers.get(authorization).get("id").getAsString()) || this.loggedUsers.get(authorization).get("admin") != null) {
+	        							Document user = db.getCollection("users").find(Document.parse("{\"userid\":\""+this.loggedUsers.get(authorization).get("id").getAsString()+"\"}")).first();
 	        							if(user != null) {
 	        								ArrayList<?> bots = user.get("bots", ArrayList.class);
 		        							bots.remove(id);
 		        							user.put("bots", bots);
-		        							db.getCollection("users").replaceOne(Document.parse("{\"userid\":\""+loggedUsers.get(authorization).get("id").getAsString()+"\"}"), user);
+		        							db.getCollection("users").replaceOne(Document.parse("{\"userid\":\""+this.loggedUsers.get(authorization).get("id").getAsString()+"\"}"), user);
 		        							db.getCollection("bots").deleteOne(bot);
-		        							botUpdate(bot.getString("id"),(String[])owners.keySet().toArray(new String[0]),2,loggedUsers.get(authorization).get("id").getAsString());
+		        							botUpdate(bot.getString("id"),(String[])owners.keySet().toArray(new String[0]),2,this.loggedUsers.get(authorization).get("id").getAsString());
 		        							return newFixedLengthResponse(Status.OK,"text/plain","Bot deleted.");
 	        							}
 	        							db.getCollection("bots").deleteOne(bot);
@@ -336,7 +336,7 @@ public class Main extends NanoHTTPD {
 	                            		return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
 	        						}
 	        					} else if(session.getUri().split("/")[4].equals("verify")){
-	        						if(apiToken || loggedUsers.get(authorization).get("admin") == null) return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
+	        						if(apiToken || this.loggedUsers.get(authorization).get("admin") == null) return newFixedLengthResponse(Status.UNAUTHORIZED,"text/plain","");
 	        						String id = session.getUri().split("/")[3];
 	        						Document bot = db.getCollection("bots").find(Document.parse("{\"id\":\""+id+"\"}")).first();
 	        						if(bot == null) {
@@ -345,7 +345,7 @@ public class Main extends NanoHTTPD {
 	        						Document owners = bot.get("owners", Document.class);
 	        						bot.put("verified", true);
         							db.getCollection("bots").replaceOne(Document.parse("{\"id\":\""+id+"\"}"), bot);
-        							botUpdate(bot.getString("id"),(String[])owners.keySet().toArray(new String[0]),3,loggedUsers.get(authorization).get("id").getAsString());
+        							botUpdate(bot.getString("id"),(String[])owners.keySet().toArray(new String[0]),3,this.loggedUsers.get(authorization).get("id").getAsString());
         							return newFixedLengthResponse(Status.OK,"text/plain","Bot verified.");
 	        					}
 	    					}
@@ -357,8 +357,8 @@ public class Main extends NanoHTTPD {
         			if(session.getUri().startsWith("/api/bots/user/")) {
             			try {
     						if(session.getUri().startsWith("/api/bots/user/@me")) {
-    							if(authorization != null && (loggedUsers.containsKey(authorization) || apiToken)) {
-    								Document user = db.getCollection("users").find(Document.parse("{\"userid\":\""+loggedUsers.get(authorization).get("id").getAsString()+"\"}")).first();
+    							if(authorization != null && (this.loggedUsers.containsKey(authorization) || apiToken)) {
+    								Document user = db.getCollection("users").find(Document.parse("{\"userid\":\""+this.loggedUsers.get(authorization).get("id").getAsString()+"\"}")).first();
     								BsonArray botIds = new BsonArray();
     								List<String> bots = new ArrayList<>();
     								Document d = new Document();
@@ -395,7 +395,7 @@ public class Main extends NanoHTTPD {
     						return newFixedLengthResponse(Status.BAD_REQUEST,"text/plain","");
     					}
             		} else if(session.getUri().startsWith("/api/bots/all")) {
-            			if(authorization != null && (loggedUsers.containsKey(authorization) || apiToken)) {
+            			if(authorization != null && (this.loggedUsers.containsKey(authorization) || apiToken)) {
             				List<String> bots = new ArrayList<>();
             				db.getCollection("bots").find().forEach((Consumer<Document>)a->{a.remove("_id");bots.add(a.toJson());});
             				return newFixedLengthResponse(Status.OK,"application/json","["+String.join(",", bots)+"]");
@@ -426,7 +426,7 @@ public class Main extends NanoHTTPD {
         				long pages = db.getCollection("bots").countDocuments(d);
         				return newFixedLengthResponse(Status.OK,"application/json","{\"pages\":\""+(int)Math.floor(pages/20)+"\",\"results\":\""+pages+"\",\"bots\":["+String.join(",", bots)+"]}");
             		} else if(session.getUri().startsWith("/api/bots/unverified")) {
-            			if(authorization != null && (loggedUsers.containsKey(authorization) || apiToken)) {
+            			if(authorization != null && (this.loggedUsers.containsKey(authorization) || apiToken)) {
             				JsonObject json;
                 			try {
         						json = new JsonParser().parse(ifnull(data.get("postData"),"{}").toString()).getAsJsonObject();

@@ -72,9 +72,8 @@
             <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
         </div>
         <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <script src="https://rawcdn.githack.com/showdownjs/showdown/1.9.0/dist/showdown.min.js"></script>
-        <script src="https://rawcdn.githack.com/leizongmin/js-xss/cc989ce9eab632d38bf9330be645f7c53e093cff/dist/xss.min.js"></script>
-        <script src="https://rawcdn.githack.com/VisionistInc/showdown-xss-filter/e26046384e266be5646ef0eb58816ff4029da565/showdown-xss-filter.js">    </script>
+        <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
         <script src="https://unpkg.com/he@1.2.0/he.js"></script>
         <script>
             Object.values = function (obj) {
@@ -138,8 +137,7 @@
               console.log(data)
               document.querySelector(".botname").textContent = data.username
               document.querySelector(".authorname").textContent = Object.values(data.owners).join(" , ")
-              var converter = new showdown.Converter({ extensions: ['xssfilter'] })
-              document.querySelector(".botbody").innerHTML = converter.makeHtml(he.decode(data.body))
+              document.querySelector(".botbody").innerHTML = DOMPurify.sanitize(marked(he.decode(data.body)))
               if(data.servers){
                 document.querySelector(".servers").textContent = data.guildCount + " Servers"
               } else{

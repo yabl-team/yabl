@@ -1,0 +1,7 @@
+version: 1.0.{build}
+install:
+- ps: mvn --version
+build_script:
+- ps: mvn package --quiet
+artifacts:
+- path: .\target\yabl-0.0.1-SNAPSHOT-jar-with-dependencies.jar

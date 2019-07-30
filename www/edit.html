@@ -81,7 +81,7 @@
                 document.querySelector(".prefix").value = botinfo["prefix"]
                 document.querySelector(".help").value = botinfo["help"]
                 document.querySelector(".desc").value = botinfo["desc"]
-                document.querySelector(".nestedinput").value = botinfo["body"]
+                document.querySelector(".nestedinput").value = he.decode(botinfo["body"])
                 document.querySelector(".website").value = botinfo["website"]
                 document.querySelector(".support").value = botinfo["support"]
                 document.querySelector(".git").value = botinfo["git"]

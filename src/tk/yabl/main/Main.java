@@ -64,6 +64,7 @@ public class Main extends NanoHTTPD {
 	public Map<String,JsonObject> loggedUsers = new HashMap<String,JsonObject>();
 	public final static Logger logger = LoggerFactory.getLogger("tk.yabl.main.Main");
 	public static Map<String,String> mimeMap;
+	public static boolean debug = false;
 	static {
 	    mimeMap = new HashMap<>();
 	    mimeMap.put("html", "text/html");
@@ -88,6 +89,7 @@ public class Main extends NanoHTTPD {
             String password = config.get("config", "mongopwd");
             String source = config.get("config", "mongosrc");
             String database = config.get("config", "mongodtb");
+            debug = Boolean.parseBoolean(config.get("config").get("debug", "false"));
             token = config.get("config","bottoken");
             secret = config.get("config","clientsecret");
             gresecret = config.get("config", "gresecret");
@@ -198,7 +200,7 @@ public class Main extends NanoHTTPD {
 										} catch (Exception e) {
 											return newFixedLengthResponse(Status.INTERNAL_ERROR,"application/json","{\"error\":true,\"message\":\"Exception "+e.getClass().getTypeName()+": "+e.getMessage()+"\"}");
 										}
-        								if(!response.get("success").getAsBoolean()) {
+        								if(!response.get("success").getAsBoolean() && !debug) {
     										return newFixedLengthResponse(Status.BAD_REQUEST,"application/json","{\"error\":true,\"message\":\"Invalid grecaptcha response.\"}");
         								}
 	        							try {
@@ -369,14 +371,15 @@ public class Main extends NanoHTTPD {
     						if(session.getUri().startsWith("/api/bots/user/@me")) {
     							if(authorization != null && (this.loggedUsers.containsKey(authorization) || apiToken)) {
     								Document user = db.getCollection("users").find(Document.parse("{\"userid\":\""+this.loggedUsers.get(authorization).get("id").getAsString()+"\"}")).first();
-    								BsonArray botIds = new BsonArray();
+    								List<String> botIds = new ArrayList<>();
     								List<String> bots = new ArrayList<>();
     								Document d = new Document();
-    								BasicBSONObject b = new BasicBSONObject();
-    								b.put("$all", botIds);
-    								d.put("id",b);
+    								Document b = new Document();
+    								logger.info(user.toString());
     								if(user.get("bots") instanceof ArrayList<?>) {
-										((ArrayList<?>)user.get("bots")).forEach((a->{botIds.add(new BsonString(a.toString()));}));
+										((ArrayList<?>)user.get("bots")).forEach((a->{botIds.add(a.toString());}));
+										b.put("$in", botIds);
+	    								d.put("id",b);
 									} else {
 										return newFixedLengthResponse(Status.INTERNAL_ERROR,"application/json","{\"error\":true,\"message\":\"Bots not instance of ArrayList.\"}");
 									}
@@ -391,10 +394,10 @@ public class Main extends NanoHTTPD {
     								List<String> bots = new ArrayList<>();
     								Document d = new Document();
     								BasicBSONObject b = new BasicBSONObject();
-    								b.put("$all", botIds);
-    								d.put("id",b);
     								if(user.get("bots") instanceof ArrayList<?>) {
 										((ArrayList<?>)user.get("bots")).forEach((a->{botIds.add(new BsonString(a.toString()));}));
+										b.put("$in", botIds);
+	    								d.put("id",b);
 									} else {
 										return newFixedLengthResponse(Status.INTERNAL_ERROR,"application/json","{\"error\":true,\"message\":\"Bots not instance of ArrayList.\"}");
 									}
@@ -479,7 +482,11 @@ public class Main extends NanoHTTPD {
 				nvps.add(new BasicNameValuePair("code", params.get("code").get(0)));
 				nvps.add(new BasicNameValuePair("client_id", "521481605467078667"));
 				nvps.add(new BasicNameValuePair("client_secret", secret));
-				nvps.add(new BasicNameValuePair("redirect_uri", "https://yabl.xyz/login"));
+				if(!debug) {
+					nvps.add(new BasicNameValuePair("redirect_uri", "https://yabl.xyz/login"));
+				} else {
+					nvps.add(new BasicNameValuePair("redirect_uri", "http://localhost/login"));
+				}
 				nvps.add(new BasicNameValuePair("grant_type", "authorization_code"));
 				nvps.add(new BasicNameValuePair("scope", "identify"));
 				httppost.setHeader("Content-Type", "application/x-www-form-urlencoded");

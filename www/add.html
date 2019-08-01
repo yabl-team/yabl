@@ -98,6 +98,7 @@
             function home(){
                 window.location.href = baseUrl;
             }
+            var instance = axios.create({validateStatus: a => {return true;}});
             function submit(gresponse){ 
                 console.log(!gresponse)
                 if(!gresponse) {
@@ -138,7 +139,6 @@
                     document.querySelector(".library").value.length > 0 ? object["library"] = document.querySelector(".library").value : false;
                     document.querySelector(".modnote").value.length > 0 ? object["modnote"] = document.querySelector(".modnote").value : false;
                     object["gresponse"] = gresponse
-                    var instance = axios.create({validateStatus: a => {return true;}});
                     instance.post(baseUrl + "/api/bot/"+object["id"]+"/add",object,{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}})
                     .then(function (response) {
                         if(response.status == 201){

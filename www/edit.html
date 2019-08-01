@@ -124,7 +124,7 @@
                     if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
                 }).catch();
             } else{
-                document.querySelector(".listitem.verifynav").style.display = "none"
+                window.location.href = baseUrl + "/401"
             }
             function verify(){
                     window.location.href = baseUrl + "/verify";

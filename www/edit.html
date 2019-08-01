@@ -73,9 +73,18 @@
         <script>
             var baseUrl = window.location.protocol +"//"+ window.location.hostname
             var instance = axios.create({validateStatus: a => {return true;}});
+            var whoami = null;
+            if(localStorage.getItem("token") !== null){
+                instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
+                    if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
+                }).catch();
+            } else{
+                window.location.href = baseUrl + "/401"
+            }
             var botinfo = null;
             instance.get(baseUrl+"/api/bot/"+window.location.href.split("/edit/")[1]).then(function(response){
                 botinfo = response.data
+                if(!botinfo.owners.hasOwnProperty(whoami.id)) window.location.href = baseUrl + "/401"
                 console.log(botinfo);
                 document.querySelector(".botid").value = botinfo["id"]
                 document.querySelector(".prefix").value = botinfo["prefix"]
@@ -117,14 +126,6 @@
             }
             function home(){
                 window.location.href = baseUrl;
-            }
-            var whoami = null;
-            if(localStorage.getItem("token") !== null){
-                instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
-                    if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
-                }).catch();
-            } else{
-                window.location.href = baseUrl + "/401"
             }
             function verify(){
                     window.location.href = baseUrl + "/verify";

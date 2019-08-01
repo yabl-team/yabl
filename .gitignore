@@ -69,3 +69,4 @@ buildNumber.properties
 /bin/
 config.ini
 yabl.jar
+.classpath

@@ -77,12 +77,11 @@ public class Main extends NanoHTTPD {
 	}
 	public Main(int port) throws IOException {
 		super(port);
-        start(NanoHTTPD.SOCKET_READ_TIMEOUT, true);
+        start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
         logger.info("Running");
 	}
 	
 	public static void main(String[] args) {
-		Main main;
 		try {
             Wini config = new Wini(new File("config.ini"));
             int port = Integer.parseInt(config.get("config", "port"));
@@ -101,8 +100,7 @@ public class Main extends NanoHTTPD {
                             .credential(credential)
                             .build());
             db = mongo.getDatabase(database);
-            main = new Main(port);
-            main.isAlive();
+            new Main(port);
         } catch (Exception e) {
             logger.error("Error while starting server:", e);
         }

@@ -74,32 +74,31 @@
             var baseUrl = window.location.protocol +"//"+ window.location.hostname
             var instance = axios.create({validateStatus: a => {return true;}});
             var whoami = null;
+            var botinfo = null;
             if(localStorage.getItem("token") !== null){
-                instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
+                instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){
+                    whoami = response.data
                     if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
+                    instance.get(baseUrl+"/api/bot/"+window.location.href.split("/edit/")[1]).then(function(response){
+                        var botinfo = response.data
+                        if(!botinfo.owners.hasOwnProperty(whoami.id) && !whoami.admin) window.location.href = baseUrl + "/401"
+                        console.log(botinfo);
+                        document.querySelector(".botid").value = botinfo["id"]
+                        document.querySelector(".prefix").value = botinfo["prefix"]
+                        document.querySelector(".help").value = botinfo["help"]
+                        document.querySelector(".desc").value = botinfo["desc"]
+                        document.querySelector(".nestedinput").value = he.decode(botinfo["body"])
+                        document.querySelector(".website").value = botinfo["website"]
+                        document.querySelector(".support").value = botinfo["support"]
+                        document.querySelector(".git").value = botinfo["git"]
+                        document.querySelector(".library").value = botinfo["library"]
+                        document.querySelector(".modnote").value = botinfo["modnote"]
+                    }).catch();
                 }).catch();
             } else{
                 window.location.href = baseUrl + "/401"
             }
             var botinfo = null;
-            instance.get(baseUrl+"/api/bot/"+window.location.href.split("/edit/")[1]).then(function(response){
-                botinfo = response.data
-                while(whoami == null){/*do nothing and wait for whoami to be available.*/}
-                if(!botinfo.owners.hasOwnProperty(whoami.id) && !whoami.admin) window.location.href = baseUrl + "/401"
-                console.log(botinfo);
-                document.querySelector(".botid").value = botinfo["id"]
-                document.querySelector(".prefix").value = botinfo["prefix"]
-                document.querySelector(".help").value = botinfo["help"]
-                document.querySelector(".desc").value = botinfo["desc"]
-                document.querySelector(".nestedinput").value = he.decode(botinfo["body"])
-                document.querySelector(".website").value = botinfo["website"]
-                document.querySelector(".support").value = botinfo["support"]
-                document.querySelector(".git").value = botinfo["git"]
-                document.querySelector(".library").value = botinfo["library"]
-                document.querySelector(".modnote").value = botinfo["modnote"]
-            }).catch();
-            
-            
             
             if(window.localStorage.getItem("token") != null){
               document.querySelector(".listitem.login").style.display = "none"

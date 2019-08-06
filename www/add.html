@@ -69,6 +69,7 @@
             <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
         </div>
         <script src="https://unpkg.com/he@1.2.0/he.js"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
         <script>
             var baseUrl = window.location.protocol +"//"+ window.location.hostname
             if(window.localStorage.getItem("token") != null){
@@ -99,6 +100,14 @@
                 window.location.href = baseUrl;
             }
             var instance = axios.create({validateStatus: a => {return true;}});
+            var whoami = null;
+            if(localStorage.getItem("token") !== null){
+                instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
+                    if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
+                }).catch();
+            } else{
+                document.querySelector(".listitem.verifynav").style.display = "none"
+            }
             function submit(gresponse){ 
                 console.log(!gresponse)
                 if(!gresponse) {
@@ -159,14 +168,6 @@
                 window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
               }
             });
-            var whoami = null;
-            if(localStorage.getItem("token") !== null){
-                instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
-                    if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
-                }).catch();
-            } else{
-                document.querySelector(".listitem.verifynav").style.display = "none"
-            }
             function verify(){
                     window.location.href = baseUrl + "/verify";
 			}

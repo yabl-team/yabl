@@ -85,7 +85,7 @@
             instance.get(baseUrl+"/api/bot/"+window.location.href.split("/edit/")[1]).then(function(response){
                 botinfo = response.data
                 while(whoami == null){/*do nothing and wait for whoami to be available.*/}
-                if(!botinfo.owners.hasOwnProperty(whoami.id)) window.location.href = baseUrl + "/401"
+                if(!botinfo.owners.hasOwnProperty(whoami.id) || !whoami.admin) window.location.href = baseUrl + "/401"
                 console.log(botinfo);
                 document.querySelector(".botid").value = botinfo["id"]
                 document.querySelector(".prefix").value = botinfo["prefix"]

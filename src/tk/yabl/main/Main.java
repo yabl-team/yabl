@@ -170,8 +170,8 @@ public class Main extends NanoHTTPD {
         						bot.remove("_id");
         						if(authorization != null && this.loggedUsers.containsKey(authorization)) {
         							if(!bot.get("owners", Document.class).containsKey(this.loggedUsers.get(authorization).get("id").getAsString()) 
-        									|| !this.loggedUsers.get(authorization).has("admin") 
-        									|| !this.loggedUsers.get(authorization).get("admin").getAsBoolean()) {
+        									&& (!this.loggedUsers.get(authorization).has("admin") 
+        									&& !this.loggedUsers.get(authorization).get("admin").getAsBoolean())) {
         								bot.remove("modnote");
         							}
         						} else {

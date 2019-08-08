@@ -34,26 +34,26 @@
 				<div class="listitem search">
 					<input class="searchbox inputbox" placeholder="Search">
 				</div>
-				<div class="listitem login" onclick="login()">
+				<a href="/login" class="listitem login">
 					<div class="hover"></div>
 					<p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
-				</div>
+				</a>
 				<div class="listitem logout" onclick="logout()">
 					<div class="hover"></div>
 					<p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
 				</div>
-				<div class="listitem addbot" onclick="addbot()">
-          <div class="hover"></div>
-          <p class="navtext text"><i class="fas fa-plus-circle"></i></p>
-        </div>
-        <div class="listitem verifynav" onclick="verify()">
-          <div class="hover"></div>
-          <p class="navtext text"><i class="fas fa-user-check"></i></p>
-        </div>
-				<div class="listitem profile" onclick="profile()">
+				<a href="/add" class="listitem addbot">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-plus-circle"></i></p>
+				</a>
+				<a href="/verify" class="listitem verifynav">
+						<div class="hover"></div>
+						<p class="navtext text"><i class="fas fa-user-check"></i></p>
+					</div>
+				<a href="/dashboard" class="listitem profile">
 					<div class="hover"></div>
 					<p class="navtext text"><i class="fas fa-user-circle"></i></p>
-				</div>
+				</a>
 			</div>
 		</div>
 		<div class="pagecontent searchcontent">
@@ -116,13 +116,18 @@
         var url = baseUrl + "/verify?page="+Math.max(Math.min(parseInt(pagein.value)-1,pages),0)
         window.location.href = url
       }
-      var whoami = null;
-      if(localStorage.getItem("token") !== null){
-        instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
-        if(whoami == null || !whoami.admin){
-          window.location.href = baseUrl + "/401"
-        }}).catch();
-      }
+			var whoami = null;
+            if(localStorage.getItem("token") !== null){
+                instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
+                    if(response.status == "401") {
+					localStorage.removeItem("token")
+					window.location.href = baseUrl + "/login"
+					}
+					if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
+                }).catch();
+            } else{
+                document.querySelector(".listitem.verifynav").style.display = "none"
+            }
       document.querySelector(".verifynav .hover").classList.add("active")
 			instance.post(baseUrl + "/api/bots/unverified",{page:page},{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}})
 			.then(function (response) {

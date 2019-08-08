@@ -1,111 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
+
 	<head>
 		<title>Yet Another Bot List</title>
-		<meta charset="utf-8"/>
+		<meta charset="utf-8" />
 		<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
 		<link rel="stylesheet" type="text/css" href="/style.css">
 	</head>
+
 	<body>
 		<div class="navbar">
 			<div class="listitem home" onclick="home()">
-				<div class="hover">
-				</div>
+				<div class="hover"></div>
 				<p class="navtext text">YABL</p>
 			</div>
 			<div class="rightnav">
 				<div class="listitem search">
 					<input class="searchbox inputbox" placeholder="Search">
 				</div>
-				<div class="listitem login" onclick="login()">
+				<a href="/login" class="listitem login">
 					<div class="hover"></div>
 					<p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
-				</div>
+				</a>
 				<div class="listitem logout" onclick="logout()">
 					<div class="hover"></div>
 					<p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
 				</div>
-				<div class="listitem addbot" onclick="addbot()">
+				<a href="/add" class="listitem addbot">
 					<div class="hover"></div>
 					<p class="navtext text"><i class="fas fa-plus-circle"></i></p>
-				</div>
-				<div class="listitem verifynav" onclick="verify()">
-						<div class="hover"></div>
-						<p class="navtext text"><i class="fas fa-user-check"></i></p>
-					</div>
-				<div class="listitem profile" onclick="profile()">
+				</a>
+				<a href="/verify" class="listitem verifynav">
 					<div class="hover"></div>
-					<p class="navtext text"><i class="fas fa-user-circle"></i></p>
-				</div>
+					<p class="navtext text"><i class="fas fa-user-check"></i></p>
 			</div>
+			<a href="/dashboard" class="listitem profile">
+				<div class="hover"></div>
+				<p class="navtext text"><i class="fas fa-user-circle"></i></p>
+			</a>
 		</div>
 		<div class="pagecontent errorcontent">
-			<p class="text header">
-				500
-            </p>
-            <p class="text subheader">
-                Internal Server Error
-            </p>
-            <br/>
-            <p class="text">
-                The server encountered a fatal error and was unable to complete your request.<br/>
-                Try reloading, If the issue persists, contact us on <a href="https://discord.gg/92CazE">the discord server.</a>
-            </p>
-      </div>
+			<p class="text header">500</p>
+			<p class="text subheader">Internal Server Error</p>
+			<br />
+			<p class="text">
+				The server encountered a fatal error and was unable to complete your request.<br />
+				Try reloading, If the issue persists, contact us on <a href="https://discord.gg/92CazE">the discord server.</a>
+			</p>
 		</div>
 		<div class="footer">
 			<p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
 			<p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
 		</div>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-		<script>
-			var baseUrl = window.location.protocol +"//"+ window.location.hostname
-			if(window.localStorage.getItem("token") != null){
-			  document.querySelector(".listitem.login").style.display = "none"
-			} else{
-			  document.querySelector(".listitem.logout").style.display = "none"
-			  document.querySelector(".listitem.addbot").style.display = "none"
-			  document.querySelector(".listitem.profile").style.display = "none"
+		<script language="javascript">
+			var baseUrl = window.location.protocol + "//" + window.location.hostname;
+			if (window.localStorage.getItem("token") != null) {
+				document.querySelector(".listitem.login").style.display = "none";
+			} else {
+				document.querySelector(".listitem.logout").style.display = "none";
+				document.querySelector(".listitem.addbot").style.display = "none";
+				document.querySelector(".listitem.profile").style.display = "none";
 			}
-            function home(){
-                window.location.href = baseUrl + "/";
-            }
-			function login(){
-			  window.location.href = baseUrl + "/login";
+
+			function home() {
+				window.location.href = baseUrl + "/";
 			}
-			function logout(){
-			  window.localStorage.removeItem("token");
-			  window.location.reload();
+
+			function login() {
+				window.location.href = baseUrl + "/login";
 			}
-			function addbot(){
-			  window.location.href = baseUrl + "/add";
+
+			function logout() {
+				window.localStorage.removeItem("token");
+				window.location.reload();
 			}
-			function profile(){
-			  window.location.href = baseUrl + "/dashboard";
+
+			function addbot() {
+				window.location.href = baseUrl + "/add";
 			}
-			function calcFontSize(username){
-				var factors = [0,2,2,2.2,2.15,2.05,1.95,1.85,1.78,1.68,1.61,1.55,1.51,1.44,1.38,1.33,1.28,1.24,1.2,1.16,1.12,1.08,1]
-				return (35-(Math.max(username.length-11,0)*factors[Math.max(username.length-11,0)]))
+
+			function profile() {
+				window.location.href = baseUrl + "/dashboard";
 			}
+
+			function calcFontSize(username) {
+				var factors = [0, 2, 2, 2.2, 2.15, 2.05, 1.95, 1.85, 1.78, 1.68, 1.61, 1.55, 1.51, 1.44, 1.38, 1.33, 1.28, 1.24, 1.2, 1.16, 1.12, 1.08, 1];
+				return (35 - (Math.max(username.length - 11, 0) * factors[Math.max(username.length - 11, 0)]));
+			}
+
 			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
-			  event.preventDefault();
-			  if (event.keyCode === 13) {
-			    window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
-			  }
+				event.preventDefault();
+				if (event.keyCode === 13) {
+					window.location.href = baseUrl + "/search?query=" + encodeURI(document.querySelector(".searchbox").value);
+				}
 			});
-			var instance = axios.create({validateStatus: a => {return true;}});
+
+			var instance = axios.create({
+				validateStatus: a => {
+					return true;
+				}
+			});
+
 			var whoami = null;
-            if(localStorage.getItem("token") !== null){
-                instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
-                    if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
-                }).catch();
-            } else{
-                document.querySelector(".listitem.verifynav").style.display = "none"
-            }
-            function verify(){
-                    window.location.href = baseUrl + "/verify";
+			if (localStorage.getItem("token") !== null) {
+				instance.get(baseUrl + "/api/whoami", {
+					"headers": {
+						"Content-Type": "application/json",
+						"Authorization": localStorage.getItem("token")
+					}
+				}).then(function(response) {
+					whoami = response.data;
+					if (response.status == "401") {
+						localStorage.removeItem("token");
+						window.location.href = baseUrl + "/login";
+					}
+					if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
+				}).catch();
+			} else {
+				document.querySelector(".listitem.verifynav").style.display = "none";
 			}
+
+			function verify() {
+				window.location.href = baseUrl + "/verify";
+			}
+
 		</script>
 	</body>
+
 </html>

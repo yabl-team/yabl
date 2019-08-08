@@ -1,4 +1,4 @@
-package tk.yabl.main;
+package xyz.yabl.main;
 
 import java.io.File;
 import java.io.IOException;
@@ -100,7 +100,8 @@ public class Main extends NanoHTTPD {
                             .credential(credential)
                             .build());
             db = mongo.getDatabase(database);
-            new Main(port);
+            @SuppressWarnings("unused")
+			Main main = new Main(port);
         } catch (Exception e) {
             logger.error("Error while starting server:", e);
         }

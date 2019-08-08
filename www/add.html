@@ -1,176 +1,206 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Yet Another Bot List</title>
-        <meta charset="utf-8"/>
-        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="/style.css">
-        <script src='https://www.google.com/recaptcha/api.js'></script>
-    </head>
-    <body>
-        <div class="navbar">
-            <div class="listitem home" onclick="home()">
-              <div class="hover"></div>
-              <p class="navtext text">YABL</p>
-            </div>
-            <div class="rightnav">
-                <div class="listitem search">
-                    <input class="searchbox inputbox" placeholder="Search"></div>
-                </div>
-                <div class="listitem login" onclick="login()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
-                </div>
-                <div class="listitem logout" onclick="logout()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
-                </div>
-                <div class="listitem addbot" onclick="addbot()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-plus-circle"></i></p>
-                </div>
-                <div class="listitem verifynav" onclick="verify()">
-                        <div class="hover"></div>
-                        <p class="navtext text"><i class="fas fa-user-check"></i></p>
-                      </div>
-                <div class="listitem profile" onclick="profile()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-user-circle"></i></p>
-                </div>
-            </div>
-        </div>
-        <div class="pagecontent noflex">
-            <div class="wrapper">
-                <div class="inputwrapper">
-                        <input class="inputbox pageinput addinput botid" placeholder="Bot ID*"><br/>
-                        <input class="inputbox pageinput addinput prefix" placeholder="Prefix*"><br/>
-                        <input class="inputbox pageinput addinput help" placeholder="Help Command*"><br/>
-                        <input class="inputbox pageinput addinput desc" placeholder="Description*"><br/>
-                        <input class="inputbox pageinput addinput website" placeholder="Website"><br/>
-                        <input class="inputbox pageinput addinput support" placeholder="Support Server"><br/>
-                        <input class="inputbox pageinput addinput git" placeholder="Git Repository"><br/>
-                        <input class="inputbox pageinput addinput library" placeholder="Library"><br/>
-                        <input class="inputbox pageinput addinput modnote" placeholder="Moderator Note"><br/>
-                        <button class="inputbox pageinput addinput submit g-recaptcha" data-sitekey="6Ld1p4YUAAAAAOtrDKN_YqflQhL0E-bMhM_b9xCC" data-callback="submit">Submit</button>
-                </div>
-                <div class="addsep">
-                    &ZeroWidthSpace;
-                </div>
-                <div class="inputbox pageinput addinput body">
-                    <textarea class="nestedinput" placeholder="Body (markdown and html supported)*"></textarea>
-                </div>
-            </div>
-            <p class="errors"></p>
-        </div>
-        <div class="footer">
-            <p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
-            <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
-        </div>
-        <script src="https://unpkg.com/he@1.2.0/he.js"></script>
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <script>
-            var baseUrl = window.location.protocol +"//"+ window.location.hostname
-            if(window.localStorage.getItem("token") != null){
-              document.querySelector(".listitem.login").style.display = "none"
-            } else{
-              document.querySelector(".listitem.logout").style.display = "none"
-              document.querySelector(".listitem.addbot").style.display = "none"
-              document.querySelector(".listitem.profile").style.display = "none"
-            }
-            document.querySelector(".addbot .hover").classList.add("active")
-            function login(){
-              window.location.href = baseUrl + "/login";
-            }
-            function logout(){
-              window.localStorage.removeItem("token");
-              window.location.href = baseUrl
-            }
-            if(localStorage.getItem("token") == null){
-                window.location.href = baseUrl + "/401"
-            }
-            function addbot(){
-              window.location.href = baseUrl + "/add";
-            }
-            function profile(){
-              window.location.href = baseUrl + "/dashboard";
-            }
-            function home(){
-                window.location.href = baseUrl;
-            }
-            var instance = axios.create({validateStatus: a => {return true;}});
-            var whoami = null;
-            if(localStorage.getItem("token") !== null){
-                instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
-                    if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
-                }).catch();
-            } else{
-                document.querySelector(".listitem.verifynav").style.display = "none"
-            }
-            function submit(gresponse){ 
-                console.log(!gresponse)
-                if(!gresponse) {
-                    alert(`Missing grecaptcha response`)
-                    return "missing grecaptcha response"
-                }
-                if(gresponse.length < 20){
-                    alert(`Invalid grecaptcha response`)
-                    return "invalid grecaptcha response"
-                }
-                if(document.querySelector(".botid").value.length < 17 || document.querySelector(".prefix").value.length < 1 || document.querySelector(".help").value.length < 2 || 
-                    document.querySelector(".desc").value.length < 30 || document.querySelector(".nestedinput").value.length < 100){
-                    if(document.querySelector(".botid").value.length < 17){
-                        alert(`Bot ID is too short. (${document.querySelector(".botid").value.length}/17)`)
-                    }
-                    if(document.querySelector(".prefix").value.length < 1){
-                        alert(`Prefix is too short. (${document.querySelector(".prefix").value.length}/1)`)
-                    }
-                    if(document.querySelector(".help").value.length < 2){
-                        alert(`Help command is too short. (${document.querySelector(".help").value.length}/2)`)
-                    }
-                    if(document.querySelector(".desc").value.length < 30){
-                        alert(`Description is too short. (${document.querySelector(".desc").value.length}/30)`)
-                    }
-                    if(document.querySelector(".nestedinput").value.length < 100){
-                        alert(`Body is too short. (${document.querySelector(".botid").value.length}/100)`)
-                    }
-                } else{
-                    var object = {};
-                    object["id"] = document.querySelector(".botid").value
-                    object["prefix"] = document.querySelector(".prefix").value
-                    object["help"] = document.querySelector(".help").value 
-                    object["desc"] = document.querySelector(".desc").value
-                    object["body"] = he.encode(document.querySelector(".nestedinput").value)
-                    document.querySelector(".website").value.length > 0 ? object["website"] = document.querySelector(".website").value : false;
-                    document.querySelector(".support").value.length > 0 ? object["support"] = document.querySelector(".support").value : false;
-                    document.querySelector(".git").value.length > 0 ? object["git"] = document.querySelector(".git").value : false;
-                    document.querySelector(".library").value.length > 0 ? object["library"] = document.querySelector(".library").value : false;
-                    document.querySelector(".modnote").value.length > 0 ? object["modnote"] = document.querySelector(".modnote").value : false;
-                    object["gresponse"] = gresponse
-                    instance.post(baseUrl + "/api/bot/"+object["id"]+"/add",object,{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}})
-                    .then(function (response) {
-                        if(response.status == 201){
-                            window.location.href = baseUrl + "/dashboard"
-                        } else{
-                            alert(response.status + ": " +JSON.stringify(response.data))
-                        }
-                    })
-                    .catch(function (error) {
-                        alert(response.status + ": " +JSON.stringify(response.data))
-                    });
-                }
-                grecaptcha.reset()
-            }
-            document.querySelector(".searchbox").addEventListener("keyup", function(event) {
-              event.preventDefault();
-              if (event.keyCode === 13) {
-                window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
-              }
-            });
-            function verify(){
-                    window.location.href = baseUrl + "/verify";
+
+	<head>
+		<title>Yet Another Bot List</title>
+		<meta charset="utf-8" />
+		<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="/style.css">
+		<script src='https://www.google.com/recaptcha/api.js'></script>
+	</head>
+
+	<body>
+		<div class="navbar">
+			<div class="listitem home" onclick="home()">
+				<div class="hover"></div>
+				<p class="navtext text">YABL</p>
+			</div>
+			<div class="rightnav">
+				<div class="listitem search">
+					<input class="searchbox inputbox" placeholder="Search"></div>
+				</div>
+				<a href="/login" class="listitem login">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
+				</a>
+				<div class="listitem logout" onclick="logout()">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
+				</div>
+				<a href="/add" class="listitem addbot">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-plus-circle"></i></p>
+				</a>
+				<a href="/verify" class="listitem verifynav">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-user-check"></i></p>
+				</a>
+			</div>
+			<a href="/dashboard" class="listitem profile">
+				<div class="hover"></div>
+				<p class="navtext text"><i class="fas fa-user-circle"></i></p>
+			</a>
+		</div>
+		<div class="pagecontent noflex">
+			<div class="wrapper">
+				<div class="inputwrapper">
+					<input class="inputbox pageinput addinput botid" placeholder="Bot ID*"><br />
+					<input class="inputbox pageinput addinput prefix" placeholder="Prefix*"><br />
+					<input class="inputbox pageinput addinput help" placeholder="Help Command*"><br />
+					<input class="inputbox pageinput addinput desc" placeholder="Description*"><br />
+					<input class="inputbox pageinput addinput website" placeholder="Website"><br />
+					<input class="inputbox pageinput addinput support" placeholder="Support Server"><br />
+					<input class="inputbox pageinput addinput git" placeholder="Git Repository"><br />
+					<input class="inputbox pageinput addinput library" placeholder="Library"><br />
+					<input class="inputbox pageinput addinput modnote" placeholder="Moderator Note"><br />
+					<button class="inputbox pageinput addinput submit g-recaptcha" data-sitekey="6Ld1p4YUAAAAAOtrDKN_YqflQhL0E-bMhM_b9xCC" data-callback="submit">Submit</button>
+				</div>
+				<div class="addsep">&ZeroWidthSpace;</div>
+				<div class="inputbox pageinput addinput body">
+					<textarea class="nestedinput" placeholder="Body (markdown and html supported)*"></textarea>
+				</div>
+			</div>
+			<p class="errors"></p>
+		</div>
+		<div class="footer">
+			<p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
+			<p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
+		</div>
+		<script src="https://unpkg.com/he@1.2.0/he.js"></script>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script language="javascript">
+			var baseUrl = window.location.protocol + "//" + window.location.hostname;
+			if (window.localStorage.getItem("token") != null) {
+				document.querySelector(".listitem.login").style.display = "none";
+			} else {
+				document.querySelector(".listitem.logout").style.display = "none";
+				document.querySelector(".listitem.addbot").style.display = "none";
+				document.querySelector(".listitem.profile").style.display = "none";
 			}
-        </script>
-    </body>
+			document.querySelector(".addbot .hover").classList.add("active");
+
+			function login() {
+				window.location.href = baseUrl + "/login";
+			}
+
+			function logout() {
+				window.localStorage.removeItem("token");
+				window.location.href = baseUrl;
+			}
+
+			if (localStorage.getItem("token") == null) {
+				window.location.href = baseUrl + "/401";
+			}
+
+			function addbot() {
+				window.location.href = baseUrl + "/add";
+			}
+
+			function profile() {
+				window.location.href = baseUrl + "/dashboard";
+			}
+
+			function home() {
+				window.location.href = baseUrl;
+			}
+
+			var instance = axios.create({
+				validateStatus: a => {
+					return true;
+				}
+			});
+
+			var whoami = null;
+			if (localStorage.getItem("token") !== null) {
+				instance.get(baseUrl + "/api/whoami", {
+					"headers": {
+						"Content-Type": "application/json",
+						"Authorization": localStorage.getItem("token")
+					}
+				}).then(function(response) {
+					whoami = response.data;
+					if (response.status == "401") {
+						localStorage.removeItem("token");
+						window.location.href = baseUrl + "/login";
+					}
+					if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
+				}).catch();
+			} else {
+				document.querySelector(".listitem.verifynav").style.display = "none";
+			}
+
+			function submit(gresponse) {
+				console.log(!gresponse);
+				if (!gresponse) {
+					alert("Missing grecaptcha response");
+					return "missing grecaptcha response";
+				}
+
+				if (gresponse.length < 20) {
+					alert("Invalid grecaptcha response");
+					return "invalid grecaptcha response";
+				}
+
+				if (document.querySelector(".botid").value.length < 17 || document.querySelector(".prefix").value.length < 1 || document.querySelector(".help").value.length < 2 || document.querySelector(".desc").value.length < 30 || document.querySelector(".nestedinput").value.length < 100) {
+					if (document.querySelector(".botid").value.length < 17) {
+						alert(`Bot ID is too short. (${document.querySelector(".botid").value.length}/17)`);
+					}
+					if (document.querySelector(".prefix").value.length < 1) {
+						alert(`Prefix is too short. (${document.querySelector(".prefix").value.length}/1)`);
+					}
+					if (document.querySelector(".help").value.length < 2) {
+						alert(`Help command is too short. (${document.querySelector(".help").value.length}/2)`);
+					}
+					if (document.querySelector(".desc").value.length < 30) {
+						alert(`Description is too short. (${document.querySelector(".desc").value.length}/30)`);
+					}
+					if (document.querySelector(".nestedinput").value.length < 100) {
+						alert(`Body is too short. (${document.querySelector(".botid").value.length}/100)`);
+					}
+				} else {
+					var object = {};
+					object["id"] = document.querySelector(".botid").value;
+					object["prefix"] = document.querySelector(".prefix").value;
+					object["help"] = document.querySelector(".help").value;
+					object["desc"] = document.querySelector(".desc").value;
+					object["body"] = he.encode(document.querySelector(".nestedinput").value);
+					document.querySelector(".website").value.length > 0 ? object["website"] = document.querySelector(".website").value : false;
+					document.querySelector(".support").value.length > 0 ? object["support"] = document.querySelector(".support").value : false;
+					document.querySelector(".git").value.length > 0 ? object["git"] = document.querySelector(".git").value : false;
+					document.querySelector(".library").value.length > 0 ? object["library"] = document.querySelector(".library").value : false;
+					document.querySelector(".modnote").value.length > 0 ? object["modnote"] = document.querySelector(".modnote").value : false;
+					object["gresponse"] = gresponse;
+					instance.post(baseUrl + "/api/bot/" + object["id"] + "/add", object, {
+							"headers": {
+								"Content-Type": "application/json",
+								"Authorization": localStorage.getItem("token")
+							}
+						}).then(function(response) {
+							if (response.status == 201) {
+								window.location.href = baseUrl + "/dashboard";
+							} else {
+								alert(response.status + ": " + JSON.stringify(response.data));
+							}
+						}).catch(function(error) {
+							alert(response.status + ": " + JSON.stringify(response.data));
+						});
+				}
+				grecaptcha.reset();
+			}
+			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
+				event.preventDefault();
+				if (event.keyCode === 13) {
+					window.location.href = baseUrl + "/search?query=" + encodeURI(document.querySelector(".searchbox").value);
+				}
+			});
+
+			function verify() {
+				window.location.href = baseUrl + "/verify";
+			}
+
+		</script>
+	</body>
+
 </html>

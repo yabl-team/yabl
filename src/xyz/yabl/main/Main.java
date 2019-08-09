@@ -75,6 +75,7 @@ public class Main extends NanoHTTPD {
 		mimeMap.put("js", "application/javascript");
 		mimeMap.put("png", "image/png");
 	}
+
 	public Main(int port) throws IOException {
 		super(port);
 		start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
@@ -209,7 +210,6 @@ public class Main extends NanoHTTPD {
 												return newFixedLengthResponse(Status.BAD_REQUEST, "application/json", "{\"error\":true,\"message\":\"Invalid grecaptcha response.\"}");
 											}
 											try {
-
 												document.put("id", json.get("id").getAsString());
 												document.put("prefix", json.get("prefix").getAsString());
 												document.put("help", json.get("help").getAsString());
@@ -868,9 +868,11 @@ public class Main extends NanoHTTPD {
 			return newFixedLengthResponse(status, mime, response);
 		}
 	}
+
 	public static<T> T ifnull(T input, T ifnull) {
 		return (input != null ? input : ifnull);
 	}
+
 	public static boolean canParse(String input) {
 		try {
 			Double.parseDouble(input);
@@ -880,6 +882,7 @@ public class Main extends NanoHTTPD {
 			return false;
 		}
 	}
+
 	public static String generate(int size) {
 		String SALTCHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
 		StringBuilder salt = new StringBuilder();
@@ -890,8 +893,8 @@ public class Main extends NanoHTTPD {
 		}
 		String saltStr = salt.toString();
 		return saltStr;
-
 	}
+
 	private static void botUpdate(String id, String[] owners, int type, String by) {
 		try (CloseableHttpClient httpclient = HttpClients.createDefault();) {
 			HttpPost httppost = new HttpPost("https://discordapp.com/api/v6/channels/523526083698491432/messages");
@@ -925,6 +928,7 @@ public class Main extends NanoHTTPD {
 			logger.error("Failed to post bot update to discord", e);
 		}
 	}
+
 	private static void delete(String id) {
 		try (CloseableHttpClient httpclient = HttpClients.createDefault();) {
 			HttpDelete httpdelete = new HttpDelete("https://discordapp.com/api/v6/guilds/523526083698491432/members/" + id);
@@ -936,6 +940,7 @@ public class Main extends NanoHTTPD {
 			logger.error("Failed to post bot delete to discord", e);
 		}
 	}
+
 	private static void verify(String id) {
 		try (CloseableHttpClient httpclient = HttpClients.createDefault();) {
 			HttpPut httpput = new HttpPut("https://discordapp.com/api/v6/guilds/523526083698491432/members/" + id + "/roles/523524003625697290");

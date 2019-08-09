@@ -71,23 +71,13 @@
             function home(){
                 window.location.href = baseUrl + "/";
             }
-			function login(){
-			  window.location.href = baseUrl + "/login";
-			}
+			
 			function logout(){
 			  window.localStorage.removeItem("token");
 			  window.location.reload();
 			}
-			function addbot(){
-			  window.location.href = baseUrl + "/add";
-			}
-			function profile(){
-			  window.location.href = baseUrl + "/dashboard";
-			}
-			function calcFontSize(username){
-				var factors = [0,2,2,2.2,2.15,2.05,1.95,1.85,1.78,1.68,1.61,1.55,1.51,1.44,1.38,1.33,1.28,1.24,1.2,1.16,1.12,1.08,1]
-				return (35-(Math.max(username.length-11,0)*factors[Math.max(username.length-11,0)]))
-			}
+			
+			
 			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
 			  event.preventDefault();
 			  if (event.keyCode === 13) {
@@ -107,9 +97,7 @@
             } else{
                 document.querySelector(".listitem.verifynav").style.display = "none"
             }
-            function verify(){
-                    window.location.href = baseUrl + "/verify";
-			}
+            
 		</script>
 	</body>
 </html>

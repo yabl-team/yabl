@@ -96,19 +96,13 @@
               document.querySelector(".listitem.addbot").style.display = "none"
               document.querySelector(".listitem.profile").style.display = "none"
             }
-            function login(){
-              window.location.href = baseUrl + "/login";
-            }
+            
             function logout(){
               window.localStorage.removeItem("token");
               window.location.reload();
             }
-            function addbot(){
-              window.location.href = baseUrl + "/add";
-            }
-            function profile(){
-              window.location.href = baseUrl + "/dashboard";
-            }
+            
+            
             function home(){
                 window.location.href = baseUrl;
             }
@@ -130,9 +124,6 @@
               }).catch();
             } else{
               document.querySelector(".listitem.verifynav").style.display = "none"
-            }
-            function verifypage(){
-              window.location.href = baseUrl + "/verify";
             }
             instance.get(baseUrl + "/api/bot/" + window.location.href.split("bot/")[1])
             .then(function (response) {

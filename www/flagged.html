@@ -55,19 +55,13 @@
               document.querySelector(".listitem.addbot").style.display = "none"
               document.querySelector(".listitem.profile").style.display = "none"
             }
-            function login(){
-              window.location.href = baseUrl + "/login";
-            }
+            
             function logout(){
               window.localStorage.removeItem("token");
               window.location.reload();
             }
-            function addbot(){
-              window.location.href = baseUrl + "/add";
-            }
-            function profile(){
-              window.location.href = baseUrl + "/dashboard";
-            }
+            
+            
             function home(){
                 window.location.href = baseUrl;
             }

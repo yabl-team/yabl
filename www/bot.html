@@ -87,7 +87,7 @@
 			}
 
 			function report() {
-				alert("Not yet implemented")
+				alert("Not yet implemented");
 			}
 
 			var baseUrl = window.location.protocol + "//" + window.location.hostname;
@@ -99,21 +99,9 @@
 				document.querySelector(".listitem.profile").style.display = "none";
 			}
 
-			function login() {
-				window.location.href = baseUrl + "/login";
-			}
-
 			function logout() {
 				window.localStorage.removeItem("token");
 				window.location.reload();
-			}
-
-			function addbot() {
-				window.location.href = baseUrl + "/add";
-			}
-
-			function profile() {
-				window.location.href = baseUrl + "/dashboard";
 			}
 
 			function home() {
@@ -132,6 +120,7 @@
 					return true;
 				}
 			});
+
 			var whoami = null;
 			if (localStorage.getItem("token") !== null) {
 				instance.get(baseUrl + "/api/whoami", {
@@ -149,10 +138,6 @@
 				}).catch();
 			} else {
 				document.querySelector(".listitem.verifynav").style.display = "none";
-			}
-
-			function verifypage() {
-				window.location.href = baseUrl + "/verify";
 			}
 
 			instance.get(baseUrl + "/api/bot/" + window.location.href.split("bot/")[1]).then(function(response) {

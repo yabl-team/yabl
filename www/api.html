@@ -1,305 +1,471 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Yet Another Bot List</title>
-        <meta charset="utf-8"/>
-        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="/style.css">
-    </head>
-    <body>
-        <div class="navbar">
-            <div class="listitem home" onclick="home()">
-              <div class="hover"></div>
-              <p class="navtext text">YABL</p>
-            </div>
-            <div class="rightnav">
-                <div class="listitem search">
-                    <input class="searchbox inputbox" placeholder="Search" onenter="search"></div>
-                </div>
-                <a href="/login" class="listitem login">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
-                </a>
-                <div class="listitem logout" onclick="logout()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
-                </div>
-                <a href="/add" class="listitem addbot">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-plus-circle"></i></p>
-                </a>
-                <a href="/verify" class="listitem verifynav">
-                    <div class="hover"></div>
-                    <p class="navtext text"><i class="fas fa-user-check"></i></p>
-                  </div>
-                <a href="/dashboard" class="listitem profile">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-user-circle"></i></p>
-                </a>
-            </div>
-        </div>
-        <div class="pagecontent apicontent">
-          <p class="header text apiheader" >API Documentation</p><br/>
-          <input class="inputbox" id="apikey" placeholder="API token" readonly></input>
-          <button class="inputbox searchbutton" id="revealkey" onclick="reveal()">Reveal</button>
-          <p class="text apiheader"><br/>
-              The base URL for all REST requests is https://yabl.xyz/api<br/>
-              <br/>
-<div class="text">
-    <a name="apiwhoami" class="text subheader">/api/whoami&nbsp;</a><br/>
-    Method: GET<br/>
-    Authorization: User Token<br/>
-    Returns information about a user token.&nbsp;<br/>
-    <pre>> GET /api/whoami
-&lt; 200
-&lt; {admin: true
-&lt;  avatar: "e4cafdbf4cae648e2883560a426838f7"
-&lt;  discriminator: "4738"
-&lt;  flags: 768
-&lt;  id: "153353572711530496"
-&lt;  locale: "en-US"
-&lt;  mfa_enabled: true
-&lt;  premium_type: 1
-&lt;  username: "! craftxbox"}
-    </pre><br/>
-    <a name="apiinvalidate" class="text subheader">/api/token/invalidate&nbsp;</a><br/>
-    Method: POST<br/>
-    Authorization: API Token<br/>
-    Invalidates an API token.&nbsp;<br/>
-    <pre>> POST /api/token/invalidate
-&lt; 200
-&lt; Token invalidated belonging to 153353572711530496
-    </pre><br/>
-    <a name="apigenerate" class="text subheader">/api/token/generate&nbsp;</a><br/>
-    Method: POST<br/>
-    Authorization: User Token<br/>
-    Generates or returns an API token.&nbsp;<br/>
-    <pre>> POST /api/token/generate
-&lt; 200
-&lt; F6Uh8DqwjiK32ajFGK2AzucTJFn6fKqIscCoGoYYlXcDd4FpGf8JHOqTQkhQAD4m
-    </pre><br/>
-    <a name="apibot" class="text subheader">/api/bot/&nbsp;</a><br/>
-    Method: GET<br/>
-    Authorization: None<br/>
-    Returns a bot object.&nbsp;<br/>
-    <pre>> GET /api/bot/321493510241124363
-&lt; 200
-&lt; {"id" : "321493510241124363",
-&lt;    "prefix" : "c;",
-&lt;    "help" : "c;help",
-&lt;    "desc" : "Craftxbot is a...",
-&lt;    "body" : "# Craftxbot  ... ",
-&lt;    "website" : "https://craftxbot.discord.bot",
-&lt;    "support" : "https://discord.gg/jcYq5ch",
-&lt;    "git" : null,
-&lt;    "library" : "Discord4J",
-&lt;    "modnote" : null,
-&lt;    "verified" : true,
-&lt;    "owners" : {
-&lt;        "153353572711530496" : "! craftxbox#4738"
-&lt;    },
-&lt;    "username" : "craftxbot",
-&lt;    "avatar" : "6f12e0c5f5270a9dcf3104ba7fc651cc",
-&lt;    "guildCount" : 418}
-    </pre><br/>
-    <a name="apiadd" class="text subheader">/api/bot/:id/add&nbsp;</a><br/>
-    Method: POST<br/>
-    Authorization: User token<br/>
-    Submits a new bot.&nbsp;<br/>
-    <pre>> POST /api/bot/0/add
-&gt; {"id" : "321493510241124363",
-&gt;    "prefix" : "c;",
-&gt;    "help" : "c;help",
-&gt;    "desc" : "Craftxbot is a...",
-&gt;    "body" : "# Craftxbot  ... ",
-&gt;    "website" : "https://craftxbot.discord.bot",
-&gt;    "support" : "https://discord.gg/jcYq5ch",
-&gt;    "git" : null,
-&gt;    "library" : "Discord4J",
-&gt;    "modnote" : null}
-&lt; 201
-&lt; &lt;the previous document&gt;
-    </pre><br/>
-    <a name="apiedit" class="text subheader">/api/bot/:id/edit&nbsp;</a><br/>
-    Method: POST<br/>
-    Authorization: User token<br/>
-    Edits an existing bot.&nbsp;<br/>
-    <pre>> POST /api/bot/321493510241124363/dedit
-&gt; {"id" : "321493510241124363",
-&gt;    "prefix" : "c;",
-&gt;    "help" : "c;help",
-&gt;    "desc" : "Craftxbot is a...",
-&gt;    "body" : "# Craftxbot  ... ",
-&gt;    "website" : "https://craftxbot.discord.bot",
-&gt;    "support" : "https://discord.gg/jcYq5ch",
-&gt;    "git" : null,
-&gt;    "library" : "Discord4J",
-&gt;    "modnote" : null}
-&lt; 200
-&lt; &lt;the previous document&gt;
-    </pre><br/>
-    <a name="apistats" class="text subheader">/api/bot/:id/stats&nbsp;</a><br/>
-    Method: POST<br/>
-    Authorization: API token<br/>
-    Changes bot guild statistics.&nbsp;<br/>
-    <pre>> POST /api/bot/321493510241124363/stats
-&gt; {"guildCount":418}
-&lt; 200
-&lt; &lt;bot object&gt;
-    </pre><br/>
-    <a name="apidelete" class="text subheader">/api/bot/:id/delete&nbsp;</a><br/>
-    Method: POST<br/>
-    Authorization: User token<br/>
-    Deletes a bot.&nbsp;<br/>
-    <pre>> POST /api/bot/321493510241124363/delete
-&lt; 200
-&lt; Bot deleted.
-    </pre><br/>
-    <a name="apiverify" class="text subheader">/api/bot/:id/verify&nbsp;</a><br/>
-    Method: POST<br/>
-    Authorization: Administrator user token<br/>
-    Verifies a bot.&nbsp;<br/>
-    <pre>> POST /api/bot/321493510241124363/verify
-&lt; 200
-&lt; Bot verified.
-    </pre><br/>
-    <a name="apibots" class="text subheader">/api/bots&nbsp;</a><br/>
-    Method: GET<br/>
-    Authorization: None<br/>
-    Returns 20 random bots.&nbsp;<br/>
-    <pre>> GET /api/bots
-&lt; 200
-&lt; &lt;an array of bot objects&gt;
-    </pre><br/>
-    <a name="apiuserme" class="text subheader">/api/bots/user/@me&nbsp;</a><br/>
-    Method: GET<br/>
-    Authorization: User token<br/>
-    Returns all of your bots, aswell as information about you.&nbsp;<br/>
-    <pre>> GET /api/bots/user/@me
-&lt; 200
-&lt; {"id":"153353572711530496",
-&lt; "userscrim":"! craftxbox#4738",
-&lt; "avatar":"e4cafdbf4cae648e2883560a426838f7",
-&lt; "bots":[&lt;bot object&gt;]}
-    </pre><br/>
-    <a name="apiuser" class="text subheader">/api/bots/user/&nbsp;</a><br/>
-    Method: GET<br/>
-    Authorization: None<br/>
-    Returns all of a users bots, aswell as information about them.&nbsp;<br/>
-    <pre>> GET /api/bots/user/153353572711530496
-&lt; 200
-&lt; {"id":"153353572711530496",
-&lt; "userscrim":"! craftxbox#4738",
-&lt; "avatar":"e4cafdbf4cae648e2883560a426838f7",
-&lt; "bots":[&lt;bot object&gt;]}
-    </pre><br/>
-    <a name="apiall" class="text subheader">/api/bots/all&nbsp;</a><br/>
-    Method: GET<br/>
-    Authorization: Any token<br/>
-    Returns an array of every bot on the list.&nbsp;<br/>
-    <pre>> GET /api/bots/all
-&lt; 200
-&lt; [&lt;bot object&gt;]
-    </pre><br/>
-    <a name="apipage" class="text subheader">/api/bots/page&nbsp;</a><br/>
-    Method: GET<br/>
-    Authorization: None<br/>
-    Searches for bots matching a query, Paginated to 20 bots per page.&nbsp;<br/>
-    <pre>> GET /api/bots/page
-> {"search":"craftxbot","page":0}
-&lt; 200
-&lt; {"results":1,
-&lt; "pages":0,
-&lt; "bots":[&lt;bot object&gt;]}
-    </pre><br/>
-    <a name="apiunverified" class="text subheader">/api/bots/unverified&nbsp;</a><br/>
-    Method: GET<br/>
-    Authorization: Any token<br/>
-    Returns unverified bots, paginated to 20 bots per page&nbsp;<br/>
-    <pre>> GET /api/bots/unverified
-> {"page":0}
-&lt; 200
-&lt; {"results":1,
-&lt; "pages":0,
-&lt; "bots":[&lt;bot object&gt;]}
-    </pre><br/>
-</div>
-            </p>
-            <p class="apiindex">
-              <a href="#apiwhoami">/api/whoami</a><br/>
-              <a href="#apiinvalidate">/api/token/invalidate</a><br/>
-              <a href="#apigenerate">/api/token/generate</a><br/>
-              <a href="#apibot">/api/bot/</a><br/>
-              <a href="#apiadd">/api/bot/add</a><br/>
-              <a href="#apiedit">/api/bot/edit</a><br/>
-              <a href="#apistats">/api/bot/stats</a><br/>
-              <a href="#apidelete">/api/bot/delete</a><br/>
-              <a href="#apiverify">/api/bot/verify</a><br/>
-              <a href="#apibots">/api/bots/</a><br/>
-              <a href="#apiuserme">/api/bots/user/@me</a><br/>
-              <a href="#apiuser">/api/bots/user/</a><br/>
-              <a href="#apiall">/api/bots/all</a><br/>
-              <a href="#apipage">/api/bots/page</a><br/>
-              <a href="#apiunverified">/api/bots/unverified</a><br/>
-            </p>
-        </div>
-        
-        <div class="footer">
-            <p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
-            <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
-        </div>
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <script>
-            var baseUrl = window.location.protocol +"//"+ window.location.hostname
-            if(window.localStorage.getItem("token") != null){
-              document.querySelector(".listitem.login").style.display = "none"
-            } else{
-              document.querySelector(".listitem.logout").style.display = "none"
-              document.querySelector(".listitem.addbot").style.display = "none"
-              document.querySelector(".listitem.profile").style.display = "none"
-            }
-            
-            function logout(){
-              window.localStorage.removeItem("token");
-              window.location.reload();
-            }
-            
-            
-            function home(){
-                window.location.href = baseUrl;
-            }
-            var instance = axios.create({validateStatus: a => {return true;}});
-            var whoami = null;
-            if(localStorage.getItem("token") !== null){
-              instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
-                if(response.status == "401") {
-                  localStorage.removeItem("token")
-                  window.location.href = baseUrl + "/login"
-                }
-                if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
-              }).catch();
-            } else{
-              apikey.style.display = "none"
-              revealkey.style.display = "none"
-              document.querySelector(".listitem.verifynav").style.display = "none"
-            }
-            
-            document.querySelector(".searchbox").addEventListener("keyup", function(event) {
-              event.preventDefault();
-              if (event.keyCode === 13) {
-                window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
-              }
-            });
-            function reveal(){
-              instance.get(baseUrl+"/api/token/generate",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){
-                var token = response.data
-                apikey.value = token
-                revealkey.disabled = true
-                revealkey.textContent = "Revealed"
-              }).catch();
-            }
-        </script>
-    </body>
+
+	<head>
+		<title>Yet Another Bot List</title>
+		<meta charset="utf-8" />
+		<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="/style.css">
+		<style>
+			pre {
+				white-space: pre-line;
+			}
+
+			.code-block {
+				display: block;
+				overflow-x: auto;
+				padding: .5em;
+				background: #474949;
+				color: #d1d9e1;
+			}
+
+			.syntax-comment,
+			.syntax-quote {
+				color: #969896;
+				font-style: italic;
+			}
+
+			.syntax-keyword,
+			.syntax-selector-tag,
+			.syntax-literal,
+			.syntax-type,
+			.syntax-addition {
+				color: #cc99cc;
+			}
+
+			.syntax-number,
+			.syntax-selector-attr,
+			.syntax-selector-pseudo {
+				color: #f99157;
+			}
+
+			.syntax-string,
+			.syntax-doctag,
+			.syntax-regexp {
+				color: #8abeb7;
+			}
+
+			.syntax-title,
+			.syntax-name,
+			.syntax-section,
+			.syntax-built_in {
+				color: #b5bd68;
+			}
+
+			.syntax-variable,
+			.syntax-template-variable,
+			.syntax-selector-id,
+			.syntax-class .syntax-title {
+				color: #ffcc66;
+			}
+
+			.syntax-section,
+			.syntax-name,
+			.syntax-strong {
+				font-weight: bold;
+			}
+
+			.syntax-symbol,
+			.syntax-bullet,
+			.syntax-subst,
+			.syntax-meta,
+			.syntax-link {
+				color: #f99157;
+			}
+
+			.syntax-deletion {
+				color: #dc322f;
+			}
+
+			.syntax-formula {
+				background: #eee8d5;
+			}
+
+			.syntax-attr,
+			.syntax-attribute {
+				color: #81a2be;
+			}
+
+			.syntax-emphasis {
+				font-style: italic;
+			}
+
+		</style>
+	</head>
+
+	<body>
+		<div class="navbar">
+			<div class="listitem home" onclick="home()">
+				<div class="hover"></div>
+				<p class="navtext text">YABL</p>
+			</div>
+			<div class="rightnav">
+				<div class="listitem search">
+					<input class="searchbox inputbox" placeholder="Search" onenter="search"></div>
+			</div>
+			<a href="/login" class="listitem login">
+				<div class="hover"></div>
+				<p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
+			</a>
+			<div class="listitem logout" onclick="logout()">
+				<div class="hover"></div>
+				<p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
+			</div>
+			<a href="/add" class="listitem addbot">
+				<div class="hover"></div>
+				<p class="navtext text"><i class="fas fa-plus-circle"></i></p>
+			</a>
+			<a href="/verify" class="listitem verifynav">
+				<div class="hover"></div>
+				<p class="navtext text"><i class="fas fa-user-check"></i></p>
+			</a>
+		</div>
+		<a href="/dashboard" class="listitem profile">
+			<div class="hover"></div>
+			<p class="navtext text"><i class="fas fa-user-circle"></i></p>
+		</a>
+		</div>
+		<div class="pagecontent apicontent">
+			<p class="header text apiheader">API Documentation</p><br />
+			<input class="inputbox" id="apikey" placeholder="API token" readonly></input>
+			<button class="inputbox searchbutton" id="revealkey" onclick="reveal()">Reveal</button>
+			<p class="text apiheader"><br />
+				The base URL for all REST requests is https://yabl.xyz/api<br />
+				<br />
+				<div class="text">
+					<a name="apiwhoami" class="text subheader">/api/whoami&nbsp;</a><br />
+					Method: GET<br />
+					Authorization: User Token<br />
+					Returns information about a user token.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">GET</span> /api/whoami
+							&lt; <span class="syntax-number">200</span>
+							&lt; &#123;<span class="syntax-attr">"admin"</span>: <span class="syntax-literal">true</span>,
+							&lt; &nbsp;<span class="syntax-attr">"avatar"</span>: <span class="syntax-string">"e4cafdbf4cae648e2883560a426838f7"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"discriminator"</span>: <span class="syntax-string">"4738"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"flags"</span>: <span class="syntax-number">768</span>,
+							&lt; &nbsp;<span class="syntax-attr">"id"</span>: <span class="syntax-string">"153353572711530496"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"locale"</span>: <span class="syntax-string">"en-US"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"mfa_enabled"</span>: <span class="syntax-literal">true</span>,
+							&lt; &nbsp;<span class="syntax-attr">"premium_type"</span>: <span class="syntax-number">1</span>,
+							&lt; &nbsp;<span class="syntax-attr">"username"</span>: <span class="syntax-string">"! craftxbox"</span>&#125;
+						</code>
+					</pre>
+					<br />
+					<a name="apiinvalidate" class="text subheader">/api/token/invalidate&nbsp;</a><br />
+					Method: POST<br />
+					Authorization: API Token<br />
+					Invalidates an API token.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">POST</span> /api/token/invalidate
+							&lt; <span class="syntax-number">200</span>
+							&lt; Token invalidated belonging to 153353572711530496
+						</code>
+					</pre>
+					<br />
+					<a name="apigenerate" class="text subheader">/api/token/generate&nbsp;</a><br />
+					Method: POST<br />
+					Authorization: User Token<br />
+					Generates or returns an API token.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">POST</span> /api/token/generate
+							&lt; <span class="syntax-number">200</span>
+							&lt; F6Uh8DqwjiK32ajFGK2AzucTJFn6fKqIscCoGoYYlXcDd4FpGf8JHOqTQkhQAD4m
+						</code>
+					</pre>
+					<br />
+					<a name="apibot" class="text subheader">/api/bot/&nbsp;</a><br />
+					Method: GET<br />
+					Authorization: None<br />
+					Returns a bot object.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">GET</span> /api/bot/321493510241124363
+							&lt; <span class="syntax-number">200</span>
+							&lt; &#123;<span class="syntax-attr">"id"</span>: <span class="syntax-string">"321493510241124363"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"prefix"</span>: <span class="syntax-string">"c;"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"help"</span>: <span class="syntax-string">"c;help"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"desc"</span>: <span class="syntax-string">"Craftxbot is a..."</span>,
+							&lt; &nbsp;<span class="syntax-attr">"body"</span>: <span class="syntax-string">"# Craftxbot  ... "</span>,
+							&lt; &nbsp;<span class="syntax-attr">"website"</span>: <span class="syntax-string">"https://craftxbot.discord.bot"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"support"</span>: <span class="syntax-string">"https://discord.gg/jcYq5ch"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"git"</span>: <span class="syntax-literal">null</span>,
+							&lt; &nbsp;<span class="syntax-attr">"library"</span>: <span class="syntax-string">"Discord4J"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"modnote"</span>: <span class="syntax-literal">null</span>,
+							&lt; &nbsp;<span class="syntax-attr">"verified"</span>: <span class="syntax-literal">true</span>,
+							&lt; &nbsp;<span class="syntax-attr">"owners"</span>: &#123;
+							&lt; &nbsp;&nbsp;&nbsp;&nbsp;<span class="syntax-attr">"153353572711530496"</span>: <span class="syntax-string">"! craftxbox#4738"</span>
+							&lt; &nbsp;&#125;,
+							&lt; &nbsp;<span class="syntax-attr">"username"</span>: <span class="syntax-string">"craftxbot"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"avatar"</span>: <span class="syntax-string">"6f12e0c5f5270a9dcf3104ba7fc651cc"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"guildCount"</span>: <span class="syntax-number">418</span>&#125;
+						</code>
+					</pre>
+					<br />
+					<a name="apiadd" class="text subheader">/api/bot/:id/add&nbsp;</a><br />
+					Method: POST<br />
+					Authorization: User token<br />
+					Submits a new bot.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">POST</span> /api/bot/0/add
+							&gt; &#123;<span class="syntax-attr">"id"</span>: <span class="syntax-string">"321493510241124363"</span>,
+							&gt; &nbsp;<span class="syntax-attr">"prefix"</span>: <span class="syntax-string">"c;"</span>,
+							&gt; &nbsp;<span class="syntax-attr">"help"</span>: <span class="syntax-string">"c;help"</span>,
+							&gt; &nbsp;<span class="syntax-attr">"desc"</span>: <span class="syntax-string">"Craftxbot is a..."</span>,
+							&gt; &nbsp;<span class="syntax-attr">"body"</span>: <span class="syntax-string">"# Craftxbot  ... "</span>,
+							&gt; &nbsp;<span class="syntax-attr">"website"</span>: <span class="syntax-string">"https://craftxbot.discord.bot"</span>,
+							&gt; &nbsp;<span class="syntax-attr">"support"</span>: <span class="syntax-string">"https://discord.gg/jcYq5ch"</span>,
+							&gt; &nbsp;<span class="syntax-attr">"git"</span>: <span class="syntax-literal">null</span>,
+							&gt; &nbsp;<span class="syntax-attr">"library"</span>: <span class="syntax-string">"Discord4J"</span>,
+							&gt; &nbsp;<span class="syntax-attr">"modnote"</span>: <span class="syntax-literal">null</span>&#125;
+							&lt; <span class="syntax-number">201</span>
+							&lt; &lt;the previous document&gt;
+						</code>
+					</pre>
+					<br />
+					<a name="apiedit" class="text subheader">/api/bot/:id/edit&nbsp;</a><br />
+					Method: POST<br />
+					Authorization: User token<br />
+					Edits an existing bot.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">POST</span> /api/bot/321493510241124363/edit
+							&gt; &#123;<span class="syntax-attr">"id"</span>: <span class="syntax-string">"321493510241124363"</span>,
+							&gt; &nbsp;<span class="syntax-attr">"prefix"</span>: <span class="syntax-string">"c;"</span>,
+							&gt; &nbsp;<span class="syntax-attr">"help"</span>: <span class="syntax-string">"c;help"</span>,
+							&gt; &nbsp;<span class="syntax-attr">"desc"</span>: <span class="syntax-string">"Craftxbot is a..."</span>,
+							&gt; &nbsp;<span class="syntax-attr">"body"</span>: <span class="syntax-string">"# Craftxbot  ... "</span>,
+							&gt; &nbsp;<span class="syntax-attr">"website"</span>: <span class="syntax-string">"https://craftxbot.discord.bot"</span>,
+							&gt; &nbsp;<span class="syntax-attr">"support"</span>: <span class="syntax-string">"https://discord.gg/jcYq5ch"</span>,
+							&gt; &nbsp;<span class="syntax-attr">"git"</span>: <span class="syntax-literal">null</span>,
+							&gt; &nbsp;<span class="syntax-attr">"library"</span>: <span class="syntax-string">"Discord4J"</span>,
+							&gt; &nbsp;<span class="syntax-attr">"modnote"</span>: <span class="syntax-literal">null</span>&#125;
+							&lt; <span class="syntax-number">200</span>
+							&lt; &lt;the previous document&gt;
+						</code>
+					</pre>
+					<br />
+					<a name="apistats" class="text subheader">/api/bot/:id/stats&nbsp;</a><br />
+					Method: POST<br />
+					Authorization: API token<br />
+					Changes bot guild statistics.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">POST</span> /api/bot/321493510241124363/stats
+							&gt; &#123;<span class="syntax-attr">"guildCount"</span>: <span class="syntax-number">418</span>&#125;
+							&lt; <span class="syntax-number">200</span>
+							&lt; &lt;bot object&gt;
+						</code>
+					</pre>
+					<br />
+					<a name="apidelete" class="text subheader">/api/bot/:id/delete&nbsp;</a><br />
+					Method: POST<br />
+					Authorization: User token<br />
+					Deletes a bot.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">POST</span> /api/bot/321493510241124363/delete
+							&lt; <span class="syntax-number">200</span>
+							&lt; Bot deleted.
+						</code>
+					</pre>
+					<br />
+					<a name="apiverify" class="text subheader">/api/bot/:id/verify&nbsp;</a><br />
+					Method: POST<br />
+					Authorization: Administrator user token<br />
+					Verifies a bot.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">POST</span> /api/bot/321493510241124363/verify
+							&lt; <span class="syntax-number">200</span>
+							&lt; Bot verified.
+						</code>
+					</pre>
+					<br />
+					<a name="apibots" class="text subheader">/api/bots&nbsp;</a><br />
+					Method: GET<br />
+					Authorization: None<br />
+					Returns 20 random bots.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">GET</span> /api/bots
+							&lt; <span class="syntax-number">200</span>
+							&lt; &lt;an array of bot objects&gt;
+						</code>
+					</pre>
+					<br />
+					<a name="apiuserme" class="text subheader">/api/bots/user/@me&nbsp;</a><br />
+					Method: GET<br />
+					Authorization: User token<br />
+					Returns all of your bots, aswell as information about you.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">GET</span> /api/bots/user/@me
+							&lt; <span class="syntax-number">200</span>
+							&lt; &#123;<span class="syntax-attr">"id"</span>: <span class="syntax-string">"153353572711530496"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"userscrim"</span>: <span class="syntax-string">"! craftxbox#4738"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"avatar"</span>: <span class="syntax-string">"e4cafdbf4cae648e2883560a426838f7"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"bots"</span>: [&lt;bot object&gt;]&#125;
+						</code>
+					</pre>
+					<br />
+					<a name="apiuser" class="text subheader">/api/bots/user/&nbsp;</a><br />
+					Method: GET<br />
+					Authorization: None<br />
+					Returns all of a users bots, aswell as information about them.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">GET</span> /api/bots/user/153353572711530496
+							&lt; <span class="syntax-number">200</span>
+							&lt; &#123;<span class="syntax-attr">"id"</span>: <span class="syntax-string">"153353572711530496"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"userscrim"</span>: <span class="syntax-string">"! craftxbox#4738"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"avatar"</span>: <span class="syntax-string">"e4cafdbf4cae648e2883560a426838f7"</span>,
+							&lt; &nbsp;<span class="syntax-attr">"bots"</span>: [&lt;bot object&gt;]&#125;
+						</code>
+					</pre>
+					<br />
+					<a name="apiall" class="text subheader">/api/bots/all&nbsp;</a><br />
+					Method: GET<br />
+					Authorization: Any token<br />
+					Returns an array of every bot on the list.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">GET</span> /api/bots/all
+							&lt; <span class="syntax-number">200</span>
+							&lt; [&lt;bot object&gt;]
+						</code>
+					</pre>
+					<br />
+					<a name="apipage" class="text subheader">/api/bots/page&nbsp;</a><br />
+					Method: GET<br />
+					Authorization: None<br />
+					Searches for bots matching a query, Paginated to 20 bots per page.&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">GET</span> /api/bots/page
+							&gt; &#123;<span class="syntax-attr">"search"</span>: <span class="syntax-string">"craftxbot"</span>, <span class="syntax-attr">"page"</span>: <span class="syntax-number">0</span>&#125;
+							&lt; <span class="syntax-number">200</span>
+							&lt; &#123;<span class="syntax-attr">"results"</span>: <span class="syntax-number">1</span>,
+							&lt; &nbsp;<span class="syntax-attr">"pages"</span>: <span class="syntax-number">0</span>,
+							&lt; &nbsp;<span class="syntax-attr">"bots"</span>: [&lt;bot object&gt;]&#125;
+						</code>
+					</pre>
+					<br />
+					<a name="apiunverified" class="text subheader">/api/bots/unverified&nbsp;</a><br />
+					Method: GET<br />
+					Authorization: Any token<br />
+					Returns unverified bots, paginated to 20 bots per page&nbsp;<br />
+					<pre>
+						<code class="code-block">
+							&gt; <span class="syntax-attribute">GET</span> /api/bots/unverified
+							&gt; &#123;<span class="syntax-attr">"page"</span>: <span class="syntax-number">0</span>&#125;
+							&lt; <span class="syntax-number">200</span>
+							&lt; &#123;<span class="syntax-attr">"results"</span>: <span class="syntax-number">1</span>,
+							&lt; &nbsp;<span class="syntax-attr">"pages"</span>: <span class="syntax-number">0</span>,
+							&lt; &nbsp;<span class="syntax-attr">"bots"</span>: [&lt;bot object&gt;]&#125;
+						</code>
+					</pre>
+					<br />
+				</div>
+			</p>
+			<p class="apiindex">
+				<a href="#apiwhoami">/api/whoami</a><br />
+				<a href="#apiinvalidate">/api/token/invalidate</a><br />
+				<a href="#apigenerate">/api/token/generate</a><br />
+				<a href="#apibot">/api/bot/</a><br />
+				<a href="#apiadd">/api/bot/add</a><br />
+				<a href="#apiedit">/api/bot/edit</a><br />
+				<a href="#apistats">/api/bot/stats</a><br />
+				<a href="#apidelete">/api/bot/delete</a><br />
+				<a href="#apiverify">/api/bot/verify</a><br />
+				<a href="#apibots">/api/bots/</a><br />
+				<a href="#apiuserme">/api/bots/user/@me</a><br />
+				<a href="#apiuser">/api/bots/user/</a><br />
+				<a href="#apiall">/api/bots/all</a><br />
+				<a href="#apipage">/api/bots/page</a><br />
+				<a href="#apiunverified">/api/bots/unverified</a><br />
+			</p>
+		</div>
+
+		<div class="footer">
+			<p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
+			<p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
+		</div>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script language="javascript">
+			var baseUrl = window.location.protocol + "//" + window.location.hostname;
+			if (window.localStorage.getItem("token") != null) {
+				document.querySelector(".listitem.login").style.display = "none";
+			} else {
+				document.querySelector(".listitem.logout").style.display = "none";
+				document.querySelector(".listitem.addbot").style.display = "none";
+				document.querySelector(".listitem.profile").style.display = "none";
+			}
+
+			function logout() {
+				window.localStorage.removeItem("token");
+				window.location.reload();
+			}
+
+			function home() {
+				window.location.href = baseUrl;
+			}
+
+			var instance = axios.create({
+				validateStatus: a => {
+					return true;
+				}
+			});
+
+			var whoami = null;
+			if (localStorage.getItem("token") !== null) {
+				instance.get(baseUrl + "/api/whoami", {
+					"headers": {
+						"Content-Type": "application/json",
+						"Authorization": localStorage.getItem("token")
+					}
+				}).then(function(response) {
+					whoami = response.data;
+					if (response.status == "401") {
+						localStorage.removeItem("token");
+						window.location.href = baseUrl + "/login";
+					}
+					if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
+				}).catch();
+			} else {
+				apikey.style.display = "none";
+				revealkey.style.display = "none";
+				document.querySelector(".listitem.verifynav").style.display = "none";
+			}
+
+			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
+				event.preventDefault();
+				if (event.keyCode === 13) {
+					window.location.href = baseUrl + "/search?query=" + encodeURI(document.querySelector(".searchbox").value);
+				}
+			});
+
+			function reveal() {
+				instance.get(baseUrl + "/api/token/generate", {
+					"headers": {
+						"Content-Type": "application/json",
+						"Authorization": localStorage.getItem("token")
+					}
+				}).then(function(response) {
+					var token = response.data;
+					apikey.value = token;
+					revealkey.disabled = true;
+					revealkey.textContent = "Revealed";
+				}).catch();
+			}
+
+		</script>
+	</body>
+
 </html>

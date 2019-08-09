@@ -1,185 +1,205 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Yet Another Bot List</title>
-        <meta charset="utf-8"/>
-        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="/style.css">
-    </head>
-    <body>
-        <div class="botcard" id="templateBotCard" style="display:none;">
-            <div class="cardbotstatus"></div>
-            <img class="cardimg" src=""/>
-            <div class="cardbotinfo">
-              <p class="cardheader subheader text">template</p>
-              <p class="cardauthor metaheader text">template#0000</p>
-              <p class="cardstats metaheader text">template Servers</p>
-            </div>
-            <p class="carddesc text">
-              template
-            </p>
-            <div class="cardbuttons">
-              <button id="editbutton" class="inputbox cardbutton">Edit</button>
-            </div>
-          </div>
-        <div class="navbar">
-            <div class="listitem home" onclick="home()">
-              <div class="hover"></div>
-              <p class="navtext text">YABL</p>
-            </div>
-            <div class="rightnav">
-                <div class="listitem search">
-                    <input class="searchbox inputbox" placeholder="Search" onenter="search"></div>
-                </div>
-                <a href="/login" class="listitem login">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
-                </a>
-                <div class="listitem logout" onclick="logout()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
-                </div>
-                <a href="/add" class="listitem addbot">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-plus-circle"></i></p>
-                </a>
-                <a href="/verify" class="listitem verifynav">
-                    <div class="hover"></div>
-                    <p class="navtext text"><i class="fas fa-user-check"></i></p>
-                  </div>
-                <a href="/dashboard" class="listitem profile">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-user-circle"></i></p>
-                </a>
-            </div>
-        </div>
-        <div class="pagecontent noflex">
-          <div class="botheader">
-            <img class="botimg" src="">
-            <div class="textdiv">
-              <p class="text header botname"></p>
-            </div>
-          </div>
-          <div class="cardrow cardrowone" id="cardrowone">
-          </div>
-          <div class="cardrow cardrowtwo" id="cardrowtwo">
-          </div>
-        </div>
-        <div class="footer">
-            <p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
-            <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
-        </div>
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <script>
-            Object.values = function (obj) {
-                var vals = [];
-                for( var key in obj ) {
-                    if ( obj.hasOwnProperty(key) ) {
-                        vals.push(obj[key]);
-                    }
-                }
-                return vals;
-            }
-            function findGetParameter(parameterName) {
-                var result = null,
-                    tmp = [];
-                location.search
-                    .substr(1)
-                    .split("&")
-                    .forEach(function (item) {
-                    tmp = item.split("=");
-                    if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
-                    });
-                return result;
-            }
-            if(findGetParameter("code") != null){
-                window.localStorage.setItem("token",findGetParameter("code"))
-                window.location.replace(window.location.toString().split(/\?/)[0]);
-            }
-            document.querySelector(".profile .hover").classList.add("active")
-            var baseUrl = window.location.protocol +"//"+ window.location.hostname
-            if(localStorage.getItem("token") == null){
-                window.location.href = baseUrl + "/401"
-            }
-            if(window.localStorage.getItem("token") != null){
-              document.querySelector(".listitem.login").style.display = "none"
-            } else{
-              document.querySelector(".listitem.logout").style.display = "none"
-              document.querySelector(".listitem.addbot").style.display = "none"
-              document.querySelector(".listitem.profile").style.display = "none"
-            }
-            
-            function logout(){
-              window.localStorage.removeItem("token");
-              window.location.href = baseUrl
-            }
-            
-            
-            function home(){
-                window.location.href = baseUrl;
-            }
-            
-            document.querySelector(".searchbox").addEventListener("keyup", function(event) {
-              event.preventDefault();
-              if (event.keyCode === 13) {
-                window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
-              }
-            });
-            var instance = axios.create({validateStatus: a => {return true;}});
-            var whoami = null;
-            instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
-              if(response.status == "401") {
-                  localStorage.removeItem("token")
-                  window.location.href = baseUrl + "/login"
-                }
-            if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
-            instance.post(baseUrl + "/api/bots/user/@me",{},{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}})
-            .then(function (response) {
-              var data = response.data
-              document.querySelector(".botname").textContent = data.userscrim
-              document.querySelector(".botimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256"
-              for(var o in data.bots){
-                var i = data.bots[o]
-                if(o < 5){
-                  var card = templateBotCard.cloneNode(true)
-                  card.id = "card"+i.id
-                  card.classList.add(i.id)
-                  card.querySelector(".cardheader").textContent = i.username
-                  card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'https://yabl.xyz/bot/" + i.id + "'")
-                  card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
-                  card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
-                  card.querySelector(".cardstats").textContent = (i.guildCount||"No") + " Servers"
-                  card.querySelector(".carddesc").textContent = i.desc
-                  card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
-                  card.querySelector("#editbutton").setAttribute("onclick", "window.open('"+baseUrl+"/edit/"+i.id+"','_blank')")
-                  card.style = "";
-                  cardrowone.appendChild(card)
-                } else if(o < 10){
-                  var card = templateBotCard.cloneNode(true)
-                  card.id = i.id
-                  card.classList.add(i.id)
-                  card.querySelector(".cardheader").textContent = i.username
-                  card.querySelector(".cardheader").setAttribute("onclick","window.location.href = 'https://yabl.xyz/bot/" + i.id + "'")
-                  card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]]
-                  card.querySelector(".cardauthor").setAttribute("onclick","window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'")
-                  card.querySelector(".cardstats").textContent = (i.guildCount||"No") + " Servers"
-                  card.querySelector(".carddesc").textContent = i.desc
-                  card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/"+i.id+"/"+i.avatar+".png?size=64"
-                  card.querySelector("#editbutton").setAttribute("onclick", "window.open('"+baseUrl+"/edit/"+i.id+"','_blank')")
-                  card.style = "";
-                  cardrowtwo.appendChild(card)
-                }
-              }
-              if(data.bots.length <= 5){
-                cardrowtwo.style = "display:none;"
-              }
-              if(data.bots.length == 0){
-                cardrowone.innerHTML = "<p class=\"text subheader\">You have no bots, why dont you <a href=/add>Add one?</a></p>"
-              }
-            }).catch(function (error) {console.log(error)});
-            }).catch();
-      </script>
-    </body>
+
+	<head>
+		<title>Yet Another Bot List</title>
+		<meta charset="utf-8" />
+		<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="/style.css">
+	</head>
+
+	<body>
+		<div class="botcard" id="templateBotCard" style="display:none;">
+			<div class="cardbotstatus"></div>
+			<img class="cardimg" src="" />
+			<div class="cardbotinfo">
+				<p class="cardheader subheader text">template</p>
+				<p class="cardauthor metaheader text">template#0000</p>
+				<p class="cardstats metaheader text">template Servers</p>
+			</div>
+			<p class="carddesc text">template</p>
+			<div class="cardbuttons">
+				<button id="editbutton" class="inputbox cardbutton">Edit</button>
+			</div>
+		</div>
+		<div class="navbar">
+			<div class="listitem home" onclick="home()">
+				<div class="hover"></div>
+				<p class="navtext text">YABL</p>
+			</div>
+			<div class="rightnav">
+				<div class="listitem search">
+					<input class="searchbox inputbox" placeholder="Search" onenter="search">
+				</div>
+				<a href="/login" class="listitem login">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
+				</a>
+				<div class="listitem logout" onclick="logout()">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
+				</div>
+				<a href="/add" class="listitem addbot">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-plus-circle"></i></p>
+				</a>
+				<a href="/verify" class="listitem verifynav">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-user-check"></i></p>
+				</a>
+			</div>
+			<a href="/dashboard" class="listitem profile">
+				<div class="hover"></div>
+				<p class="navtext text"><i class="fas fa-user-circle"></i></p>
+			</a>
+		</div>
+		<div class="pagecontent noflex">
+			<div class="botheader">
+				<img class="botimg" src="">
+				<div class="textdiv">
+					<p class="text header botname"></p>
+				</div>
+			</div>
+			<div class="cardrow cardrowone" id="cardrowone"></div>
+			<div class="cardrow cardrowtwo" id="cardrowtwo"></div>
+		</div>
+		<div class="footer">
+			<p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
+			<p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
+		</div>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script language="javascript">
+			Object.values = function(obj) {
+				var vals = [];
+				for (var key in obj) {
+					if (obj.hasOwnProperty(key)) {
+						vals.push(obj[key]);
+					}
+				}
+				return vals;
+			}
+
+			function findGetParameter(parameterName) {
+				var result = null,
+					tmp = [];
+				location.search
+					.substr(1)
+					.split("&")
+					.forEach(function(item) {
+						tmp = item.split("=");
+						if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+					});
+				return result;
+			}
+
+			if (findGetParameter("code") != null) {
+				window.localStorage.setItem("token", findGetParameter("code"));
+				window.location.replace(window.location.toString().split(/\?/)[0]);
+			}
+
+			document.querySelector(".profile .hover").classList.add("active");
+			var baseUrl = window.location.protocol + "//" + window.location.hostname;
+			if (localStorage.getItem("token") == null) {
+				window.location.href = baseUrl + "/401";
+			}
+			if (window.localStorage.getItem("token") != null) {
+				document.querySelector(".listitem.login").style.display = "none";
+			} else {
+				document.querySelector(".listitem.logout").style.display = "none";
+				document.querySelector(".listitem.addbot").style.display = "none";
+				document.querySelector(".listitem.profile").style.display = "none";
+			}
+
+			function logout() {
+				window.localStorage.removeItem("token");
+				window.location.href = baseUrl
+			}
+
+			function home() {
+				window.location.href = baseUrl;
+			}
+
+			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
+				event.preventDefault();
+				if (event.keyCode === 13) {
+					window.location.href = baseUrl + "/search?query=" + encodeURI(document.querySelector(".searchbox").value);
+				}
+			});
+
+			var instance = axios.create({
+				validateStatus: a => {
+					return true;
+				}
+			});
+
+			var whoami = null;
+			instance.get(baseUrl + "/api/whoami", {
+				"headers": {
+					"Content-Type": "application/json",
+					"Authorization": localStorage.getItem("token")
+				}
+			}).then(function(response) {
+				whoami = response.data
+				if (response.status == "401") {
+					localStorage.removeItem("token");
+					window.location.href = baseUrl + "/login";
+				}
+				if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
+				instance.post(baseUrl + "/api/bots/user/@me", {}, {
+					"headers": {
+						"Content-Type": "application/json",
+						"Authorization": localStorage.getItem("token")
+					}
+				}).then(function(response) {
+					var data = response.data;
+					document.querySelector(".botname").textContent = data.userscrim;
+					document.querySelector(".botimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256";
+					for (var o in data.bots) {
+						var i = data.bots[o];
+						if (o < 5) {
+							var card = templateBotCard.cloneNode(true);
+							card.id = "card" + i.id;
+							card.classList.add(i.id);
+							card.querySelector(".cardheader").textContent = i.username;
+							card.querySelector(".cardheader").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/bot/" + i.id + "'");
+							card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]];
+							card.querySelector(".cardauthor").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'");
+							card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
+							card.querySelector(".carddesc").textContent = i.desc;
+							card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
+							card.querySelector("#editbutton").setAttribute("onclick", "window.open('" + baseUrl + "/edit/" + i.id + "','_blank')");
+							card.style = "";
+							cardrowone.appendChild(card);
+						} else if (o < 10) {
+							var card = templateBotCard.cloneNode(true);
+							card.id = i.id;
+							card.classList.add(i.id);
+							card.querySelector(".cardheader").textContent = i.username;
+							card.querySelector(".cardheader").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/bot/" + i.id + "'");
+							card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]];
+							card.querySelector(".cardauthor").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'");
+							card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
+							card.querySelector(".carddesc").textContent = i.desc;
+							card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
+							card.querySelector("#editbutton").setAttribute("onclick", "window.open('" + baseUrl + "/edit/" + i.id + "','_blank')");
+							card.style = "";
+							cardrowtwo.appendChild(card);
+						}
+					}
+					if (data.bots.length <= 5) {
+						cardrowtwo.style = "display: none;";
+					}
+					if (data.bots.length == 0) {
+						cardrowone.innerHTML = "<p class=\"text subheader\">You have no bots, why dont you <a href=/add>Add one?</a></p>";
+					}
+				}).catch(function(error) {
+					console.error(error.stack);
+				});
+			}).catch();
+
+		</script>
+	</body>
+
 </html>

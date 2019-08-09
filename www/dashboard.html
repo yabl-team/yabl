@@ -112,29 +112,13 @@
 				document.querySelector(".listitem.profile").style.display = "none";
 			}
 
-			function login() {
-				window.location.href = baseUrl + "/login";
-			}
-
 			function logout() {
 				window.localStorage.removeItem("token");
 				window.location.href = baseUrl
 			}
 
-			function addbot() {
-				window.location.href = baseUrl + "/add";
-			}
-
-			function profile() {
-				window.location.href = baseUrl + "/dashboard";
-			}
-
 			function home() {
 				window.location.href = baseUrl;
-			}
-
-			function verify() {
-				window.location.href = baseUrl + "/verify";
 			}
 
 			document.querySelector(".searchbox").addEventListener("keyup", function(event) {

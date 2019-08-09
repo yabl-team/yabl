@@ -81,10 +81,6 @@
 			}
 			document.querySelector(".addbot .hover").classList.add("active");
 
-			function login() {
-				window.location.href = baseUrl + "/login";
-			}
-
 			function logout() {
 				window.localStorage.removeItem("token");
 				window.location.href = baseUrl;
@@ -92,14 +88,6 @@
 
 			if (localStorage.getItem("token") == null) {
 				window.location.href = baseUrl + "/401";
-			}
-
-			function addbot() {
-				window.location.href = baseUrl + "/add";
-			}
-
-			function profile() {
-				window.location.href = baseUrl + "/dashboard";
 			}
 
 			function home() {
@@ -195,10 +183,6 @@
 					window.location.href = baseUrl + "/search?query=" + encodeURI(document.querySelector(".searchbox").value);
 				}
 			});
-
-			function verify() {
-				window.location.href = baseUrl + "/verify";
-			}
 
 		</script>
 	</body>

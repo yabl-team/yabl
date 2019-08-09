@@ -147,6 +147,7 @@
 					document.querySelector(".botname").textContent = data.username;
 					document.querySelector(".authorname").textContent = Object.values(data.owners).join(" , ");
 					document.querySelector(".botbody").innerHTML = DOMPurify.sanitize(marked(he.decode(data.body)));
+
 					if (data.servers) {
 						document.querySelector(".servers").textContent = data.guildCount + " Servers";
 					} else {
@@ -156,28 +157,34 @@
 					document.querySelector(".library").setAttribute("onclick", "window.open('" + baseUrl + "/search?query=" + data.library + "','_blank')");
 					document.querySelector(".botimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256";
 					document.querySelector(".invite").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id=" + data.id + "&scope=bot','_blank')");
+
 					if (data.website) {
 						document.querySelector(".botwebsite").setAttribute("onclick", "window.open('" + data.website + "','_blank')");
 					} else {
 						document.querySelector(".botwebsite").setAttribute("style", "display:none !important;");
 					}
+
 					if (data.support) {
 						document.querySelector(".botsupport").setAttribute("onclick", "window.open('" + data.support + "','_blank')");
 					} else {
 						document.querySelector(".botsupport").setAttribute("style", "display:none !important;");
 					}
+
 					if (data.git) {
 						document.querySelector(".botgit").setAttribute("onclick", "window.open('" + data.git + "','_blank')");
 					} else {
 						document.querySelector(".botgit").setAttribute("style", "display:none !important;");
 					}
+
 					if (window.localStorage.getItem("token") !== null) {
 						document.querySelector(".report").setAttribute("style", "display:block !important;");
 					}
+
 					if (whoami && whoami.admin && !data.verified) {
 						document.querySelector(".verify").setAttribute("style", "display:block !important;");
 						document.querySelector(".verify").setAttribute("onclick", "verify()");
 					}
+
 					if (whoami && whoami.admin || whoami && data.owners.hasOwnProperty(whoami.id)) {
 						document.querySelector(".report").setAttribute("style", "display:none !important;");
 						document.querySelector(".delete").setAttribute("style", "display:block !important;");

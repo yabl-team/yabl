@@ -1,200 +1,246 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>Yet Another Bot List</title>
-        <meta charset="utf-8"/>
-        <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-        <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
-        <link rel="stylesheet" type="text/css" href="/style.css">
-    </head>
-    <body>
-        <div class="navbar">
-            <div class="listitem home" onclick="home()">
-              <div class="hover"></div>
-              <p class="navtext text">YABL</p>
-            </div>
-            <div class="rightnav">
-                <div class="listitem search">
-                    <input class="searchbox inputbox" placeholder="Search" onenter="search"></div>
-                </div>
-                <div class="listitem login" onclick="login()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
-                </div>
-                <div class="listitem logout" onclick="logout()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
-                </div>
-                <div class="listitem addbot" onclick="addbot()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-plus-circle"></i></p>
-                </div>
-                <div class="listitem verifynav" onclick="verifypage()">
-                    <div class="hover"></div>
-                    <p class="navtext text"><i class="fas fa-user-check"></i></p>
-                  </div>
-                <div class="listitem profile" onclick="profile()">
-                  <div class="hover"></div>
-                  <p class="navtext text"><i class="fas fa-user-circle"></i></p>
-                </div>
-            </div>
-        </div>
-        <div class="pagecontent noflex">
-          <div class="botheader">
-            <img class="botimg" src="">
-            <div class="textdiv">
-              <p class="text header botname"></p>
-              <p class="authorname text subheader"></p>
-              <div class="statdiv">
-                  <button class="statbox statbutton statusonline">Not Yet Implemented</button>
-                  <button class="statbox statbutton servers"></button>
-                  <button class="statbox button statbutton library"></button>
-              </div>
-              <div class="statdiv buttondiv">
-                  <button class="statbox button statbutton invite">Invite</button>
-                  <button class="statbox button statbutton botwebsite">Website</button>
-                  <button class="statbox button statbutton botsupport">Support</button>
-                  <button class="statbox button statbutton botgit">Git</button>
-                  <button class="statbox button statbutton report" onclick="report()">Report</button>
-                  <button class="statbox button statbutton edit">Edit</button>
-                  <button class="statbox button statbutton delete">Delete</button>
-                  <button class="statbox button statbutton verify">Verify</button>
-              </div>
-            </div>
-          </div>
-          <div class="botbody inputbox">
 
-          </div>
-        </div>
-        <div class="footer">
-            <p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
-            <p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
-        </div>
-        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-        <script src="https://unpkg.com/he@1.2.0/he.js"></script>
-        <script>
-            Object.values = function (obj) {
-                var vals = [];
-                for( var key in obj ) {
-                    if ( obj.hasOwnProperty(key) ) {
-                        vals.push(obj[key]);
-                    }
-                }
-                return vals;
-            }
-            function report(){
-              alert("Not yet implemented")
-            }
-            var baseUrl = window.location.protocol +"//"+ window.location.hostname
-            if(window.localStorage.getItem("token") != null){
-              document.querySelector(".listitem.login").style.display = "none"
-            } else{
-              document.querySelector(".listitem.logout").style.display = "none"
-              document.querySelector(".listitem.addbot").style.display = "none"
-              document.querySelector(".listitem.profile").style.display = "none"
-            }
-            function login(){
-              window.location.href = baseUrl + "/login";
-            }
-            function logout(){
-              window.localStorage.removeItem("token");
-              window.location.reload();
-            }
-            function addbot(){
-              window.location.href = baseUrl + "/add";
-            }
-            function profile(){
-              window.location.href = baseUrl + "/dashboard";
-            }
-            function home(){
-                window.location.href = baseUrl;
-            }
-            document.querySelector(".searchbox").addEventListener("keyup", function(event) {
-              event.preventDefault();
-              if (event.keyCode === 13) {
-                window.location.href = baseUrl + "/search?query="+encodeURI(document.querySelector(".searchbox").value);
-              }
-            });
-            var instance = axios.create({validateStatus: a => {return true;}});
-            var whoami = null;
-            if(localStorage.getItem("token") !== null){
-              instance.get(baseUrl+"/api/whoami",{"headers":{"Content-Type":"application/json","Authorization":localStorage.getItem("token")}}).then(function(response){whoami = response.data
-                if(!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none"
-              }).catch();
-            } else{
-              document.querySelector(".listitem.verifynav").style.display = "none"
-            }
-            function verifypage(){
-              window.location.href = baseUrl + "/verify";
-            }
-            instance.get(baseUrl + "/api/bot/" + window.location.href.split("bot/")[1])
-            .then(function (response) {
-              setTimeout(()=>{
-              var data = response.data
-              console.log(data)
-              document.querySelector(".botname").textContent = data.username
-              document.querySelector(".authorname").textContent = Object.values(data.owners).join(" , ")
-              document.querySelector(".botbody").innerHTML = DOMPurify.sanitize(marked(he.decode(data.body)))
-              if(data.servers){
-                document.querySelector(".servers").textContent = data.guildCount + " Servers"
-              } else{
-                document.querySelector(".servers").setAttribute("style","display:none !important;")
-              }
-              document.querySelector(".library").textContent = data.library || "Not Specified"
-              document.querySelector(".library").setAttribute("onclick","window.open('"+baseUrl+"/search?query="+data.library+"','_blank')")
-              document.querySelector(".botimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256"
-              document.querySelector(".invite").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id="+data.id+"&scope=bot','_blank')")
-              if(data.website){
-                document.querySelector(".botwebsite").setAttribute("onclick", "window.open('" + data.website + "','_blank')")
-              } else{
-                document.querySelector(".botwebsite").setAttribute("style","display:none !important;")
-              }
-              if(data.support){
-                document.querySelector(".botsupport").setAttribute("onclick", "window.open('" + data.support + "','_blank')")
-              } else{
-                document.querySelector(".botsupport").setAttribute("style","display:none !important;")
-              }
-              if(data.git){
-                document.querySelector(".botgit").setAttribute("onclick", "window.open('" + data.git + "','_blank')")
-              } else{
-                document.querySelector(".botgit").setAttribute("style","display:none !important;")
-              }
-              if(window.localStorage.getItem("token") !== null){
-                document.querySelector(".report").setAttribute("style","display:block !important;")
-              }
-              if(whoami && whoami.admin && !data.verified){
-                document.querySelector(".verify").setAttribute("style","display:block !important;")
-                document.querySelector(".verify").setAttribute("onclick", "verify()")
-              }
-              if(whoami && whoami.admin || whoami && data.owners.hasOwnProperty(whoami.id)){
-                document.querySelector(".report").setAttribute("style","display:none !important;")
-                document.querySelector(".delete").setAttribute("style","display:block !important;")
-                document.querySelector(".delete").setAttribute("onclick", "deletebot()");
-                document.querySelector(".edit").setAttribute("style","display:block !important;")
-                document.querySelector(".edit").setAttribute("onclick","window.location.href ='"+baseUrl+"/edit/"+data.id+"'")
-              }},100)
-            }).catch(function (error) {console.log(error)});
-            function deletebot(){
-              document.querySelector(".delete").textContent = "Are you really sure?"
-              document.querySelector(".delete").setAttribute("style","display:block !important;background-color:rgb(155, 31, 31) !important;")
-              document.querySelector(".delete").setAttribute("onclick", "");
-              setTimeout(function(){
-                document.querySelector(".delete").textContent = "Are you really sure?"
-                document.querySelector(".delete").setAttribute("style","display:block !important;");
-                document.querySelector(".delete").setAttribute("onclick", "deleteiamreallysure()");
-              },1500)
-            }
-            function deleteiamreallysure(){
-              var instance = axios.create()
-              instance.post(baseUrl+"/api/bot/"+ window.location.href.split("bot/")[1]+"/delete",{},{"headers":{"Content-Type":"application/json","Authorization":localStorage.token}}).then(()=>{window.location.replace(baseUrl + "/dashboard")})
-            }
-            function verify(){
-              var instance = axios.create()
-              instance.post(baseUrl+"/api/bot/"+ window.location.href.split("bot/")[1]+"/verify",{},{"headers":{"Content-Type":"application/json","Authorization":localStorage.token}}).then(()=>{window.location.reload()})
-            }
-      </script>
-    </body>
+	<head>
+		<title>Yet Another Bot List</title>
+		<meta charset="utf-8" />
+		<link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+		<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.1/css/all.css" integrity="sha384-gfdkjb5BdAXd+lj+gudLWI+BXq4IuLW5IT+brZEZsLFm++aCMlF1V92rMkPaX4PP" crossorigin="anonymous">
+		<link rel="stylesheet" type="text/css" href="/style.css">
+	</head>
+
+	<body>
+		<div class="navbar">
+			<div class="listitem home" onclick="home()">
+				<div class="hover"></div>
+				<p class="navtext text">YABL</p>
+			</div>
+			<div class="rightnav">
+				<div class="listitem search">
+					<input class="searchbox inputbox" placeholder="Search" onenter="search">
+				</div>
+				<a href="/login" class="listitem login">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
+				</a>
+				<div class="listitem logout" onclick="logout()">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
+				</div>
+				<a href="/add" class="listitem addbot">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-plus-circle"></i></p>
+				</a>
+				<a href="/verify" class="listitem verifynav">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-user-check"></i></p>
+				</a>
+			</div>
+			<a href="/dashboard" class="listitem profile">
+				<div class="hover"></div>
+				<p class="navtext text"><i class="fas fa-user-circle"></i></p>
+			</a>
+		</div>
+		<div class="pagecontent noflex">
+			<div class="botheader">
+				<img class="botimg" src="">
+				<div class="textdiv">
+					<p class="text header botname"></p>
+					<p class="authorname text subheader"></p>
+					<div class="statdiv">
+						<button class="statbox statbutton statusonline">Not Yet Implemented</button>
+						<button class="statbox statbutton servers"></button>
+						<button class="statbox button statbutton library"></button>
+					</div>
+					<div class="statdiv buttondiv">
+						<button class="statbox button statbutton invite">Invite</button>
+						<button class="statbox button statbutton botwebsite">Website</button>
+						<button class="statbox button statbutton botsupport">Support</button>
+						<button class="statbox button statbutton botgit">Git</button>
+						<button class="statbox button statbutton report" onclick="report()">Report</button>
+						<button class="statbox button statbutton edit">Edit</button>
+						<button class="statbox button statbutton delete">Delete</button>
+						<button class="statbox button statbutton verify">Verify</button>
+					</div>
+				</div>
+			</div>
+			<div class="botbody inputbox"></div>
+		</div>
+		<div class="footer">
+			<p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
+			<p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
+		</div>
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+		<script src="https://unpkg.com/he@1.2.0/he.js"></script>
+		<script language="javascript">
+			Object.values = function(obj) {
+				var vals = [];
+				for (var key in obj) {
+					if (obj.hasOwnProperty(key)) {
+						vals.push(obj[key]);
+					}
+				}
+				return vals;
+			}
+
+			function report() {
+				alert("Not yet implemented")
+			}
+
+			var baseUrl = window.location.protocol + "//" + window.location.hostname;
+			if (window.localStorage.getItem("token") != null) {
+				document.querySelector(".listitem.login").style.display = "none";
+			} else {
+				document.querySelector(".listitem.logout").style.display = "none";
+				document.querySelector(".listitem.addbot").style.display = "none";
+				document.querySelector(".listitem.profile").style.display = "none";
+			}
+
+			function login() {
+				window.location.href = baseUrl + "/login";
+			}
+
+			function logout() {
+				window.localStorage.removeItem("token");
+				window.location.reload();
+			}
+
+			function addbot() {
+				window.location.href = baseUrl + "/add";
+			}
+
+			function profile() {
+				window.location.href = baseUrl + "/dashboard";
+			}
+
+			function home() {
+				window.location.href = baseUrl;
+			}
+
+			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
+				event.preventDefault();
+				if (event.keyCode === 13) {
+					window.location.href = baseUrl + "/search?query=" + encodeURI(document.querySelector(".searchbox").value);
+				}
+			});
+
+			var instance = axios.create({
+				validateStatus: a => {
+					return true;
+				}
+			});
+			var whoami = null;
+			if (localStorage.getItem("token") !== null) {
+				instance.get(baseUrl + "/api/whoami", {
+					"headers": {
+						"Content-Type": "application/json",
+						"Authorization": localStorage.getItem("token")
+					}
+				}).then(function(response) {
+					whoami = response.data;
+					if (response.status == "401") {
+						localStorage.removeItem("token");
+						window.location.href = baseUrl + "/login";
+					}
+					if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
+				}).catch();
+			} else {
+				document.querySelector(".listitem.verifynav").style.display = "none";
+			}
+
+			function verifypage() {
+				window.location.href = baseUrl + "/verify";
+			}
+
+			instance.get(baseUrl + "/api/bot/" + window.location.href.split("bot/")[1]).then(function(response) {
+				setTimeout(() => {
+					var data = response.data;
+					console.log(data);
+					document.querySelector(".botname").textContent = data.username;
+					document.querySelector(".authorname").textContent = Object.values(data.owners).join(" , ");
+					document.querySelector(".botbody").innerHTML = DOMPurify.sanitize(marked(he.decode(data.body)));
+					if (data.servers) {
+						document.querySelector(".servers").textContent = data.guildCount + " Servers";
+					} else {
+						document.querySelector(".servers").setAttribute("style", "display:none !important;");
+					}
+					document.querySelector(".library").textContent = data.library || "Not Specified";
+					document.querySelector(".library").setAttribute("onclick", "window.open('" + baseUrl + "/search?query=" + data.library + "','_blank')");
+					document.querySelector(".botimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256";
+					document.querySelector(".invite").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id=" + data.id + "&scope=bot','_blank')");
+					if (data.website) {
+						document.querySelector(".botwebsite").setAttribute("onclick", "window.open('" + data.website + "','_blank')");
+					} else {
+						document.querySelector(".botwebsite").setAttribute("style", "display:none !important;");
+					}
+					if (data.support) {
+						document.querySelector(".botsupport").setAttribute("onclick", "window.open('" + data.support + "','_blank')");
+					} else {
+						document.querySelector(".botsupport").setAttribute("style", "display:none !important;");
+					}
+					if (data.git) {
+						document.querySelector(".botgit").setAttribute("onclick", "window.open('" + data.git + "','_blank')");
+					} else {
+						document.querySelector(".botgit").setAttribute("style", "display:none !important;");
+					}
+					if (window.localStorage.getItem("token") !== null) {
+						document.querySelector(".report").setAttribute("style", "display:block !important;");
+					}
+					if (whoami && whoami.admin && !data.verified) {
+						document.querySelector(".verify").setAttribute("style", "display:block !important;");
+						document.querySelector(".verify").setAttribute("onclick", "verify()");
+					}
+					if (whoami && whoami.admin || whoami && data.owners.hasOwnProperty(whoami.id)) {
+						document.querySelector(".report").setAttribute("style", "display:none !important;");
+						document.querySelector(".delete").setAttribute("style", "display:block !important;");
+						document.querySelector(".delete").setAttribute("onclick", "deletebot()");
+						document.querySelector(".edit").setAttribute("style", "display:block !important;");
+						document.querySelector(".edit").setAttribute("onclick", "window.location.href ='" + baseUrl + "/edit/" + data.id + "'");
+					}
+				}, 100);
+			}).catch(function(error) {
+				console.log(error);
+			});
+
+			function deletebot() {
+				document.querySelector(".delete").textContent = "Are you really sure?";
+				document.querySelector(".delete").setAttribute("style", "display:block !important;background-color:rgb(155, 31, 31) !important;");
+				document.querySelector(".delete").setAttribute("onclick", "");
+				setTimeout(function() {
+					document.querySelector(".delete").textContent = "Are you really sure?";
+					document.querySelector(".delete").setAttribute("style", "display:block !important;");
+					document.querySelector(".delete").setAttribute("onclick", "deleteiamreallysure()");
+				}, 1500);
+			}
+
+			function deleteiamreallysure() {
+				var instance = axios.create();
+				instance.post(baseUrl + "/api/bot/" + window.location.href.split("bot/")[1] + "/delete", {}, {
+					"headers": {
+						"Content-Type": "application/json",
+						"Authorization": localStorage.token
+					}
+				}).then(() => {
+					window.location.replace(baseUrl + "/dashboard");
+				}).catch();
+			}
+
+			function verify() {
+				var instance = axios.create();
+				instance.post(baseUrl + "/api/bot/" + window.location.href.split("bot/")[1] + "/verify", {}, {
+					"headers": {
+						"Content-Type": "application/json",
+						"Authorization": localStorage.token
+					}
+				}).then(() => {
+					window.location.reload();
+				}).catch();
+			}
+
+		</script>
+	</body>
+
 </html>

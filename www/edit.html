@@ -21,28 +21,29 @@
 				<div class="listitem search">
 					<input class="searchbox inputbox" placeholder="Search">
 				</div>
+				<a href="/login" class="listitem login">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
+				</a>
+				<div class="listitem logout" onclick="logout()">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
+				</div>
+				<a href="/add" class="listitem addbot">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-plus-circle"></i></p>
+				</a>
+				<a href="/verify" class="listitem verifynav">
+					<div class="hover"></div>
+					<p class="navtext text"><i class="fas fa-user-check"></i></p>
+				</a>
 			</div>
-			<div class="listitem login" onclick="login()">
-				<div class="hover"></div>
-				<p class="navtext text"><i class="fas fa-sign-in-alt"></i></p>
-			</div>
-			<div class="listitem logout" onclick="logout()">
-				<div class="hover"></div>
-				<p class="navtext text"><i class="fas fa-sign-out-alt"></i></p>
-			</div>
-			<div class="listitem addbot" onclick="addbot()">
-				<div class="hover"></div>
-				<p class="navtext text"><i class="fas fa-plus-circle"></i></p>
-			</div>
-			<div class="listitem verifynav" onclick="verify()">
-				<div class="hover"></div>
-				<p class="navtext text"><i class="fas fa-user-check"></i></p>
-			</div>
-			<div class="listitem profile" onclick="profile()">
+			<a href="/dashboard" class="listitem profile">
 				<div class="hover"></div>
 				<p class="navtext text"><i class="fas fa-user-circle"></i></p>
-			</div>
+			</a>
 		</div>
+
 		<div class="pagecontent noflex">
 			<div class="wrapper">
 				<div class="inputwrapper">
@@ -71,12 +72,13 @@
 		<script src="https://unpkg.com/he@1.2.0/he.js"></script>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script language="javascript">
-			var baseUrl = window.location.protocol + "//" + window.location.hostname;
+			var baseUrl = window.location.protocol + "//" + window.location.hostname
 			var instance = axios.create({
 				validateStatus: a => {
 					return true;
 				}
 			});
+
 			var whoami = null;
 			var botinfo = null;
 			if (localStorage.getItem("token") !== null) {
@@ -86,6 +88,10 @@
 						"Authorization": localStorage.getItem("token")
 					}
 				}).then(function(response) {
+					if (response.status == "401") {
+						localStorage.removeItem("token");
+						window.location.href = baseUrl + "/login";
+					}
 					whoami = response.data;
 					if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
 					instance.get(baseUrl + "/api/bot/" + window.location.href.split("/edit/")[1]).then(function(response) {
@@ -157,8 +163,7 @@
 					alert("Missing grecaptcha response");
 					return "invalid grecaptcha response";
 				}
-				if (document.querySelector(".botid").value.length < 17 || document.querySelector(".prefix").value.length < 1 || document.querySelector(".help").value.length < 2 ||
-					document.querySelector(".desc").value.length < 30 || document.querySelector(".nestedinput").value.length < 100) {
+				if (document.querySelector(".botid").value.length < 17 || document.querySelector(".prefix").value.length < 1 || document.querySelector(".help").value.length < 2 || document.querySelector(".desc").value.length < 30 || document.querySelector(".nestedinput").value.length < 100) {
 					if (document.querySelector(".botid").value.length < 17) {
 						alert(`Bot ID is too short. (${document.querySelector(".botid").value.length}/17)`);
 					}
@@ -192,21 +197,22 @@
 							return true;
 						}
 					});
+
 					console.log(object);
 					instance.post(baseUrl + "/api/bot/" + object["id"] + "/edit", object, {
-							"headers": {
-								"Content-Type": "application/json",
-								"Authorization": localStorage.getItem("token")
-							}
-						}).then(function(response) {
-							if (response.status == 200) {
-								window.location.href = baseUrl + "/dashboard";
-							} else {
-								alert(response.status + ": " + JSON.stringify(response.data));
-							}
-						}).catch(function(error) {
+						"headers": {
+							"Content-Type": "application/json",
+							"Authorization": localStorage.getItem("token")
+						}
+					}).then(function(response) {
+						if (response.status == 200) {
+							window.location.href = baseUrl + "/dashboard";
+						} else {
 							alert(response.status + ": " + JSON.stringify(response.data));
-						});
+						}
+					}).catch(function(error) {
+						alert(response.status + ": " + JSON.stringify(response.data));
+					});
 				}
 				grecaptcha.reset();
 			}

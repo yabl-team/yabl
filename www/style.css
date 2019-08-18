@@ -306,9 +306,10 @@ a:active {
 
 .indexcontent {
 	display: block;
-	margin-left:20px;
-	margin-right:20px;
-}
+	padding-left:50px;
+	padding-right:50px;
+	width:calc(100% - 100px)
+} 
 
 .indexheader {
 	margin: auto;

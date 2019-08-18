@@ -86,6 +86,7 @@
 			instance.post(baseUrl + "/api/bots").then(function(response) {
 				var data = response.data;
 				for (var o in response.data) {
+					if(o > 9) break;
 					var i = data[o];
 					var card = document.getElementById("templateBotCard").cloneNode(true);
 					card.id = "card" + i.id;

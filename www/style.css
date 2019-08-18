@@ -279,6 +279,16 @@ a:active {
 	align-content: space-between;
 }
 
+.card {
+	display: flex;
+	flex-flow: row wrap;
+	min-width: 285px;
+	word-wrap: break-word;
+	background-color: #333333;
+	background-clip: border-box;
+	border-radius: 10px;
+}
+
 .botcard {
 	position: relative;
 	width: 285px;

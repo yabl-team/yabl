@@ -270,10 +270,11 @@ a:active {
 }
 
 .cardrow {
+	display: flex;
 	min-height: 301px !important;
 	max-height: 301px !important;
 	width: 100%;
-	display: flex;
+	max-width: calc(380.2px * 5);
 	flex-flow: row wrap;
 	justify-content: center;
 	align-content: space-between;
@@ -290,6 +291,7 @@ a:active {
 }
 
 .botcard {
+	display: flex;
 	position: relative;
 	width: 285px;
 	height: 260px;
@@ -297,7 +299,6 @@ a:active {
 	margin: 8px;
 	padding: 8px;
 	background: #333333;
-	display: flex;
 	flex-flow: row wrap;
 	justify-content: flex-start;
 	align-items: flex-start;

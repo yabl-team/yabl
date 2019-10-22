@@ -76,20 +76,23 @@ public class Main extends NanoHTTPD {
 		mimeMap.put("png", "image/png");
 	}
 
-	public Main(int port) throws IOException {
-		super(port);
+	public Main(String ip,int port) throws IOException {
+		super(ip,port);
 		start(NanoHTTPD.SOCKET_READ_TIMEOUT, false);
 		logger.info("Running");
 	}
 
 	public static void main(String[] args) {
 		try {
-			Wini config = new Wini(new File("config.ini"));
+			Wini config = new Wini(new File("config.ini"));			
+			String ip = config.get("config", "listenip");
 			int port = Integer.parseInt(config.get("config", "port"));
 			String username = config.get("config", "mongousr");
 			String password = config.get("config", "mongopwd");
 			String source = config.get("config", "mongosrc");
 			String database = config.get("config", "mongodtb");
+			String dataip = config.get("config", "mongoip");
+			int dataport = Integer.parseInt(config.get("config", "mongoprt"));
 			debug = Boolean.parseBoolean(config.get("config").get("debug", "false"));
 			bottoken = config.get("config", "bottoken");
 			secret = config.get("config", "clientsecret");
@@ -102,7 +105,7 @@ public class Main extends NanoHTTPD {
 				.build());
 			db = mongo.getDatabase(database);
 			@SuppressWarnings("unused")
-			Main main = new Main(port);
+			Main main = new Main(ip,port);
 		} catch (Exception e) {
 			logger.error("Error while starting server:", e);
 		}

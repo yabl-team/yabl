@@ -580,14 +580,14 @@ public class Main extends NanoHTTPD {
 						String rediruri = "https://yabl.xyz/dashboard?code=" + response.get("access_token").getAsString();
 						Response r = newFixedLengthResponse(Status.REDIRECT_SEE_OTHER, "text/html", "Login success. If you dont get redirected,<a href=\"" + rediruri + "\">click here</a> or go to the following link manually:<br/>" + rediruri);
 						r.addHeader("Location", rediruri);
-						user.put("avatar", uInfo.get("avatar").getAsString());
+						user.put("avatar", uInfo.get("avatar") == null ? "https://cdn.discordapp.com/embed/avatars/4.png" : uInfo.get("avatar").getAsString());
 						db.getCollection("users").replaceOne(new BsonDocument().append("userid", new BsonString(uInfo.get("id").getAsString())), user);
 						return r;
 					}
 					user = new Document();
 					user.append("userid", uInfo.get("id").getAsString());
 					user.append("bots", new BsonArray());
-					user.append("avatar", uInfo.get("avatar").getAsString());
+					user.append("avatar", uInfo.get("avatar") == null ? "https://cdn.discordapp.com/embed/avatars/4.png" : uInfo.get("avatar").getAsString());
 					user.append("userscrim", uInfo.get("username").getAsString() + "#" + uInfo.get("discriminator").getAsString());
 					db.getCollection("users").insertOne(user);
 					this.loggedUsers.put(response.get("access_token").getAsString(), uInfo);

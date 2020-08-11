@@ -265,6 +265,7 @@ public class Main extends NanoHTTPD {
 													httpput.setHeader("Authorization", "Bot " + bottoken);
 													StringEntity ent = new StringEntity("{\"access_token\":\"" + authorization + "\"}");
 													httpput.setEntity(ent);
+													httpclient.execute(httpput);
 													botUpdate(document.getString("id"), new String[] {
 														this.loggedUsers.get(authorization).get("id").getAsString()
 													}, 0, this.loggedUsers.get(authorization).get("id").getAsString());

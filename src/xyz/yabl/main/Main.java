@@ -242,7 +242,7 @@ public class Main extends NanoHTTPD {
 												response = new JsonParser().parse(EntityUtils.toString(httpclient.execute(httpget).getEntity())).getAsJsonObject();
 												if (response.has("username") && response.get("id").getAsString().equals(json.get("id").getAsString()) && response.has("bot")) {
 													document.put("username", response.get("username").getAsString());
-													document.put("avatar", response.get("avatar") == null ? "" : response.get("avatar").getAsString());
+													document.put("avatar", response.get("avatar") == null ? "https://cdn.discordapp.com/embed/avatars/4.png" : response.get("avatar").getAsString());
 													Document user = db.getCollection("users").find(new BsonDocument().append("userid", new BsonString(this.loggedUsers.get(authorization).get("id").getAsString()))).first();
 													@SuppressWarnings("unchecked")
 													List<String> bots = (List<String> ) user.get("bots");
@@ -343,6 +343,16 @@ public class Main extends NanoHTTPD {
 											document.put("modnote", json.get("modnote").getAsString());
 										} else {
 											document.put("modnote", bot.get("modnote"));
+										}
+										try (CloseableHttpClient httpclient = HttpClients.createDefault()) {
+											HttpGet httpget = new HttpGet("https://discordapp.com/api/v6/users/" + json.get("id").getAsString());
+											httpget.setHeader("Content-Type", "application/json");
+											httpget.setHeader("Authorization", "Bot " + bottoken);
+											JsonObject response = new JsonParser().parse(EntityUtils.toString(httpclient.execute(httpget).getEntity())).getAsJsonObject();
+											if (response.has("username") && response.get("id").getAsString().equals(json.get("id").getAsString()) && response.has("bot")) {
+												document.put("username", response.get("username").getAsString());
+												document.put("avatar", response.get("avatar") == null ? "https://cdn.discordapp.com/embed/avatars/4.png" : response.get("avatar").getAsString());
+											}
 										}
 									} catch (Exception e1) {
 										logger.error("error", e1);

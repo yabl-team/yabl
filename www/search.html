@@ -11,17 +11,19 @@
 
 	<body>
 		<div class="botcard" id="templateBotCard" style="display:none;">
-			<div class="cardbotstatus"></div>
-			<img class="cardimg" src="" />
-			<div class="cardbotinfo">
-				<p class="cardheader subheader text">template</p>
-				<p class="cardauthor metaheader text">template#0000</p>
-				<p class="cardstats metaheader text">template Servers</p>
-			</div>
-			<p class="carddesc text">template</p>
-			<div class="cardbuttons">
-				<button id="invitebutton" class="inputbox cardbutton">Invite</button>
-				<button id="supportbutton" class="inputbox cardbutton">Support</button>
+			<div class="card">
+				<div class="cardbotstatus"></div>
+				<img class="cardimg" src="" />
+				<div class="cardbotinfo">
+					<p class="cardheader subheader text">template</p>
+					<p class="cardauthor metaheader text">template#0000</p>
+					<p class="cardstats metaheader text">template Servers</p>
+				</div>
+				<p class="carddesc text">template</p>
+				<div class="cardbuttons">
+					<button id="invitebutton" class="inputbox cardbutton">Invite</button>
+					<button id="supportbutton" class="inputbox cardbutton">Support</button>
+				</div>
 			</div>
 		</div>
 		<div class="navbar">
@@ -56,18 +58,14 @@
 			</div>
 		</div>
 		<div class="pagecontent searchcontent">
-			<div class="cardrow cardrowone" id="cardrowone"></div>
-			<div class="cardrow cardrowtwo" id="cardrowtwo"></div>
-			<div class="cardrow cardrowtwo" id="cardrowthree"></div>
-			<div class="cardrow cardrowtwo" id="cardrowfour"></div>
+			<div class="cardrow" id="cardrow"></div>
 			<div id="pagesdiv">
 				<button class="inputbox searchbutton" id="previousbtn" onclick="previous()">Previous</button>
 				<input class="inputbox searchbutton pagebox" id="pagein"></input>
 				<button class="inputbox searchbutton" id="gobtn" onclick="go()">Go</button>
 				<button class="inputbox searchbutton" id="nextbtn" onclick="next()">Next</button>
-				<br />
-				<p class="footitem text" id="results"></p>
 			</div>
+			<p class="footitem text" id="results"></p>
 		</div>
 		<div class="footer">
 			<p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
@@ -80,9 +78,7 @@
 				document.querySelector(".listitem.login").style.display = "none";
 			} else {
 				document.querySelector(".listitem.logout").style.display = "none";
-				document.querySelector(".listitem.addbot").style.display = "none";
-				document.querySelector(".listitem.profile").style.display = "none";
-			}
+				document.querySelector(".listitem.addbot").style.display = "none"; 
 
 			function findGetParameter(parameterName) {
 				var result = null,
@@ -132,85 +128,29 @@
 					previousbtn.setAttribute("style", "display:none;");
 					gobtn.setAttribute("style", "display:none;");
 					pagein.setAttribute("style", "display:none;");
-					results.textContent = (data.results || 0) + " Results, Page " + (parseInt(page) + 1) + " of 1";
+					results.textContent = (data.results || 0) + " Results, Page 1 of 1";
 				} else {
-					results.textContent = (data.results || 0) + " Results, Page " + (parseInt(page) + 1) + " of " + (parseInt(data.pages) || 1);
+					results.textContent = (data.results || 0) + " Results, Page " + (parseInt(page) + 1) + " of " + (parseInt(data.pages)+1 || 1);
 				}
 				if (parseInt(page) == (data.pages || 0) - 1) nextbtn.setAttribute("style", "display:none;");
 				if (parseInt(page) == 0) previousbtn.setAttribute("style", "display:none;");
-				for (var o in data.bots) {
-					var i = data.bots[o];
-					if (o < 5) {
-						var card = document.getElementById("templateBotCard").cloneNode(true);
-						card.id = "card" + i.id;
-						card.classList.add("card" + i.id);
-						card.querySelector(".cardheader").textContent = i.username;
-						card.querySelector(".cardheader").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/bot/" + i.id + "'");
-						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]];
-						card.querySelector(".cardauthor").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'");
-						card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
-						card.querySelector(".carddesc").textContent = i.desc;
-						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
-						card.querySelector("#invitebutton").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id=" + i.id + "&scope=bot','_blank')");
-						card.querySelector("#supportbutton").setAttribute("onclick", "window.open('" + i.support + "','_blank')");
-						card.style = "";
-						document.getElementById("cardrowone").appendChild(card);
-					} else if (o < 10) {
-						var card = document.getElementById("templateBotCard").cloneNode(true);
-						card.id = "card" + i.id;
-						card.classList.add("card" + i.id);
-						card.querySelector(".cardheader").textContent = i.username;
-						card.querySelector(".cardheader").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/bot/" + i.id + "'");
-						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]];
-						card.querySelector(".cardauthor").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'");
-						card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
-						card.querySelector(".carddesc").textContent = i.desc;
-						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
-						card.style = "";
-						document.getElementById("cardrowtwo").appendChild(card);
-					} else if (o < 15) {
-						var card = document.getElementById("templateBotCard").cloneNode(true);
-						card.id = "card" + i.id;
-						card.classList.add("card" + i.id);
-						card.querySelector(".cardheader").textContent = i.username;
-						card.querySelector(".cardheader").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/bot/" + i.id + "'");
-						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]];
-						card.querySelector(".cardauthor").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'");
-						card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
-						card.querySelector(".carddesc").textContent = i.desc;
-						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
-						card.style = "";
-						document.getElementById("cardrowthree").appendChild(card);
-					} else if (o < 20) {
-						var card = document.getElementById("templateBotCard").cloneNode(true);
-						card.id = "card" + i.id;
-						card.classList.add("card" + i.id);
-						card.querySelector(".cardheader").textContent = i.username;
-						card.querySelector(".cardheader").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/bot/" + i.id + "'");
-						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]];
-						card.querySelector(".cardauthor").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'");
-						card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
-						card.querySelector(".carddesc").textContent = i.desc;
-						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
-						card.style = "";
-						document.getElementById("cardrowfour").appendChild(card);
-					}
-				}
-				if (data.bots) {
-					if (data.bots.length <= 5) {
-						cardrowtwo.style = "display:none;";
-						cardrowthree.style = "display:none;";
-						cardrowfour.style = "display:none;";
-					} else if (data.bots.length <= 10) {
-						cardrowthree.style = "display:none;";
-						cardrowfour.style = "display:none;";
-					} else if (data.bots.length <= 15) {
-						cardrowfour.style = "display:none;";
-					}
-				} else {
-					cardrowtwo.style = "display:none;";
-					cardrowthree.style = "display:none;";
-					cardrowfour.style = "display:none;";
+				for (var o in response.data) {
+					if(o > 19) break; // this theoretically should NEVER happen if the server is doing its job right
+					var i = data[o];
+					var card = document.getElementById("templateBotCard").cloneNode(true);
+					card.id = "card" + i.id;
+					card.classList.add("card" + i.id);
+					card.querySelector(".cardheader").textContent = i.username;
+					card.querySelector(".cardheader").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/bot/" + i.id + "'");
+					card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]];
+					card.querySelector(".cardauthor").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'");
+					card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
+					card.querySelector(".carddesc").textContent = i.desc;
+					card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
+					card.querySelector("#invitebutton").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id=" + i.id + "&scope=bot','_blank')");
+					card.querySelector("#supportbutton").setAttribute("onclick", "window.open('" + i.support + "','_blank')");
+					card.style = "";
+					document.getElementById("cardrow").appendChild(card);
 				}
 			}).catch(function(error) {
 				console.error(error.stack);

@@ -242,7 +242,7 @@ public class Main extends NanoHTTPD {
 												response = new JsonParser().parse(EntityUtils.toString(httpclient.execute(httpget).getEntity())).getAsJsonObject();
 												if (response.has("username") && response.get("id").getAsString().equals(json.get("id").getAsString()) && response.has("bot")) {
 													document.put("username", response.get("username").getAsString());
-													document.put("avatar", response.get("avatar") == null ? "https://cdn.discordapp.com/embed/avatars/4.png" : response.get("avatar").getAsString());
+													document.put("avatar", response.get("avatar").isJsonNull() ? "https://cdn.discordapp.com/embed/avatars/4.png" : response.get("avatar").getAsString());
 													Document user = db.getCollection("users").find(new BsonDocument().append("userid", new BsonString(this.loggedUsers.get(authorization).get("id").getAsString()))).first();
 													@SuppressWarnings("unchecked")
 													List<String> bots = (List<String> ) user.get("bots");
@@ -352,7 +352,7 @@ public class Main extends NanoHTTPD {
 											JsonObject response = new JsonParser().parse(EntityUtils.toString(httpclient.execute(httpget).getEntity())).getAsJsonObject();
 											if (response.has("username") && response.get("id").getAsString().equals(json.get("id").getAsString()) && response.has("bot")) {
 												document.put("username", response.get("username").getAsString());
-												document.put("avatar", response.get("avatar") == null ? "https://cdn.discordapp.com/embed/avatars/4.png" : response.get("avatar").getAsString());
+												document.put("avatar", response.get("avatar").isJsonNull() ? "https://cdn.discordapp.com/embed/avatars/4.png" : response.get("avatar").getAsString());
 											}
 										}
 									} catch (Exception e1) {
@@ -580,14 +580,14 @@ public class Main extends NanoHTTPD {
 						String rediruri = "https://yabl.xyz/dashboard?code=" + response.get("access_token").getAsString();
 						Response r = newFixedLengthResponse(Status.REDIRECT_SEE_OTHER, "text/html", "Login success. If you dont get redirected,<a href=\"" + rediruri + "\">click here</a> or go to the following link manually:<br/>" + rediruri);
 						r.addHeader("Location", rediruri);
-						user.put("avatar", uInfo.get("avatar") == null ? "https://cdn.discordapp.com/embed/avatars/4.png" : uInfo.get("avatar").getAsString());
+						user.put("avatar", uInfo.get("avatar").isJsonNull() ? "https://cdn.discordapp.com/embed/avatars/4.png" : uInfo.get("avatar").getAsString());
 						db.getCollection("users").replaceOne(new BsonDocument().append("userid", new BsonString(uInfo.get("id").getAsString())), user);
 						return r;
 					}
 					user = new Document();
 					user.append("userid", uInfo.get("id").getAsString());
 					user.append("bots", new BsonArray());
-					user.append("avatar", uInfo.get("avatar") == null ? "https://cdn.discordapp.com/embed/avatars/4.png" : uInfo.get("avatar").getAsString());
+					user.append("avatar", uInfo.get("avatar").isJsonNull() ? "https://cdn.discordapp.com/embed/avatars/4.png" : uInfo.get("avatar").getAsString());
 					user.append("userscrim", uInfo.get("username").getAsString() + "#" + uInfo.get("discriminator").getAsString());
 					db.getCollection("users").insertOne(user);
 					this.loggedUsers.put(response.get("access_token").getAsString(), uInfo);

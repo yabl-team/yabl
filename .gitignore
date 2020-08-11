@@ -70,3 +70,4 @@ buildNumber.properties
 config.ini
 yabl.jar
 .classpath
+/log.log

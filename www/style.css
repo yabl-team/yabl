@@ -271,8 +271,6 @@ a:active {
 
 .cardrow {
 	display: flex;
-	min-height: 301px !important;
-	max-height: 301px !important;
 	width: 100%;
 	max-width: calc(380.2px * 5);
 	flex-flow: row wrap;

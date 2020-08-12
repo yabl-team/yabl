@@ -413,7 +413,7 @@ a:active {
     align-items: flex-start;
     box-sizing: border-box;
     margin: 0em;
-    padding: 1px 6px;
+    padding: 4px 6px;
 }
 
 .cardbutton:link,.cardbutton:visited,.cardbutton:active{

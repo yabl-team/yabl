@@ -114,7 +114,7 @@
 						window.location.href = baseUrl + "/login";
 					}
 					if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
-				}).catch();
+				});
 			} else {
 				document.querySelector(".listitem.verifynav").style.display = "none";
 			}

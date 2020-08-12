@@ -128,7 +128,7 @@
 						window.location.href = baseUrl + "/login";
 					}
 					if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
-				}).catch();
+				});
 			} else {
 				document.querySelector(".listitem.verifynav").style.display = "none";
 			}
@@ -167,9 +167,7 @@
 				} else {
 					cardrowone.innerHTML = "<p class=\"text subheader\">This person has no bots.</p>";
 				}
-			}).catch(function(error) {
-				console.error(error.stack);
-			});
+			})
 
 		</script>
 	</body>

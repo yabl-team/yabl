@@ -103,9 +103,7 @@
 					card.style = "";
 					document.getElementById("cardrow").appendChild(card);
 				}
-			}).catch(function(error) {
-				console.error(error.stack);
-			});
+			})
 
 			function login() {
 				window.location.href = baseUrl + "/login";
@@ -142,7 +140,7 @@
 						window.location.href = baseUrl + "/login";
 					}
 					if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
-				}).catch();
+				});
 			} else {
 				document.querySelector(".listitem.verifynav").style.display = "none";
 			}

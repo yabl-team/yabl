@@ -135,7 +135,7 @@
 						window.location.href = baseUrl + "/login";
 					}
 					if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
-				}).catch();
+				})
 			} else {
 				document.querySelector(".listitem.verifynav").style.display = "none";
 			}
@@ -193,9 +193,7 @@
 						document.querySelector(".edit").setAttribute("onclick", "window.location.href ='" + baseUrl + "/edit/" + data.id + "'");
 					}
 				}, 100);
-			}).catch(function(error) {
-				console.error(error.stack);
-			});
+			})
 
 			function deletebot() {
 				document.querySelector(".delete").textContent = "Are you really sure?";
@@ -217,7 +215,7 @@
 					}
 				}).then(() => {
 					window.location.replace(baseUrl + "/dashboard");
-				}).catch();
+				});
 			}
 
 			function verify() {
@@ -229,7 +227,7 @@
 					}
 				}).then(() => {
 					window.location.reload();
-				}).catch();
+				});
 			}
 
 		</script>

@@ -107,8 +107,8 @@
 						document.querySelector(".git").value = botinfo["git"];
 						document.querySelector(".library").value = botinfo["library"];
 						document.querySelector(".modnote").value = botinfo["modnote"];
-					}).catch();
-				}).catch();
+					});
+				});
 			} else {
 				window.location.href = baseUrl + "/401";
 			}

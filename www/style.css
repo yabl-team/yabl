@@ -1,3 +1,7 @@
+* {
+	font-family: 'Roboto', Arial, Helvetica, sans-serif;
+}
+
 html,
 body {
 	background: #4F4F4F;
@@ -23,7 +27,6 @@ h1 {
 }
 
 .text {
-	font-family: 'Roboto', Arial, Helvetica, sans-serif;
 	color: #E0E0E0;
 	font-style: normal;
 	font-weight: normal;

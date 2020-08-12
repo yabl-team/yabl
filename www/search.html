@@ -124,18 +124,18 @@
 			page: page
 		}).then(function (response) {
 			var data = response.data;
-			pages = (data.pages || 0) - 1;
-			if (pages == -1) {
+			pages = (data.pages || 0) + 1;
+			if (pages == 1) {
 				nextbtn.setAttribute("style", "display:none;");
 				previousbtn.setAttribute("style", "display:none;");
 				gobtn.setAttribute("style", "display:none;");
 				pagein.setAttribute("style", "display:none;");
 				results.textContent = (data.results || 0) + " Results, Page 1 of 1";
 			} else {
-				results.textContent = (data.results || 0) + " Results, Page " + (parseInt(page) + 1) + " of " + (parseInt(data.pages) + 1 || 1);
+				results.textContent = (data.results || 0) + " Results, Page " + (parseInt(page)+1) + " of " + pages;
 			}
-			if (parseInt(page) == (data.pages || 0) - 1) nextbtn.setAttribute("style", "display:none;");
-			if (parseInt(page) == 0) previousbtn.setAttribute("style", "display:none;");
+			if (parseInt(page) == pages-1) nextbtn.setAttribute("style", "display:none;");
+			if (parseInt(page) == 0); previousbtn.setAttribute("style", "display:none;");
 			for (var o in data.bots) {
 				if (o > 19) break; // this theoretically should NEVER happen if the server is doing its job right
 				var i = data.bots[o];

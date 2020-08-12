@@ -167,8 +167,6 @@
 						}
 					}).then(function(response) {
 						if (response.status == 201) {
-							alert("Joining our discord is required for your bot to be verified. Please join it at https://discord.gg/vXeUnzZ\nThis is a temporary bug fix and at a later date, will automatically add you via the oauth flow.");
-							window.open("_blank","https://discord.gg/vXeUnzZ")
 							window.location.href = baseUrl + "/dashboard";
 						} else {
 							alert(response.status + ": " + JSON.stringify(response.data));

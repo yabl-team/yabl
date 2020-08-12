@@ -158,9 +158,9 @@
 					var data = response.data;
 					document.querySelector(".username").textContent = data.userscrim;
 					document.querySelector(".userimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256";
-					for (var o in response.data) {
+					for (var o in data.bots) {
 						if(o > 9) break;
-						var i = data[o];
+						var i = data.bots[o];
 						var card = document.getElementById("templateBotCard").cloneNode(true);
 						card.id = "card" + i.id;
 						card.classList.add("card" + i.id);

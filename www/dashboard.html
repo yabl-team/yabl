@@ -12,16 +12,19 @@
 
 	<body>
 		<div class="botcard" id="templateBotCard" style="display:none;">
-			<div class="cardbotstatus"></div>
-			<img class="cardimg" src="" onerror="this.onerror = null;this.src='https://crxb.cc/mvrijtlc'" />
-			<div class="cardbotinfo">
-				<p class="cardheader subheader text">template</p>
-				<p class="cardauthor metaheader text">template#0000</p>
-				<p class="cardstats metaheader text">template Servers</p>
-			</div>
-			<p class="carddesc text">template</p>
-			<div class="cardbuttons">
-				<button id="editbutton" class="inputbox cardbutton">Edit</button>
+			<div class="card">
+				<div class="cardbotstatus"></div>
+				<img class="cardimg" src="" onerror="this.onerror = null;this.src='https://crxb.cc/mvrijtlc'"/>
+				<div class="cardbotinfo">
+					<a class="cardheader subheader text">template</a><br/>
+					<a class="cardauthor metaheader text">template#0000</a><br/>
+					<p class="cardstats metaheader text">template Servers</p>
+				</div>
+				<p class="carddesc text">template</p>
+				<div class="cardbuttons">
+					<a target="_blank" id="invitebutton" class="inputbox cardbutton">Invite</a>
+					<a target="_blank" id="supportbutton" class="inputbox cardbutton">Support</a>
+				</div>
 			</div>
 		</div>
 		<div class="navbar">
@@ -56,14 +59,13 @@
 			</div>
 		</div>
 		<div class="pagecontent noflex">
-			<div class="botheader">
-				<img class="botimg" src="" onerror="this.onerror = null;this.src='https://crxb.cc/mvrijtlc'">
+			<div class="userheader">
+				<img class="userimg" src="" onerror="this.onerror = null;this.src='https://crxb.cc/mvrijtlc'">
 				<div class="textdiv">
-					<p class="text header botname"></p>
+					<p class="text header username"></p>
 				</div>
 			</div>
-			<div class="cardrow cardrowone" id="cardrowone"></div>
-			<div class="cardrow cardrowtwo" id="cardrowtwo"></div>
+			<div class="cardrow" id="cardrow"></div>
 		</div>
 		<div class="footer">
 			<p class="footitem text">&#169; YABL team 2018-19, built with java and html.</p>
@@ -154,44 +156,31 @@
 					}
 				}).then(function(response) {
 					var data = response.data;
-					document.querySelector(".botname").textContent = data.userscrim;
-					document.querySelector(".botimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256";
-					for (var o in data.bots) {
-						var i = data.bots[o];
-						if (o < 5) {
-							var card = templateBotCard.cloneNode(true);
-							card.id = "card" + i.id;
-							card.classList.add(i.id);
-							card.querySelector(".cardheader").textContent = i.username;
-							card.querySelector(".cardheader").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/bot/" + i.id + "'");
-							card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]];
-							card.querySelector(".cardauthor").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'");
-							card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
-							card.querySelector(".carddesc").textContent = i.desc;
-							card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
-							card.querySelector("#editbutton").setAttribute("onclick", "window.open('" + baseUrl + "/edit/" + i.id + "','_blank')");
-							card.style = "";
-							cardrowone.appendChild(card);
-						} else if (o < 10) {
-							var card = templateBotCard.cloneNode(true);
-							card.id = i.id;
-							card.classList.add(i.id);
-							card.querySelector(".cardheader").textContent = i.username;
-							card.querySelector(".cardheader").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/bot/" + i.id + "'");
-							card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]];
-							card.querySelector(".cardauthor").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'");
-							card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
-							card.querySelector(".carddesc").textContent = i.desc;
-							card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
-							card.querySelector("#editbutton").setAttribute("onclick", "window.open('" + baseUrl + "/edit/" + i.id + "','_blank')");
-							card.style = "";
-							cardrowtwo.appendChild(card);
+					document.querySelector(".username").textContent = data.userscrim;
+					document.querySelector(".userimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256";
+					for (var o in response.data) {
+						if(o > 9) break;
+						var i = data[o];
+						var card = document.getElementById("templateBotCard").cloneNode(true);
+						card.id = "card" + i.id;
+						card.classList.add("card" + i.id);
+						card.querySelector(".cardheader").textContent = i.username;
+						card.querySelector(".cardheader").setAttribute("href", "/bot/" + i.id );
+						card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]];
+						card.querySelector(".cardauthor").setAttribute("href", "/user/" + Object.keys(i.owners)[0]);
+						card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
+						card.querySelector(".carddesc").textContent = i.desc;
+						card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
+						card.querySelector("#invitebutton").setAttribute("href", "/edit/" + i.id);
+						card.querySelector("#supportbutton").setAttribute("href", i.support);
+						card.style = "";
+						document.getElementById("cardrow").appendChild(card);
+					}
+					if (data.bots) {
+						if (data.bots.length == 0) {
+							cardrowone.innerHTML = "<p class=\"text subheader\">You have no bots, why dont you <a href=/add>Add one?</a></p>";
 						}
-					}
-					if (data.bots.length <= 5) {
-						cardrowtwo.style = "display: none;";
-					}
-					if (data.bots.length == 0) {
+					} else {
 						cardrowone.innerHTML = "<p class=\"text subheader\">You have no bots, why dont you <a href=/add>Add one?</a></p>";
 					}
 				}).catch(function(error) {

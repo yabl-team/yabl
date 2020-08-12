@@ -12,17 +12,19 @@
 
 <body>
 	<div class="botcard" id="templateBotCard" style="display:none;">
-		<div class="cardbotstatus"></div>
-		<img class="cardimg" src="" onerror="this.onerror = null;this.src='https://crxb.cc/mvrijtlc'" />
-		<div class="cardbotinfo">
-			<p class="cardheader subheader text">template</p>
-			<p class="cardauthor metaheader text">template#0000</p>
-			<p class="cardstats metaheader text">template Servers</p>
-		</div>
-		<p class="carddesc text">template</p>
-		<div class="cardbuttons">
-			<button id="invitebutton" class="inputbox cardbutton">Invite</button>
-			<button id="supportbutton" class="inputbox cardbutton">Support</button>
+		<div class="card">
+			<div class="cardbotstatus"></div>
+			<img class="cardimg" src="" onerror="this.onerror = null;this.src='https://crxb.cc/mvrijtlc'" />
+			<div class="cardbotinfo">
+				<a class="cardheader subheader text">template</a><br />
+				<a class="cardauthor metaheader text">template#0000</a><br />
+				<p class="cardstats metaheader text">template Servers</p>
+			</div>
+			<p class="carddesc text">template</p>
+			<div class="cardbuttons">
+				<a target="_blank" id="invitebutton" class="inputbox cardbutton">Invite</a>
+				<a target="_blank" id="supportbutton" class="inputbox cardbutton">Support</a>
+			</div>
 		</div>
 	</div>
 	<div class="navbar">
@@ -161,21 +163,21 @@
 			}
 			if (parseInt(page) + 1 == pages) nextbtn.setAttribute("style", "display:none;");
 			if (parseInt(page) == 0) previousbtn.setAttribute("style", "display:none;");
-			for (var o in data.bots) {
-				if (o > 19) break; // this theoretically should NEVER happen if the server is doing its job right
-				var i = data.bots[o];
+			for (var o in response.data) {
+				if (o > 19) break;
+				var i = data[o];
 				var card = document.getElementById("templateBotCard").cloneNode(true);
 				card.id = "card" + i.id;
 				card.classList.add("card" + i.id);
 				card.querySelector(".cardheader").textContent = i.username;
-				card.querySelector(".cardheader").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/bot/" + i.id + "'");
+				card.querySelector(".cardheader").setAttribute("href", "/bot/" + i.id);
 				card.querySelector(".cardauthor").textContent = i.owners[Object.keys(i.owners)[0]];
-				card.querySelector(".cardauthor").setAttribute("onclick", "window.location.href = 'https://yabl.xyz/user/" + Object.keys(i.owners)[0] + "'");
+				card.querySelector(".cardauthor").setAttribute("href", "/user/" + Object.keys(i.owners)[0]);
 				card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
 				card.querySelector(".carddesc").textContent = i.desc;
 				card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
-				card.querySelector("#invitebutton").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id=" + i.id + "&scope=bot','_blank')");
-				card.querySelector("#supportbutton").setAttribute("onclick", "window.open('" + i.support + "','_blank')");
+				card.querySelector("#invitebutton").setAttribute("href", "https://discordapp.com/oauth2/authorize?client_id=" + i.id + "&scope=bot");
+				card.querySelector("#supportbutton").setAttribute("href", i.support);
 				card.style = "";
 				document.getElementById("cardrow").appendChild(card);
 			}

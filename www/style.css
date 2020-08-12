@@ -440,7 +440,7 @@ a:active {
 	display: block;
 }
 
-.botheader {
+.botheader,.userheader {
 	margin-left: 64px;
 	margin-top: 64px;
 	display: flex;
@@ -449,12 +449,12 @@ a:active {
 	width: max-content;
 }
 
-.botname {
+.botname,.username {
 	margin-top: 15px;
 	margin-left: 16px;
 }
 
-.botimg {
+.botimg,.userimg {
 	width: 200px;
 	height: 200px;
 	border-radius: 100px;

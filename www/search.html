@@ -124,7 +124,7 @@
 			page: page
 		}).then(function (response) {
 			var data = response.data;
-			pages = (data.pages || 0) + 1;
+			pages = parseInt(data.pages || 0) + 1;
 			if (pages == 1) {
 				nextbtn.setAttribute("style", "display:none;");
 				previousbtn.setAttribute("style", "display:none;");

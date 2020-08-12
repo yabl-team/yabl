@@ -330,6 +330,7 @@ a:active {
 }
 
 .cardheader {
+	text-decoration: none;
 	max-height: 35px;
 	margin-bottom: 0px;
 	cursor: pointer;
@@ -345,6 +346,7 @@ a:active {
 }
 
 .cardauthor {
+	text-decoration: none;
 	margin-left: 14px;
 	color: #BBB;
 	cursor: pointer;
@@ -392,6 +394,7 @@ a:active {
 }
 
 .cardbutton {
+	text-decoration: none;
 	width: 130px;
 	height: 40px;
 	background-color: #666;
@@ -411,6 +414,10 @@ a:active {
     box-sizing: border-box;
     margin: 0em;
     padding: 1px 6px;
+}
+
+.cardbutton:link,.cardbutton:visited,.cardbutton:active{
+	color:#fff;
 }
 
 .cardbutton:hover {

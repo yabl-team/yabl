@@ -138,7 +138,7 @@
 			if (parseInt(page) == 0) previousbtn.setAttribute("style", "display:none;");
 			for (var o in response.data) {
 				if (o > 19) break; // this theoretically should NEVER happen if the server is doing its job right
-				var i = data[o];
+				var i = data.bots[o];
 				var card = document.getElementById("templateBotCard").cloneNode(true);
 				card.id = "card" + i.id;
 				card.classList.add("card" + i.id);

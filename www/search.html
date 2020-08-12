@@ -135,7 +135,7 @@
 				results.textContent = (data.results || 0) + " Results, Page " + (parseInt(page)+1) + " of " + pages;
 			}
 			if (parseInt(page)+1 == pages) nextbtn.setAttribute("style", "display:none;");
-			if (parseInt(page) == 1); previousbtn.setAttribute("style", "display:none;");
+			if (parseInt(page) == 1) previousbtn.setAttribute("style", "display:none;");
 			for (var o in data.bots) {
 				if (o > 19) break; // this theoretically should NEVER happen if the server is doing its job right
 				var i = data.bots[o];

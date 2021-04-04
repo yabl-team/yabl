@@ -151,7 +151,7 @@
 				card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
 				let invite = "https://discordapp.com/oauth2/authorize?client_id=" + i.id + "&scope=bot";
 				card.querySelector("#invitebutton").setAttribute("onclick", i.verified ? "window.open('"+invite+"','_blank')" : "unverifiedInvite('"+invite+"')");
-				card.querySelector("#supportbutton").setAttribute("onclick", "offboard('" + i.support + ")");
+				card.querySelector("#supportbutton").setAttribute("onclick", "offboard('" + i.support + "')");
 				card.style = "";
 				document.getElementById("cardrow").appendChild(card);
 			}

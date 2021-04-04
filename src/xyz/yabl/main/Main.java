@@ -62,7 +62,7 @@ public class Main extends NanoHTTPD {
 	public static String secret = null;
 	public static String gresecret = null;
 	public Map<String, JsonObject> loggedUsers = new HashMap<>();
-	public final static Logger logger = LoggerFactory.getLogger("tk.yabl.main.Main");
+	public final static Logger logger = LoggerFactory.getLogger("xyz.yabl.main.Main");
 	public static Map<String, String> mimeMap;
 	public static boolean debug = false;
 	static {
@@ -91,8 +91,6 @@ public class Main extends NanoHTTPD {
 			String password = config.get("config", "mongopwd");
 			String source = config.get("config", "mongosrc");
 			String database = config.get("config", "mongodtb");
-			String dataip = config.get("config", "mongoip");
-			int dataport = Integer.parseInt(config.get("config", "mongoprt"));
 			debug = Boolean.parseBoolean(config.get("config").get("debug", "false"));
 			bottoken = config.get("config", "bottoken");
 			secret = config.get("config", "clientsecret");
@@ -100,7 +98,7 @@ public class Main extends NanoHTTPD {
 			MongoCredential credential = MongoCredential.createCredential(username, source, password.toCharArray());
 			mongo = MongoClients.create(
 				MongoClientSettings.builder()
-				.applyToClusterSettings(builder -> builder.hosts(Arrays.asList(new ServerAddress("localhost", 27017))))
+				.applyToClusterSettings(builder -> builder.hosts(Arrays.asList(new ServerAddress(config.get("config", "mongoip"), Integer.parseInt(config.get("config", "mongoprt"))))))
 				.credential(credential)
 				.build());
 			db = mongo.getDatabase(database);

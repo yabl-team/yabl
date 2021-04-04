@@ -149,8 +149,9 @@
 				card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
 				card.querySelector(".carddesc").textContent = i.desc;
 				card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
-				card.querySelector("#invitebutton").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id=" + i.id + "&scope=bot','_blank')");
-				card.querySelector("#supportbutton").setAttribute("onclick", "window.open('" + i.support + "','_blank')");
+				let invite = "https://discordapp.com/oauth2/authorize?client_id=" + i.id + "&scope=bot";
+				card.querySelector("#invitebutton").setAttribute("onclick", i.verified ? "window.open('"+invite+"','_blank')" : "unverifiedInvite('"+invite+"')");
+				card.querySelector("#supportbutton").setAttribute("onclick", "offboard('" + i.support + "')");
 				card.style = "";
 				document.getElementById("cardrow").appendChild(card);
 			}
@@ -163,6 +164,18 @@
 
 		function home() {
 			window.location.href = baseUrl;
+		}
+		
+		function unverifiedInvite(invite){
+			if(confirm("!!!WARNING!!!\nThis bot has NOT YET passed verification from our staff team.\nInviting this bot may potentially be dangerous, we don't know.\nPlease, do your research and keep safe.\nWe are not responsible for damages if you ignore this!\nDo you wish to continue?")){
+				window.open(invite,"_blank");
+			}
+		}
+		
+		function offboard(link){
+			if(confirm(`!!!WARNING!!!\nYou are leaving the YABL site to go to:\n${link}\nWhich is not controlled by the YABL team.\nDo you wish to continue?`)){
+				window.open(link,"_blank");
+			}
 		}
 
 		var whoami = null;

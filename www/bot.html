@@ -75,134 +75,75 @@
 		<script src="https://cdn.jsdelivr.net/npm/dompurify/dist/purify.min.js"></script>
 		<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 		<script src="https://unpkg.com/he@1.2.0/he.js"></script>
+		<script src="/common.js"></script>
 		<script language="javascript">
-			Object.values = function(obj) {
-				var vals = [];
-				for (var key in obj) {
-					if (obj.hasOwnProperty(key)) {
-						vals.push(obj[key]);
-					}
-				}
-				return vals;
-			}
-
 			function report() {
 				alert("Not yet implemented");
-			}
-
-			var baseUrl = window.location.protocol + "//" + window.location.hostname;
-			if (window.localStorage.getItem("token") != null) {
-				document.querySelector(".listitem.login").style.display = "none";
-			} else {
-				document.querySelector(".listitem.logout").style.display = "none";
-				document.querySelector(".listitem.addbot").style.display = "none";
-				document.querySelector(".listitem.profile").style.display = "none";
-			}
-
-			function logout() {
-				window.localStorage.removeItem("token");
-				window.location.reload();
-			}
-
-			function home() {
-				window.location.href = baseUrl;
-			}
-
-			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
-				event.preventDefault();
-				if (event.keyCode === 13) {
-					window.location.href = baseUrl + "/search?query=" + encodeURI(document.querySelector(".searchbox").value);
-				}
-			});
-
-			var instance = axios.create({
-				validateStatus: a => {
-					return true;
-				}
-			});
-
-			var whoami = null;
-			if (localStorage.getItem("token") !== null) {
-				instance.get(baseUrl + "/api/whoami", {
-					"headers": {
-						"Content-Type": "application/json",
-						"Authorization": localStorage.getItem("token")
-					}
-				}).then(function(response) {
-					whoami = response.data;
-					if (response.status == "401") {
-						localStorage.removeItem("token");
-						window.location.href = baseUrl + "/login";
-					}
-					if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
-				})
-			} else {
-				document.querySelector(".listitem.verifynav").style.display = "none";
 			}
 
 			instance.get(baseUrl + "/api/bot/" + window.location.href.split("bot/")[1]).then(function(response) {
 				setTimeout(() => {
 					var data = response.data;
 					console.log(data);
-					document.querySelector(".botname").textContent = data.username;
-					document.querySelector(".authorname").textContent = Object.values(data.owners).join(" , ");
-					document.querySelector(".botbody").innerHTML = DOMPurify.sanitize(marked(he.decode(data.body)));
+					$(".botname").textContent = data.username;
+					$(".authorname").textContent = Object.values(data.owners).join(" , ");
+					$(".botbody").innerHTML = DOMPurify.sanitize(marked(he.decode(data.body)));
 
 					if (data.servers) {
-						document.querySelector(".servers").textContent = data.guildCount + " Servers";
+						$(".servers").textContent = data.guildCount + " Servers";
 					} else {
-						document.querySelector(".servers").setAttribute("style", "display:none !important;");
+						$(".servers").setAttribute("style", "display:none !important;");
 					}
-					document.querySelector(".library").textContent = data.library || "Not Specified";
-					document.querySelector(".library").setAttribute("onclick", "window.open('" + baseUrl + "/search?query=" + data.library + "','_blank')");
-					document.querySelector(".botimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256";
-					document.querySelector(".invite").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id=" + data.id + "&scope=bot','_blank')");
+					$(".library").textContent = data.library || "Not Specified";
+					$(".library").setAttribute("onclick", "window.open('" + baseUrl + "/search?query=" + data.library + "','_blank')");
+					$(".botimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256";
+					$(".invite").setAttribute("onclick", "window.open('https://discordapp.com/oauth2/authorize?client_id=" + data.id + "&scope=bot','_blank')");
 
 					if (data.website) {
-						document.querySelector(".botwebsite").setAttribute("onclick", "window.open('" + data.website + "','_blank')");
+						$(".botwebsite").setAttribute("onclick", "window.open('" + data.website + "','_blank')");
 					} else {
-						document.querySelector(".botwebsite").setAttribute("style", "display:none !important;");
+						$(".botwebsite").setAttribute("style", "display:none !important;");
 					}
 
 					if (data.support) {
-						document.querySelector(".botsupport").setAttribute("onclick", "window.open('" + data.support + "','_blank')");
+						$(".botsupport").setAttribute("onclick", "window.open('" + data.support + "','_blank')");
 					} else {
-						document.querySelector(".botsupport").setAttribute("style", "display:none !important;");
+						$(".botsupport").setAttribute("style", "display:none !important;");
 					}
 
 					if (data.git) {
-						document.querySelector(".botgit").setAttribute("onclick", "window.open('" + data.git + "','_blank')");
+						$(".botgit").setAttribute("onclick", "window.open('" + data.git + "','_blank')");
 					} else {
-						document.querySelector(".botgit").setAttribute("style", "display:none !important;");
+						$(".botgit").setAttribute("style", "display:none !important;");
 					}
 
 					if (window.localStorage.getItem("token") !== null) {
-						document.querySelector(".report").setAttribute("style", "display:block !important;");
+						$(".report").setAttribute("style", "display:block !important;");
 					}
 
 					if (whoami && whoami.admin && !data.verified) {
-						document.querySelector(".verify").setAttribute("style", "display:block !important;");
-						document.querySelector(".verify").setAttribute("onclick", "verify()");
+						$(".verify").setAttribute("style", "display:block !important;");
+						$(".verify").setAttribute("onclick", "verify()");
 					}
 
 					if (whoami && whoami.admin || whoami && data.owners.hasOwnProperty(whoami.id)) {
-						document.querySelector(".report").setAttribute("style", "display:none !important;");
-						document.querySelector(".delete").setAttribute("style", "display:block !important;");
-						document.querySelector(".delete").setAttribute("onclick", "deletebot()");
-						document.querySelector(".edit").setAttribute("style", "display:block !important;");
-						document.querySelector(".edit").setAttribute("onclick", "window.location.href ='" + baseUrl + "/edit/" + data.id + "'");
+						$(".report").setAttribute("style", "display:none !important;");
+						$(".delete").setAttribute("style", "display:block !important;");
+						$(".delete").setAttribute("onclick", "deletebot()");
+						$(".edit").setAttribute("style", "display:block !important;");
+						$(".edit").setAttribute("onclick", "window.location.href ='" + baseUrl + "/edit/" + data.id + "'");
 					}
 				}, 100);
 			})
 
 			function deletebot() {
-				document.querySelector(".delete").textContent = "Are you really sure?";
-				document.querySelector(".delete").setAttribute("style", "display:block !important;background-color:rgb(155, 31, 31) !important;");
-				document.querySelector(".delete").setAttribute("onclick", "");
+				$(".delete").textContent = "Are you really sure?";
+				$(".delete").setAttribute("style", "display:block !important;background-color:rgb(155, 31, 31) !important;");
+				$(".delete").setAttribute("onclick", "");
 				setTimeout(function() {
-					document.querySelector(".delete").textContent = "Are you really sure?";
-					document.querySelector(".delete").setAttribute("style", "display:block !important;");
-					document.querySelector(".delete").setAttribute("onclick", "deleteiamreallysure()");
+					$(".delete").textContent = "Are you really sure?";
+					$(".delete").setAttribute("style", "display:block !important;");
+					$(".delete").setAttribute("onclick", "deleteiamreallysure()");
 				}, 1500);
 			}
 

@@ -1,3 +1,6 @@
+const $ = document.querySelector.bind(document)
+const $$ = document.querySelectorAll.bind(document)
+
 Object.values = function (obj) {
     var vals = [];
     for (var key in obj) {
@@ -10,15 +13,19 @@ Object.values = function (obj) {
 
 var query = findGetParameter("query") || "";
 var page = findGetParameter("page") || "0";
+var pages = 0;
+if(pagein.value){
+    pagein.value = parseInt(page)+1;
+}
 
 var baseUrl = window.location.protocol + "//" + window.location.hostname;
 
 if (window.localStorage.getItem("token") != null) {
-    document.querySelector(".listitem.login").style.display = "none";
+    $(".listitem.login").style.display = "none";
 } else {
-    document.querySelector(".listitem.logout").style.display = "none";
-    document.querySelector(".listitem.addbot").style.display = "none";
-    document.querySelector(".listitem.profile").style.display = "none";
+    $(".listitem.logout").style.display = "none";
+    $(".listitem.addbot").style.display = "none";
+    $(".listitem.profile").style.display = "none";
 }
 
 function findGetParameter(parameterName) {
@@ -41,7 +48,7 @@ var instance = axios.create({
 });
 
 var whoami = null;
-if (localStorage.getItem("token") !== null) {
+if (localStorage.getItem("token") !== null && !window.location.pathname.startsWith("/dashboard")) {
     instance.get(baseUrl + "/api/whoami", {
         "headers": {
             "Content-Type": "application/json",
@@ -53,10 +60,25 @@ if (localStorage.getItem("token") !== null) {
             localStorage.removeItem("token");
             window.location.href = baseUrl + "/login";
         }
-        if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
+        if (!whoami.admin) $(".listitem.verifynav").style.display = "none";
     });
 } else {
-    document.querySelector(".listitem.verifynav").style.display = "none";
+    $(".listitem.verifynav").style.display = "none";
+}
+
+function next() {
+    var url = baseUrl + window.location.pathname + "?query=" + query + "&page=" + (parseInt(page) + 1);
+    window.location.href = url;
+}
+
+function previous() {
+    var url = baseUrl + window.location.pathname + "?query=" + query + "&page=" + (parseInt(page) - 1);
+    window.location.href = url;
+}
+
+function go() {
+    var url = baseUrl + window.location.pathname + "?query=" + query + "&page=" + Math.max(Math.min(parseInt(pagein.value) - 1, pages), 0);
+    window.location.href = url;
 }
 
 function login() {
@@ -105,9 +127,9 @@ Do you wish to continue?`)) {
     }
 }
 
-document.querySelector(".searchbox").addEventListener("keyup", function (event) {
+$(".searchbox").addEventListener("keyup", function (event) {
     event.preventDefault();
     if (event.keyCode === 13) {
-        window.location.href = baseUrl + "/search?query=" + encodeURI(document.querySelector(".searchbox").value);
+        window.location.href = baseUrl + "/search?query=" + encodeURI($(".searchbox").value);
     }
 });

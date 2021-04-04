@@ -72,69 +72,15 @@
 			<p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
 		</div>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="/common.js"></script>
 		<script language="javascript">
-			Object.values = function(obj) {
-				var vals = [];
-				for (var key in obj) {
-					if (obj.hasOwnProperty(key)) {
-						vals.push(obj[key]);
-					}
-				}
-				return vals;
-			}
-
-			function findGetParameter(parameterName) {
-				var result = null,
-					tmp = [];
-				location.search
-					.substr(1)
-					.split("&")
-					.forEach(function(item) {
-						tmp = item.split("=");
-						if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
-					});
-				return result;
-			}
 
 			if (findGetParameter("code") != null) {
 				window.localStorage.setItem("token", findGetParameter("code"));
 				window.location.replace(window.location.toString().split(/\?/)[0]);
 			}
 
-			document.querySelector(".profile .hover").classList.add("active");
-			var baseUrl = window.location.protocol + "//" + window.location.hostname;
-			if (localStorage.getItem("token") == null) {
-				window.location.href = baseUrl + "/401";
-			}
-			if (window.localStorage.getItem("token") != null) {
-				document.querySelector(".listitem.login").style.display = "none";
-			} else {
-				document.querySelector(".listitem.logout").style.display = "none";
-				document.querySelector(".listitem.addbot").style.display = "none";
-				document.querySelector(".listitem.profile").style.display = "none";
-			}
-
-			function logout() {
-				window.localStorage.removeItem("token");
-				window.location.href = baseUrl
-			}
-
-			function home() {
-				window.location.href = baseUrl;
-			}
-
-			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
-				event.preventDefault();
-				if (event.keyCode === 13) {
-					window.location.href = baseUrl + "/search?query=" + encodeURI(document.querySelector(".searchbox").value);
-				}
-			});
-
-			var instance = axios.create({
-				validateStatus: a => {
-					return true;
-				}
-			});
+			$(".profile .hover").classList.add("active");
 
 			var whoami = null;
 			instance.get(baseUrl + "/api/whoami", {
@@ -148,7 +94,7 @@
 					localStorage.removeItem("token");
 					window.location.href = baseUrl + "/login";
 				}
-				if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
+				if (!whoami.admin) $(".listitem.verifynav").style.display = "none";
 				instance.post(baseUrl + "/api/bots/user/@me", {}, {
 					"headers": {
 						"Content-Type": "application/json",
@@ -156,8 +102,8 @@
 					}
 				}).then(function(response) {
 					var data = response.data;
-					document.querySelector(".username").textContent = data.userscrim;
-					document.querySelector(".userimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256";
+					$(".username").textContent = data.userscrim;
+					$(".userimg").src = "https://cdn.discordapp.com/avatars/" + data.id + "/" + data.avatar + ".png?size=256";
 					for (var o in data.bots) {
 						if(o > 9) break;
 						var i = data.bots[o];

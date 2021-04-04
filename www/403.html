@@ -55,58 +55,7 @@
 			<p class="footitem text"><a href="/terms">Terms</a>|<a href="https://github.com/yabl-team">Github</a>|<a href="/api">API</a></p>
 		</div>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-		<script language="javascript">
-			var baseUrl = window.location.protocol + "//" + window.location.hostname;
-			if (window.localStorage.getItem("token") != null) {
-				document.querySelector(".listitem.login").style.display = "none";
-			} else {
-				document.querySelector(".listitem.logout").style.display = "none";
-				document.querySelector(".listitem.addbot").style.display = "none";
-				document.querySelector(".listitem.profile").style.display = "none";
-			}
-
-			function home() {
-				window.location.href = baseUrl + "/";
-			}
-
-			function logout() {
-				window.localStorage.removeItem("token");
-				window.location.reload();
-			}
-
-			var instance = axios.create({
-				validateStatus: a => {
-					return true;
-				}
-			});
-
-			var whoami = null;
-			if (localStorage.getItem("token") !== null) {
-				instance.get(baseUrl + "/api/whoami", {
-					"headers": {
-						"Content-Type": "application/json",
-						"Authorization": localStorage.getItem("token")
-					}
-				}).then(function(response) {
-					whoami = response.data;
-					if (response.status == "401") {
-						localStorage.removeItem("token");
-						window.location.href = baseUrl + "/login";
-					}
-					if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
-				}).catch();
-			} else {
-				document.querySelector(".listitem.verifynav").style.display = "none";
-			}
-
-			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
-				event.preventDefault();
-				if (event.keyCode === 13) {
-					window.location.href = baseUrl + "/search?query=" + encodeURI(document.querySelector(".searchbox").value);
-				}
-			});
-
-		</script>
+		<script src="/common.js"></script>
 	</body>
 
 </html>

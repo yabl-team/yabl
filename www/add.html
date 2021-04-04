@@ -70,53 +70,12 @@
 		</div>
 		<script src="https://unpkg.com/he@1.2.0/he.js"></script>
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="/common.js"></script>
 		<script language="javascript">
-			var baseUrl = window.location.protocol + "//" + window.location.hostname;
-			if (window.localStorage.getItem("token") != null) {
-				document.querySelector(".listitem.login").style.display = "none";
-			} else {
-				document.querySelector(".listitem.logout").style.display = "none";
-				document.querySelector(".listitem.addbot").style.display = "none";
-				document.querySelector(".listitem.profile").style.display = "none";
-			}
-			document.querySelector(".addbot .hover").classList.add("active");
-
-			function logout() {
-				window.localStorage.removeItem("token");
-				window.location.href = baseUrl;
-			}
+			$(".addbot .hover").classList.add("active");
 
 			if (localStorage.getItem("token") == null) {
 				window.location.href = baseUrl + "/401";
-			}
-
-			function home() {
-				window.location.href = baseUrl;
-			}
-
-			var instance = axios.create({
-				validateStatus: a => {
-					return true;
-				}
-			});
-
-			var whoami = null;
-			if (localStorage.getItem("token") !== null) {
-				instance.get(baseUrl + "/api/whoami", {
-					"headers": {
-						"Content-Type": "application/json",
-						"Authorization": localStorage.getItem("token")
-					}
-				}).then(function(response) {
-					whoami = response.data;
-					if (response.status == "401") {
-						localStorage.removeItem("token");
-						window.location.href = baseUrl + "/login";
-					}
-					if (!whoami.admin) document.querySelector(".listitem.verifynav").style.display = "none";
-				});
-			} else {
-				document.querySelector(".listitem.verifynav").style.display = "none";
 			}
 
 			function submit(gresponse) {
@@ -131,34 +90,34 @@
 					return "invalid grecaptcha response";
 				}
 
-				if (document.querySelector(".botid").value.length < 17 || document.querySelector(".prefix").value.length < 1 || document.querySelector(".help").value.length < 2 || document.querySelector(".desc").value.length < 30 || document.querySelector(".nestedinput").value.length < 100) {
-					if (document.querySelector(".botid").value.length < 17) {
-						alert(`Bot ID is too short. (${document.querySelector(".botid").value.length}/17)`);
+				if ($(".botid").value.length < 17 || $(".prefix").value.length < 1 || $(".help").value.length < 2 || $(".desc").value.length < 30 || $(".nestedinput").value.length < 100) {
+					if ($(".botid").value.length < 17) {
+						alert(`Bot ID is too short. (${$(".botid").value.length}/17)`);
 					}
-					if (document.querySelector(".prefix").value.length < 1) {
-						alert(`Prefix is too short. (${document.querySelector(".prefix").value.length}/1)`);
+					if ($(".prefix").value.length < 1) {
+						alert(`Prefix is too short. (${$(".prefix").value.length}/1)`);
 					}
-					if (document.querySelector(".help").value.length < 2) {
-						alert(`Help command is too short. (${document.querySelector(".help").value.length}/2)`);
+					if ($(".help").value.length < 2) {
+						alert(`Help command is too short. (${$(".help").value.length}/2)`);
 					}
-					if (document.querySelector(".desc").value.length < 30) {
-						alert(`Description is too short. (${document.querySelector(".desc").value.length}/30)`);
+					if ($(".desc").value.length < 30) {
+						alert(`Description is too short. (${$(".desc").value.length}/30)`);
 					}
-					if (document.querySelector(".nestedinput").value.length < 100) {
-						alert(`Body is too short. (${document.querySelector(".botid").value.length}/100)`);
+					if ($(".nestedinput").value.length < 100) {
+						alert(`Body is too short. (${$(".botid").value.length}/100)`);
 					}
 				} else {
 					var object = {};
-					object["id"] = document.querySelector(".botid").value;
-					object["prefix"] = document.querySelector(".prefix").value;
-					object["help"] = document.querySelector(".help").value;
-					object["desc"] = document.querySelector(".desc").value;
-					object["body"] = he.encode(document.querySelector(".nestedinput").value);
-					document.querySelector(".website").value.length > 0 ? object["website"] = document.querySelector(".website").value : false;
-					document.querySelector(".support").value.length > 0 ? object["support"] = document.querySelector(".support").value : false;
-					document.querySelector(".git").value.length > 0 ? object["git"] = document.querySelector(".git").value : false;
-					document.querySelector(".library").value.length > 0 ? object["library"] = document.querySelector(".library").value : false;
-					document.querySelector(".modnote").value.length > 0 ? object["modnote"] = document.querySelector(".modnote").value : false;
+					object["id"] = $(".botid").value;
+					object["prefix"] = $(".prefix").value;
+					object["help"] = $(".help").value;
+					object["desc"] = $(".desc").value;
+					object["body"] = he.encode($(".nestedinput").value);
+					$(".website").value.length > 0 ? object["website"] = $(".website").value : false;
+					$(".support").value.length > 0 ? object["support"] = $(".support").value : false;
+					$(".git").value.length > 0 ? object["git"] = $(".git").value : false;
+					$(".library").value.length > 0 ? object["library"] = $(".library").value : false;
+					$(".modnote").value.length > 0 ? object["modnote"] = $(".modnote").value : false;
 					object["gresponse"] = gresponse;
 					instance.post(baseUrl + "/api/bot/" + object["id"] + "/add", object, {
 						"headers": {
@@ -177,13 +136,6 @@
 				}
 				grecaptcha.reset();
 			}
-			document.querySelector(".searchbox").addEventListener("keyup", function(event) {
-				event.preventDefault();
-				if (event.keyCode === 13) {
-					window.location.href = baseUrl + "/search?query=" + encodeURI(document.querySelector(".searchbox").value);
-				}
-			});
-
 		</script>
 	</body>
 

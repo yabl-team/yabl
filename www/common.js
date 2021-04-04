@@ -14,7 +14,7 @@ Object.values = function (obj) {
 var query = findGetParameter("query") || "";
 var page = findGetParameter("page") || "0";
 var pages = 0;
-if(pagein.value){
+if(pagein && pagein.value){
     pagein.value = parseInt(page)+1;
 }
 

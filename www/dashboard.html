@@ -85,7 +85,7 @@
 			let waitingCycles = 0;
 
 			let dashboardStuff = () => {
-				if(waitingCycles > 5){
+				if(waitingCycles > 20){
 					alert("Failed to load user information, Please try again.")
 					return;
 				}
@@ -128,7 +128,7 @@
 					})
 				} else{
 					waitingCycles++;
-					setTimeout(dashboardStuff,1000)
+					setTimeout(dashboardStuff,250)
 				}
 			}
 			dashboardStuff()

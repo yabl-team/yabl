@@ -22,8 +22,7 @@
 				</div>
 				<p class="carddesc text">template</p>
 				<div class="cardbuttons">
-					<a target="_blank" id="invitebutton" class="inputbox cardbutton">Invite</a>
-					<a target="_blank" id="supportbutton" class="inputbox cardbutton">Support</a>
+					<a target="_blank" id="editbutton" class="inputbox cardbutton">Edit</a>
 				</div>
 			</div>
 		</div>
@@ -113,8 +112,7 @@
 							card.querySelector(".cardstats").textContent = (i.guildCount || "No") + " Servers";
 							card.querySelector(".carddesc").textContent = i.desc;
 							card.querySelector(".cardimg").src = "https://cdn.discordapp.com/avatars/" + i.id + "/" + i.avatar + ".png?size=64";
-							card.querySelector("#invitebutton").setAttribute("href", "/edit/" + i.id);
-							card.querySelector("#supportbutton").setAttribute("href", i.support);
+							card.querySelector("#editbutton").setAttribute("href", "/edit/" + i.id);
 							card.style = "";
 							document.getElementById("cardrow").appendChild(card);
 						}

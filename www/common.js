@@ -61,6 +61,7 @@ if (localStorage.getItem("token") !== null && !window.location.pathname.startsWi
             window.location.href = baseUrl + "/login";
         }
         if (!whoami.admin) $(".listitem.verifynav").style.display = "none";
+        window.whoami = response;
     });
 } else {
     $(".listitem.verifynav").style.display = "none";

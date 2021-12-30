@@ -87,7 +87,7 @@
 					console.log(data);
 					$(".botname").textContent = data.username;
 					$(".authorname").textContent = Object.values(data.owners).join(" , ");
-					$(".botbody").innerHTML = DOMPurify.sanitize(marked(he.decode(data.body)));
+					$(".botbody").innerHTML = DOMPurify.sanitize(marked.parse(he.decode(data.body)));
 
 					if (data.servers) {
 						$(".servers").textContent = data.guildCount + " Servers";

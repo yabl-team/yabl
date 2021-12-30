@@ -48,7 +48,7 @@ var instance = axios.create({
 });
 
 var whoami = null;
-if (localStorage.getItem("token") !== null && !window.location.pathname.startsWith("/dashboard")) {
+if (localStorage.getItem("token") !== null) {
     instance.get(baseUrl + "/api/whoami", {
         "headers": {
             "Content-Type": "application/json",

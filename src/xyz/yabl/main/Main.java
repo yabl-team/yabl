@@ -809,6 +809,9 @@ public class Main extends NanoHTTPD {
 			String response;
 			Status status = Status.OK;
 			String mime = "text/plain";
+			String remoteIp = session.getRemoteIpAddress();
+			String sessionUri = session.getUri();
+			Map<String,String> headers;
 			try {
 				if (session.getUri().equals("/")) {
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/index.html")));
@@ -826,13 +829,13 @@ public class Main extends NanoHTTPD {
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/" + uri)));
 				}
 			} catch (NoSuchFileException e) {
-				logger.debug("File not found.", e);
+				logger.debug(remoteIp + " (CFIP: "+headers.get("CF-Connecting-IP")?headers.get("CF-Connecting-IP"):"No"+"): File not found. "+sessionUri);
 				try {
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/404.html")));
 					mime = "text/html";
 					status = Status.NOT_FOUND;
 				} catch (NoSuchFileException e1) {
-					logger.warn("Error document not found.", e1);
+					logger.warn("Error document not found.");
 					mime = "text/html";
 					response = "<h1>404: Not Found</h1><br/><h3>The requested URL " + session.getUri() + " was not found on this server.</h3><br/>Additionally, the 404 error document was not found.";
 					status = Status.NOT_FOUND;
@@ -843,35 +846,35 @@ public class Main extends NanoHTTPD {
 					status = Status.INTERNAL_ERROR;
 				}
 			} catch (AccessDeniedException e) {
-				logger.debug("File access forbidden.", e);
+				logger.debug(remoteIp + " (CFIP: "+headers.get("CF-Connecting-IP")?headers.get("CF-Connecting-IP"):"No"+"): File access forbidden. "+sessionUri);
 				try {
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/403.html")));
 					mime = "text/html";
 					status = Status.FORBIDDEN;
 				} catch (NoSuchFileException e1) {
-					logger.warn("Error document not found.", e1);
+					logger.warn("Error document not found.");
 					mime = "text/html";
 					response = "<h1>403: Forbidden</h1><br/><h3>The requested URL " + session.getUri() + " was denied access to by the filesystem.</h3><br/>Additionally, the 403 error document was not found.";
 					status = Status.FORBIDDEN;
 				} catch (IOException e1) {
-					logger.error("IO Exception in serve file:", e1);
+					logger.error("IO Exception in serve errdoc:", e1);
 					mime = "text/html";
 					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk";
 					status = Status.INTERNAL_ERROR;
 				}
 			} catch (IOException e) {
-				logger.error("IO Exception in serve file.", e);
+				logger.debug(remoteIp + " (CFIP: "+headers.get("CF-Connecting-IP")?headers.get("CF-Connecting-IP"):"No"+"): IO Exception in serve file. "+sessionUri);
 				try {
 					mime = "text/html";
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/500.html")));
 					status = Status.INTERNAL_ERROR;
 				} catch (NoSuchFileException e1) {
-					logger.warn("Error document not found.", e1);
+					logger.warn("Error document not found.");
 					mime = "text/html";
 					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk<br/>Additionally, the 500 error document was not found.";
 					status = Status.INTERNAL_ERROR;
 				} catch (IOException e1) {
-					logger.error("IO Exception in serve file.", e1);
+					logger.error("IO Exception in serve errdoc.",e1);
 					response = "<h1>500: Internal Server Error</h1><br/><h3>Server encountered an exception.</h3><br/>Try again later, if the problem persists contact the administrator at admin@yabl.tk";
 					mime = "text/html";
 					status = Status.INTERNAL_ERROR;

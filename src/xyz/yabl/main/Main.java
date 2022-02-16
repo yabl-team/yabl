@@ -811,7 +811,7 @@ public class Main extends NanoHTTPD {
 			String mime = "text/plain";
 			String remoteIp = session.getRemoteIpAddress();
 			String sessionUri = session.getUri();
-			Map<String,String> headers;
+			Map<String,String> headers = session.getHeaders();
 			try {
 				if (session.getUri().equals("/")) {
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/index.html")));

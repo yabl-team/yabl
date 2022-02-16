@@ -829,7 +829,7 @@ public class Main extends NanoHTTPD {
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/" + uri)));
 				}
 			} catch (NoSuchFileException e) {
-				logger.debug(remoteIp + " (CFIP: "+headers.get("CF-Connecting-IP")?headers.get("CF-Connecting-IP"):"No"+"): File not found. "+sessionUri);
+				logger.debug(remoteIp + " (CFIP: "+headers.get("CF-Connecting-IP")!=null?headers.get("CF-Connecting-IP"):"No"+"): File not found. "+sessionUri);
 				try {
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/404.html")));
 					mime = "text/html";
@@ -846,7 +846,7 @@ public class Main extends NanoHTTPD {
 					status = Status.INTERNAL_ERROR;
 				}
 			} catch (AccessDeniedException e) {
-				logger.debug(remoteIp + " (CFIP: "+headers.get("CF-Connecting-IP")?headers.get("CF-Connecting-IP"):"No"+"): File access forbidden. "+sessionUri);
+				logger.debug(remoteIp + " (CFIP: "+headers.get("CF-Connecting-IP")!=null?headers.get("CF-Connecting-IP"):"No"+"): File access forbidden. "+sessionUri);
 				try {
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/403.html")));
 					mime = "text/html";
@@ -863,7 +863,7 @@ public class Main extends NanoHTTPD {
 					status = Status.INTERNAL_ERROR;
 				}
 			} catch (IOException e) {
-				logger.debug(remoteIp + " (CFIP: "+headers.get("CF-Connecting-IP")?headers.get("CF-Connecting-IP"):"No"+"): IO Exception in serve file. "+sessionUri);
+				logger.debug(remoteIp + " (CFIP: "+headers.get("CF-Connecting-IP")!=null?headers.get("CF-Connecting-IP"):"No"+"): IO Exception in serve file. "+sessionUri);
 				try {
 					mime = "text/html";
 					response = String.join("\n", Files.readAllLines(Paths.get("./www/500.html")));

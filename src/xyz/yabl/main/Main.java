@@ -170,7 +170,6 @@ public class Main extends NanoHTTPD {
 							d.put("id", new BsonString(id));
 							Document bot = db.getCollection("bots").find(d).first();
 							if (bot != null) {
-								bot.remove("_id");
 								if (authorization != null && this.loggedUsers.containsKey(authorization)) {
 									if (!(bot.get("owners", Document.class).keySet().contains(this.loggedUsers.get(authorization).get("id").getAsString())) &&
 										(this.loggedUsers.get(authorization).has("admin") &&
@@ -257,7 +256,6 @@ public class Main extends NanoHTTPD {
 													userF.put("_id", id);
 													db.getCollection("users").replaceOne(userF, user);
 													db.getCollection("bots").insertOne(document);
-													document.remove("_id");
 													HttpPut httpput = new HttpPut("https://discordapp.com/api/v6/guilds/523523486719803403/members/" + this.loggedUsers.get(authorization).get("id").getAsString());
 													httpput.setHeader("Content-Type", "application/json");
 													httpput.setHeader("Authorization", "Bot " + bottoken);
@@ -359,7 +357,6 @@ public class Main extends NanoHTTPD {
 									}
 									db.getCollection("bots").replaceOne(bot, document);
 									botUpdate(document.getString("id"), owners.keySet().toArray(new String[0]), 1, this.loggedUsers.get(authorization).get("id").getAsString());
-									document.remove("_id");
 									return newFixedLengthResponse(Status.OK, "application/json", document.toJson());
 								} else if (session.getUri().split("/")[4].equals("stats")) {
 									if (apiToken) {
@@ -378,7 +375,6 @@ public class Main extends NanoHTTPD {
 											return newFixedLengthResponse(Status.BAD_REQUEST, "application/json", "{\"error\":true,\"message\":\"Property guildCount must be greater than or equal to zero.\"}");
 										bot.put("guildCount", Integer.parseInt(json.get("guildCount").getAsString().split("\\.")[0].substring(0, Math.min(json.get("guildCount").getAsString().split("\\.")[0].length(), 9))));
 										db.getCollection("bots").replaceOne(Document.parse("{\"id\":\"" + id + "\"}"), bot);
-										bot.remove("_id");
 										return newFixedLengthResponse(Status.OK, "application/json", bot.toJson());
 									}
 									return newFixedLengthResponse(Status.UNAUTHORIZED, "application/json", "{\"error\":true,\"message\":\"Token does not have permission to modify this object.\"}");
@@ -445,7 +441,7 @@ public class Main extends NanoHTTPD {
 										return newFixedLengthResponse(Status.INTERNAL_ERROR, "application/json", "{\"error\":true,\"message\":\"Bots not instance of ArrayList.\"}");
 									}
 									db.getCollection("bots").find(d).forEach((Consumer<Document> ) a -> {
-										a.remove("_id");bots.add(a.toJson());
+										a.remove("modnote");bots.add(a.toJson());
 									});
 									return newFixedLengthResponse(Status.OK, "application/json", "{\"id\":\"" + user.getString("userid") + "\",\"userscrim\":\"" + user.getString("userscrim") + "\",\"avatar\":\"" + user.getString("avatar") + "\",\"bots\":[" + String.join(",", bots) + "]}");
 								}
@@ -466,7 +462,7 @@ public class Main extends NanoHTTPD {
 									return newFixedLengthResponse(Status.INTERNAL_ERROR, "application/json", "{\"error\":true,\"message\":\"Bots not instance of ArrayList.\"}");
 								}
 								db.getCollection("bots").find(d).forEach((Consumer<Document> ) a -> {
-									a.remove("_id");bots.add(a.toJson());
+									a.remove("modnote");bots.add(a.toJson());
 								});
 								return newFixedLengthResponse(Status.OK, "application/json", "{\"id\":\"" + user.getString("userid") + "\",\"userscrim\":\"" + user.getString("userscrim") + "\",\"avatar\":\"" + user.getString("avatar") + "\",\"bots\":[" + String.join(",", bots) + "]}");
 							}
@@ -477,7 +473,7 @@ public class Main extends NanoHTTPD {
 						if (authorization != null && (this.loggedUsers.containsKey(authorization) || apiToken)) {
 							List<String> bots = new ArrayList<>();
 							db.getCollection("bots").find().forEach((Consumer<Document> ) a -> {
-								a.remove("_id");bots.add(a.toJson());
+								a.remove("modnote");bots.add(a.toJson());
 							});
 							return newFixedLengthResponse(Status.OK, "application/json", "[" + String.join(",", bots) + "]");
 						}
@@ -503,7 +499,7 @@ public class Main extends NanoHTTPD {
 							sort.put("score", sort2);
 						}
 						db.getCollection("bots").find(d).projection(sort).sort(sort).skip(json.get("page") != null ? json.get("page").getAsInt() * 20 : 0).limit(20).forEach((Consumer<Document> ) a -> {
-							a.remove("_id");bots.add(a.toJson());
+							a.remove("modnote");bots.add(a.toJson());
 						});
 						long pages = db.getCollection("bots").countDocuments(d);
 						return newFixedLengthResponse(Status.OK, "application/json", "{\"pages\":\"" + (int) Math.floor(pages / 20) + "\",\"results\":\"" + pages + "\",\"bots\":[" + String.join(",", bots) + "]}");
@@ -520,7 +516,7 @@ public class Main extends NanoHTTPD {
 							List<String> bots = new ArrayList<>();
 							Document d = Document.parse("{\"verified\":false}");
 							db.getCollection("bots").find(d).skip(json.get("page") != null ? json.get("page").getAsInt() * 20 : 0).limit(20).forEach((Consumer<Document> ) a -> {
-								a.remove("_id");bots.add(a.toJson());
+								a.remove("modnote");bots.add(a.toJson());
 							});
 							long pages = db.getCollection("bots").countDocuments(d);
 							return newFixedLengthResponse(Status.OK, "application/json", "{\"pages\":\"" + (int) Math.floor(pages / 20) + "\",\"results\":\"" + pages + "\",\"bots\":[" + String.join(",", bots) + "]}");
@@ -533,7 +529,7 @@ public class Main extends NanoHTTPD {
 							Document.parse("{ $sample : { size: 20 } }]")
 						};
 						db.getCollection("bots").aggregate(Arrays.asList(aggregateArray)).forEach((Consumer<Document> ) a -> {
-							a.remove("_id");bots.add(a.toJson());
+							a.remove("modnote");bots.add(a.toJson());
 						});
 						return newFixedLengthResponse(Status.OK, "application/json", "[" + String.join(",", bots) + "]");
 					}

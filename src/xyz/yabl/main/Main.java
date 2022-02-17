@@ -498,11 +498,14 @@ public class Main extends NanoHTTPD {
 							sort2.put("$meta", "textScore");
 							sort.put("score", sort2);
 						}
-						db.getCollection("bots").find(d).projection(sort).sort(sort).skip(json.get("page") != null ? json.get("page").getAsInt() * 20 : 0).limit(20).forEach((Consumer<Document> ) a -> {
+						int limit = json.has("limit") ? json.get("limit").getAsInt() : 20;
+						limit = limit < 1 ? 1 : limit;
+						limit = limit > 100 ? 100 : limit;
+						db.getCollection("bots").find(d).projection(sort).sort(sort).skip(json.get("page") != null ? json.get("page").getAsInt() * limit : 0).limit(limit).forEach((Consumer<Document> ) a -> {
 							a.remove("modnote");bots.add(a.toJson());
 						});
 						long pages = db.getCollection("bots").countDocuments(d);
-						return newFixedLengthResponse(Status.OK, "application/json", "{\"pages\":\"" + (int) Math.floor(pages / 20) + "\",\"results\":\"" + pages + "\",\"bots\":[" + String.join(",", bots) + "]}");
+						return newFixedLengthResponse(Status.OK, "application/json", "{\"pages\":\"" + (int) Math.floor(pages / limit) + "\",\"results\":\"" + pages + "\",\"bots\":[" + String.join(",", bots) + "]}");
 					} else if (session.getUri().startsWith("/api/bots/unverified")) {
 						if (authorization != null && (this.loggedUsers.containsKey(authorization) || apiToken)) {
 							JsonObject json;
@@ -515,11 +518,14 @@ public class Main extends NanoHTTPD {
 							}
 							List<String> bots = new ArrayList<>();
 							Document d = Document.parse("{\"verified\":false}");
-							db.getCollection("bots").find(d).skip(json.get("page") != null ? json.get("page").getAsInt() * 20 : 0).limit(20).forEach((Consumer<Document> ) a -> {
+							int limit = json.has("limit") ? json.get("limit").getAsInt() : 20;
+							limit = limit < 1 ? 1 : limit;
+							limit = limit > 1000 ? 1000 : limit;
+							db.getCollection("bots").find(d).skip(json.get("page") != null ? json.get("page").getAsInt() * limit : 0).limit(limit).forEach((Consumer<Document> ) a -> {
 								a.remove("modnote");bots.add(a.toJson());
 							});
 							long pages = db.getCollection("bots").countDocuments(d);
-							return newFixedLengthResponse(Status.OK, "application/json", "{\"pages\":\"" + (int) Math.floor(pages / 20) + "\",\"results\":\"" + pages + "\",\"bots\":[" + String.join(",", bots) + "]}");
+							return newFixedLengthResponse(Status.OK, "application/json", "{\"pages\":\"" + (int) Math.floor(pages / limit) + "\",\"results\":\"" + pages + "\",\"bots\":[" + String.join(",", bots) + "]}");
 						}
 						return newFixedLengthResponse(Status.UNAUTHORIZED, "application/json", "{\"error\":true,\"message\":\"Token does not have permission to access this object.\"}");
 					} else {

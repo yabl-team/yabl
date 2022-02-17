@@ -521,7 +521,7 @@ public class Main extends NanoHTTPD {
 							int limit = json.has("limit") ? json.get("limit").getAsInt() : 20;
 							limit = limit < 1 ? 1 : limit;
 							limit = limit > 1000 ? 1000 : limit;
-							db.getCollection("bots").find(d).skip(json.get("page") != null ? json.get("page").getAsInt() * limit : 0).limit(limit).forEach((Consumer<Document> ) a -> {
+							db.getCollection("bots").find(d).skip(json.get("page") != null ? json.get("page").getAsInt() * limit : 0).limit(limit).sort(new Document("_id",1)).forEach((Consumer<Document> ) a -> {
 								a.remove("modnote");bots.add(a.toJson());
 							});
 							long pages = db.getCollection("bots").countDocuments(d);

@@ -79,7 +79,8 @@
 	<script language="javascript">
 		$(".verifynav .hover").classList.add("active");
 		instance.post(baseUrl + "/api/bots/unverified", {
-			page: page
+			page: page,
+			limit: findGetParameter("limit") != null ? findGetParameter("limit") : 20
 		}, {
 			"headers": {
 				"Content-Type": "application/json",

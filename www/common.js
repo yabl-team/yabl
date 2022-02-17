@@ -61,7 +61,7 @@ if (localStorage.getItem("token") !== null) {
             window.location.href = baseUrl + "/login";
         }
         if (!whoami.admin) $(".listitem.verifynav").style.display = "none";
-        window.whoami = response;
+        window.whoami = whoami;
     });
 } else {
     $(".listitem.verifynav").style.display = "none";

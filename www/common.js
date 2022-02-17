@@ -68,17 +68,17 @@ if (localStorage.getItem("token") !== null) {
 }
 
 function next() {
-    var url = baseUrl + window.location.pathname + "?query=" + query + "&page=" + (parseInt(page) + 1) + "&limit="+findGetParameter("limit");
+    var url = baseUrl + window.location.pathname + "?query=" + query + "&page=" + (parseInt(page) + 1) + "&limit="+(findGetParameter("limit")||0);
     window.location.href = url;
 }
 
 function previous() {
-    var url = baseUrl + window.location.pathname + "?query=" + query + "&page=" + (parseInt(page) - 1) + "&limit="+findGetParameter("limit");
+    var url = baseUrl + window.location.pathname + "?query=" + query + "&page=" + (parseInt(page) - 1) + "&limit="+(findGetParameter("limit")||0);
     window.location.href = url;
 }
 
 function go() {
-    var url = baseUrl + window.location.pathname + "?query=" + query + "&page=" + Math.max(Math.min(parseInt(pagein.value) - 1, pages), 0) + "&limit="+findGetParameter("limit");
+    var url = baseUrl + window.location.pathname + "?query=" + query + "&page=" + Math.max(Math.min(parseInt(pagein.value) - 1, pages), 0) + "&limit="+*(findGetParameter("limit")||0);
     window.location.href = url;
 }
 

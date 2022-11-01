@@ -77,7 +77,19 @@
 			if (localStorage.getItem("token") == null) {
 				window.location.href = baseUrl + "/401";
 			}
-
+			
+			$(".botid").addEventListener("input", (e)=>{
+				if(e.target.value.length >= 17){
+					try{
+						if(BigInt(e.target.value) < BigInt("220331822284806820")){
+							alert("Bots that have a Client ID differing than their user ID are currently not supported. Check back at a later time.")
+						}
+					} catch(e){
+						//probably parse fail, not important either way.
+					}
+				}
+			});
+			
 			function submit(gresponse) {
 				console.log(!gresponse);
 				if (!gresponse) {
